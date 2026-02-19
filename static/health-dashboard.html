@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saglik Paneli</title>
+<meta name="description" content="GSC Radar saglik paneli: SEO skor, trend ve risklerin gunluk takibi.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="/static/health-dashboard.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GSC Radar - Saglik Paneli">
+<meta property="og:description" content="Site sagligini gun gun izleyin, riskleri erken yakalayin.">
+<meta property="og:url" content="/static/health-dashboard.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GSC Radar - Saglik Paneli">
+<meta name="twitter:description" content="SEO skor, trend ve risk takibi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+<div id="appHeader"></div>
+<div class="page">
+  <button
+    type="button"
+    onclick="openHelpModal()"
+    style="position:fixed; top:88px; right:22px; z-index:60; width:42px; height:42px; border-radius:50%; border:1px solid #0f4c81; background:#ffffff; color:#0f4c81; font-weight:700; font-size:20px; cursor:pointer;"
+    title="Saglik yardimi"
+  >?</button>
+  <section class="hero">
+    <h2 class="hero-title">Saglik Komuta Merkezi</h2>
+    <p class="hero-subtitle">Site sagligini gun gun takip et, trendleri gor, riskleri hizli yakala.</p>
+  </section>
+
+  <section class="toolbar">
+    <label>
+      Site:
+      <select id="siteSelect">
+        <option value="">Site seciniz</option>
+      </select>
+    </label>
+
+    <label>
+      Analiz Araligi:
+      <select id="range">
+        <option value="1" selected>Bugun (1 Gun)</option>
+        <option value="7">Son 7 Gun</option>
+        <option value="14">Son 14 Gun</option>
+        <option value="30">Son 30 Gun</option>
+      </select>
+    </label>
+
+    <button type="button" onclick="runHealth()">Saglik Hesapla</button>
+
+    <div class="site-id-box">
+      <strong>Site Kimligi:</strong>
+      <code id="selectedSiteId">-</code>
+      <button type="button" onclick="copySiteId()">Kopyala</button>
+    </div>
+  </section>
+
+  <section class="kpi-grid">
+    <article class="kpi-card">
+      <div class="label">Guncel Skor</div>
+      <div class="value" id="kpiScore">-</div>
+      <div class="hint" id="kpiStatusHint">Durum bekleniyor</div>
+    </article>
+    <article class="kpi-card">
+      <div class="label">Durum</div>
+      <div class="value" id="kpiStatus">-</div>
+      <div class="hint">Saglikli / Riskli / Kritik</div>
+    </article>
+    <article class="kpi-card">
+      <div class="label">Degisim</div>
+      <div class="value" id="kpiDelta">-</div>
+      <div class="hint">Ilk ve son skor farki</div>
+    </article>
+    <article class="kpi-card">
+      <div class="label">Ortalama</div>
+      <div class="value" id="kpiAvg">-</div>
+      <div class="hint" id="kpiPoints">0 veri noktasi</div>
+    </article>
+  </section>
+
+  <section class="tabs">
+    <button class="tab-button active" onclick="showTab('list', this)">Tarihe Gore</button>
+    <button class="tab-button" onclick="showTab('chart', this)">Grafik</button>
+    <button class="tab-button" onclick="showTab('summary', this)">Ozet</button>
+  </section>
+
+  <section class="panel">
+    <div id="list" class="tab active">
+      <ul id="timelineList" class="timeline-list"></ul>
+      <p id="timelineEmpty" class="loading-note" style="display:none;">Bu aralikta saglik verisi bulunamadi.</p>
+    </div>
+
+    <div id="chart" class="tab">
+      <canvas id="healthChart"></canvas>
+    </div>
+
+    <div id="summary" class="tab">
+      <div class="summary-line"><strong>Son Gun:</strong> <span id="lastDate">-</span></div>
+      <div class="summary-line"><strong>Son Skor:</strong> <span id="lastScore">-</span></div>
+      <div class="summary-line"><strong>Son Durum:</strong> <span id="lastStatus">-</span></div>
+      <div class="summary-line"><strong>En Dusuk:</strong> <span id="minScore">-</span></div>
+      <div class="summary-line"><strong>En Yuksek:</strong> <span id="maxScore">-</span></div>
+      <div class="summary-line"><strong>Toplam Uyari:</strong> <span id="totalAlerts">-</span></div>
+      <div class="loading-note">Skor yorumu: 85+ iyi, 65-84 riskli, 64 ve alti kritik.</div>
+    </div>
+  </section>
+</div>
+
+<div id="helpModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.45); z-index:80; padding:20px;">
+  <div style="max-width:820px; margin:30px auto; background:#fff; border-radius:14px; border:1px solid #cbd5e1; padding:18px; max-height:85vh; overflow:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0;">Saglik Paneli Yardim</h3>
+      <button type="button" class="btn-secondary" onclick="closeHelpModal()">Kapat</button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Alan</th><th>Ne Yapar</th><th>Nasil Kullanilir</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Analiz Araligi</td><td>Gunluk/7/14/30 gun veriyi filtreler.</td><td>Site sectikten sonra araligi sec.</td></tr>
+        <tr><td>Saglik Hesapla</td><td>GSC verisinden yeni anlik goruntu olusturur.</td><td>Butona tikla, sonra zaman cizelgesi ve KPI guncellenir.</td></tr>
+        <tr><td>Tarihe Gore</td><td>Gun bazli score ve alert listesi.</td><td>Son degisimleri gun gun takip et.</td></tr>
+        <tr><td>Grafik</td><td>Saglik skoru egilim cizgisi.</td><td>Riskli dususleri hizli fark et.</td></tr>
+        <tr><td>Ozet</td><td>Min/Max/Son score ve toplam alert.</td><td>Aylik haftalik performans ozeti icin kullan.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let chartInstance = null;
+function t(key, fallback, params) {
+  if (window.GSCRadarI18n && typeof window.GSCRadarI18n.t === "function") {
+    return window.GSCRadarI18n.t(key, fallback, params);
+  }
+  return fallback || key;
+}
+
+function openHelpModal() {
+  document.getElementById("helpModal").style.display = "block";
+}
+
+function closeHelpModal() {
+  document.getElementById("helpModal").style.display = "none";
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeHelpModal();
+});
+
+document.getElementById("helpModal").addEventListener("click", e => {
+  if (e.target && e.target.id === "helpModal") closeHelpModal();
+});
+
+function updateSelectedSiteId(siteId) {
+  const el = document.getElementById("selectedSiteId");
+  el.textContent = siteId || "-";
+  if (window.GSCRadarHeader && typeof window.GSCRadarHeader.setSiteId === "function") {
+    window.GSCRadarHeader.setSiteId(siteId || "");
+  }
+}
+
+function copySiteId() {
+  const siteId = document.getElementById("selectedSiteId").textContent.trim();
+  if (!siteId || siteId === "-") {
+    alert(t("common.no_site_id_to_copy", "Kopyalanacak site id yok"));
+    return;
+  }
+  navigator.clipboard.writeText(siteId)
+    .then(() => alert(t("common.site_id_copied", "Site ID kopyalandi")))
+    .catch(() => alert(t("common.copy_failed", "Kopyalama basarisiz")));
+}
+
+function getStatusChip(status) {
+  if (!status || status === "-") return "-";
+  return '<span class="status-chip ' + status + '">' + status + "</span>";
+}
+
+function updateKpis(points) {
+  const scoreEl = document.getElementById("kpiScore");
+  const statusEl = document.getElementById("kpiStatus");
+  const deltaEl = document.getElementById("kpiDelta");
+  const avgEl = document.getElementById("kpiAvg");
+  const statusHintEl = document.getElementById("kpiStatusHint");
+  const pointsEl = document.getElementById("kpiPoints");
+
+  if (!points || points.length === 0) {
+    scoreEl.textContent = "-";
+    statusEl.textContent = "-";
+    deltaEl.textContent = "-";
+    avgEl.textContent = "-";
+    statusHintEl.textContent = t("health.status_waiting", "Durum bekleniyor");
+    pointsEl.textContent = t("health.points", "0 veri noktasi", { count: 0 });
+    return;
+  }
+
+  const first = points[0];
+  const last = points[points.length - 1];
+  const delta = last.score - first.score;
+  const avg = points.reduce((acc, p) => acc + p.score, 0) / points.length;
+
+  scoreEl.textContent = last.score;
+  statusEl.innerHTML = getStatusChip(last.status);
+  deltaEl.textContent = (delta > 0 ? "+" : "") + delta.toFixed(1);
+  avgEl.textContent = avg.toFixed(1);
+  statusHintEl.textContent = t("health.last_update", "Son guncelleme: {{date}}", { date: last.date });
+  pointsEl.textContent = t("health.points", "{{count}} veri noktasi", { count: points.length });
+}
+
+function renderList(points) {
+  const ul = document.getElementById("timelineList");
+  const empty = document.getElementById("timelineEmpty");
+  ul.innerHTML = "";
+
+  if (!points || points.length === 0) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  points.forEach(p => {
+    const li = document.createElement("li");
+    li.className = "timeline-item";
+    li.innerHTML = [
+      '<div><strong>' + p.date.split("T")[0] + "</strong></div>",
+      '<div class="timeline-meta">',
+      '<span>Skor: <strong>' + p.score + "</strong></span>",
+      getStatusChip(p.status),
+      '<span>Uyarilar: ' + (p.alerts || 0) + "</span>",
+      "</div>"
+    ].join("");
+    ul.appendChild(li);
+  });
+}
+
+function renderSummary(points) {
+  const set = (id, value) => { document.getElementById(id).textContent = value; };
+
+  if (!points || points.length === 0) {
+    set("lastDate", "-");
+    set("lastScore", "-");
+    set("lastStatus", "-");
+    set("minScore", "-");
+    set("maxScore", "-");
+    set("totalAlerts", "-");
+    return;
+  }
+
+  const last = points[points.length - 1];
+  const minScore = Math.min(...points.map(p => p.score));
+  const maxScore = Math.max(...points.map(p => p.score));
+  const totalAlerts = points.reduce((acc, p) => acc + (p.alerts || 0), 0);
+
+  set("lastDate", last.date.split("T")[0]);
+  set("lastScore", String(last.score));
+  document.getElementById("lastStatus").innerHTML = getStatusChip(last.status);
+  set("minScore", String(minScore));
+  set("maxScore", String(maxScore));
+  set("totalAlerts", String(totalAlerts));
+}
+
+function renderChart(points) {
+  const ctx = document.getElementById("healthChart").getContext("2d");
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: points.map(p => p.date.split("T")[0]),
+      datasets: [{
+        label: t("health.chart_score", "Saglik Skoru"),
+        data: points.map(p => p.score),
+        borderColor: "#0f4c81",
+        backgroundColor: "rgba(15, 76, 129, 0.12)",
+        borderWidth: 2.5,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        tension: 0.25,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } },
+      scales: { y: { beginAtZero: true, max: 100, ticks: { stepSize: 10 } } }
+    }
+  });
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if (btn) btn.classList.add("active");
+}
+
+function runHealth() {
+  const siteId = new URLSearchParams(window.location.search).get("site");
+  const days = document.getElementById("range").value;
+  if (!siteId) {
+    alert(t("common.site_not_selected", "Site secilmedi"));
+    return;
+  }
+
+  fetch("/sites/" + siteId + "/health/run?days=" + days, { method: "POST" })
+    .then(res => res.json())
+    .then(() => loadDashboard(siteId))
+    .catch(err => {
+      console.error(err);
+      alert(t("health.run_error", "Saglik hesaplanirken hata olustu"));
+    });
+}
+
+function loadDashboard(siteId) {
+  const days = document.getElementById("range").value;
+  fetch("/sites/" + siteId + "/health/timeline?days=" + days)
+    .then(res => res.json())
+    .then(data => {
+      const points = data.points || [];
+      updateKpis(points);
+      renderList(points);
+      renderChart(points);
+      renderSummary(points);
+    })
+    .catch(err => {
+      console.error(err);
+      alert(t("health.load_error", "Saglik verisi yuklenemedi"));
+    });
+}
+
+fetch("/sites")
+  .then(res => res.json())
+  .then(sites => {
+    const select = document.getElementById("siteSelect");
+    sites.forEach(site => {
+      const option = document.createElement("option");
+      option.value = site.id;
+      option.textContent = site.domain;
+      select.appendChild(option);
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const activeSite = params.get("site");
+    if (activeSite) {
+      select.value = activeSite;
+      updateSelectedSiteId(activeSite);
+      loadDashboard(activeSite);
+    } else {
+      updateSelectedSiteId("");
+    }
+  });
+
+document.getElementById("siteSelect").addEventListener("change", e => {
+  const siteId = e.target.value;
+  if (!siteId) return;
+  history.pushState({}, "", "?site=" + siteId);
+  updateSelectedSiteId(siteId);
+  loadDashboard(siteId);
+});
+
+document.getElementById("range").addEventListener("change", () => {
+  const siteId = new URLSearchParams(window.location.search).get("site");
+  if (siteId) loadDashboard(siteId);
+});
+</script>
+
+<script src="/static/header.js"></script>
+</body>
+</html>

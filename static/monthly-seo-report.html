@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aylık SEO Raporu</title>
+<meta name="description" content="GSC Radar Aylık SEO raporu: yonetici ozeti, teknik bulgular, keyword firsatlari ve white-label PDF.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="/static/monthly-seo-report.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GSC Radar - Aylık SEO Raporu">
+<meta property="og:description" content="Aylık performans, firsatlar ve aksiyon plani ile white-label raporlama.">
+<meta property="og:url" content="/static/monthly-seo-report.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GSC Radar - Aylık SEO Raporu">
+<meta name="twitter:description" content="Musteri odakli white-label SEO raporu ve aksiyon plani.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/pdfmake.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.15/build/vfs_fonts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+<style>
+.report-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -80px -120px auto;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15, 76, 129, 0.18) 0%, rgba(15, 76, 129, 0) 70%);
+  pointer-events: none;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.section-title {
+  margin: 0 0 8px 0;
+  font-family: "Inter", sans-serif;
+}
+
+.list-clean {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.list-clean li {
+  margin-bottom: 6px;
+}
+
+.small-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.preflight {
+  border: 1px solid #c7d7ea;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.preflight-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.preflight-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.preflight-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #dbeafe;
+  color: #1e3a8a;
+  white-space: nowrap;
+}
+
+.preflight-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.preflight-tip {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+  background: #ffffff;
+  font-size: 13px;
+  color: #1e3a8a;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.insight-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+  padding: 12px;
+}
+
+.insight-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.4px;
+}
+
+.insight-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge.good {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge.bad {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.stat-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 6px;
+}
+
+.story-mode[hidden] {
+  display: none;
+}
+
+.story-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.story-step {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: 12px;
+}
+
+.story-step h4 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.story-step p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.notes-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.notes-form textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  font-family: "Inter", sans-serif;
+}
+
+.note-list {
+  display: grid;
+  gap: 8px;
+}
+
+.note-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.note-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.note-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.note-tag.team {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.note-tag.client {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.page {
+  max-width: 1060px;
+}
+
+.toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toolbar input[type="text"],
+.toolbar input[type="month"],
+.toolbar input[type="color"] {
+  width: min(260px, 100%);
+}
+
+#competitorInputTable input {
+  width: 100%;
+  min-width: 220px;
+}
+
+.color-palette {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+}
+
+#logoPreview {
+  max-height: 36px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 3px;
+  background: #fff;
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .insight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolbar input[type="text"],
+  .toolbar input[type="month"],
+  .toolbar input[type="color"] {
+    width: 100%;
+  }
+
+  .story-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .preflight-head {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="appHeader"></div>
+<div class="page">
+  <section class="hero">
+    <h2 class="hero-title">Aylık Detayli SEO Raporu</h2>
+    <p class="hero-subtitle">Musteri seviyesi ozet, teknik bulgular, keyword firsatlari ve aksiyon plani.</p>
+  </section>
+
+  <section class="preflight" aria-label="Aylik rapor oncesi tavsiye edilen adimlar">
+    <div class="preflight-head">
+      <div>
+        <h3 class="preflight-title">Aylik rapor oncesi tavsiye edilen adimlar</h3>
+        <div class="small-note">Bu adimlari tamamlamak, eksik veri ile rapor paylasma riskini azaltir.</div>
+      </div>
+      <span class="preflight-badge">Rapor Kalitesi Kontrolu</span>
+    </div>
+    <ol class="preflight-list">
+      <li><strong>Dogru siteyi secin:</strong> Raporu olusturmadan once dogru proje/domain secildigini kontrol edin.</li>
+      <li><strong>Rapor ayini netlestirin:</strong> Ay seciminden sonra donemin tamamlandigindan emin olun.</li>
+      <li><strong>Veri cekimini yenileyin:</strong> Once ilgili ekranlarda "verileri cek/guncelle" islemini yapin.</li>
+      <li><strong>Alarm ve saglik durumunu kontrol edin:</strong> Kritik uyari varken rapor paylasmadan once not dusun.</li>
+      <li><strong>Not ekleyin:</strong> Bu aya ozel durumlari (kampanya, teknik degisiklik, sezon etkisi) rapora yazin.</li>
+      <li><strong>Marka ayarlarini tamamlayin:</strong> Musteri adi, raporu hazirlayan ve logo bilgisini doldurun.</li>
+      <li><strong>Son kontrol yapin:</strong> KPI kartlari, hikaye modu ve aksiyon plani bolumlerinin dolu oldugunu teyit edin.</li>
+    </ol>
+    <div class="preflight-tip">
+      Ipucu: Veri eksikse once "Raporu Getir" ile sayfayi yenileyin, sonra PDF olusturun.
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <label>
+      Site:
+      <select id="siteSelect">
+        <option value="">Site seciniz</option>
+      </select>
+    </label>
+
+    <label>
+      Rapor Ay:
+      <input type="month" id="monthInput">
+    </label>
+
+    <button type="button" onclick="loadReport()">Raporu Getir</button>
+    <button type="button" class="btn-success" onclick="downloadPdf()">PDF Indir</button>
+    <button type="button" class="btn-secondary" onclick="toggleStoryMode()">Hikaye Modu</button>
+    <button type="button" class="btn-secondary" onclick="generateShareLink()" data-i18n="monthly.generate_share_link">Paylasim Linki Uret</button>
+
+    <div class="site-id-box">
+      <strong>Site ID:</strong>
+      <code id="selectedSiteId">-</code>
+      <button type="button" onclick="copySiteId()">Kopyala</button>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <label style="flex:1 1 420px; max-width:100%;">
+      <span data-i18n="monthly.share_link_label">Paylasim Linki:</span>
+      <input type="text" id="reportShareLink" readonly placeholder="Link olusturmak icin butona basin">
+    </label>
+    <button type="button" onclick="copyShareLink()" data-i18n="monthly.copy_share_link">Linki Kopyala</button>
+  </section>
+
+  <section class="toolbar">
+    <label>Musteri Adi: <input type="text" id="clientName" placeholder="Orn: ACME Turizm"></label>
+    <label>Raporu Hazirlayan: <input type="text" id="preparedBy" placeholder="Orn: SEO Team"></label>
+    <label>Not: <input type="text" id="customNote" placeholder="Orn: Q1 hedef odakli rapor"></label>
+  </section>
+
+  <section class="toolbar">
+    <label>Logo Yukle:
+      <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp">
+    </label>
+    <label>Ana Renk:
+      <input type="color" id="primaryColorPicker" value="#0f4c81">
+    </label>
+    <label>RGB / HEX:
+      <input type="text" id="primaryColorText" placeholder="#0f4c81 veya rgb(15,76,129)" value="#0f4c81">
+    </label>
+    <div>
+      <div class="small-note">Hazir Renkler</div>
+      <div class="color-palette">
+        <button type="button" class="swatch" data-color="#0f4c81" style="background:#0f4c81;" title="Navy"></button>
+        <button type="button" class="swatch" data-color="#1d4ed8" style="background:#1d4ed8;" title="Blue"></button>
+        <button type="button" class="swatch" data-color="#0f766e" style="background:#0f766e;" title="Teal"></button>
+        <button type="button" class="swatch" data-color="#15803d" style="background:#15803d;" title="Green"></button>
+        <button type="button" class="swatch" data-color="#b45309" style="background:#b45309;" title="Orange"></button>
+        <button type="button" class="swatch" data-color="#be123c" style="background:#be123c;" title="Rose"></button>
+        <button type="button" class="swatch" data-color="#7c3aed" style="background:#7c3aed;" title="Purple"></button>
+        <button type="button" class="swatch" data-color="#111827" style="background:#111827;" title="Slate"></button>
+      </div>
+    </div>
+    <div>
+      <div class="small-note">Logo Onizleme</div>
+      <img id="logoPreview" alt="Logo onizleme">
+    </div>
+  </section>
+
+  <section class="report-grid">
+    <article class="panel">
+      <h3 class="section-title">Yonetici Ozeti</h3>
+      <div class="kpi-grid">
+        <article class="kpi-card">
+          <div class="label">Gorunurluk Endeksi</div>
+          <div class="value" id="kpiVisibility">-</div>
+          <div class="hint">0-100</div>
+        </article>
+        <article class="kpi-card">
+          <div class="label">Klik</div>
+          <div class="value" id="kpiClicks">-</div>
+          <div class="hint" id="kpiClicksDelta">-</div>
+        </article>
+        <article class="kpi-card">
+          <div class="label">Impression</div>
+          <div class="value" id="kpiImpressions">-</div>
+          <div class="hint" id="kpiImprDelta">-</div>
+        </article>
+        <article class="kpi-card">
+          <div class="label">Ortalama Pozisyon</div>
+          <div class="value" id="kpiPosition">-</div>
+          <div class="hint" id="kpiPosDelta">-</div>
+        </article>
+      </div>
+      <div class="small-note" id="periodLabel">Donem: -</div>
+      <div class="small-note" id="gscNote"></div>
+    </article>
+
+    <article class="panel">
+      <h3 class="section-title">Derin Icgoru Paneli</h3>
+      <div class="insight-grid">
+        <article class="insight-card">
+          <div class="insight-label">Markali Tiklamalar</div>
+          <div class="insight-value" id="segBrandedClicks">-</div>
+          <div class="small-note" id="segBrandedCtr">TO: -</div>
+        </article>
+        <article class="insight-card">
+          <div class="insight-label">Markasiz Tiklamalar</div>
+          <div class="insight-value" id="segNonBrandedClicks">-</div>
+          <div class="small-note" id="segNonBrandedCtr">TO: -</div>
+        </article>
+        <article class="insight-card">
+          <div class="insight-label">Backlink Risk</div>
+          <div class="insight-value" id="backlinkToxicRatio">-</div>
+          <div class="small-note" id="backlinkDelta">Yeni/Kayip: -</div>
+        </article>
+        <article class="insight-card">
+          <div class="insight-label">Anomali Sayfalari</div>
+          <div class="insight-value" id="anomalyCount">-</div>
+          <div class="small-note"><span id="anomalyBadge" class="badge warn">Bekleniyor</span></div>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="panel" style="margin:0;">
+          <h4 style="margin:0 0 8px 0;">Cihaz Dagilimi</h4>
+          <canvas id="deviceMixChart"></canvas>
+        </article>
+        <article class="panel" style="margin:0;">
+          <h4 style="margin:0 0 8px 0;">Hizli Durum Ozeti</h4>
+          <ul class="stat-list">
+            <li class="stat-item"><span>Cannibalization Query</span><strong id="cannibalCount">-</strong></li>
+            <li class="stat-item"><span>Internal Link Onerileri</span><strong id="internalLinkCount">-</strong></li>
+            <li class="stat-item"><span>Toxic Backlinks</span><strong id="toxicBacklinkCount">-</strong></li>
+            <li class="stat-item"><span>Top Ulke</span><strong id="topCountry">-</strong></li>
+          </ul>
+        </article>
+      </div>
+    </article>
+
+    <article class="panel story-mode" id="storyModePanel">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <h3 class="section-title" style="margin:0;">Rapor Hikayesi Modu</h3>
+        <span id="storyStatusBadge" class="badge warn">Hazirlaniyor</span>
+      </div>
+      <div class="story-flow">
+        <article class="story-step">
+          <h4>1) Ne Oldu?</h4>
+          <p id="storyWhatText">Rapor yuklendikten sonra otomatik doldurulur.</p>
+        </article>
+        <article class="story-step">
+          <h4>2) Neden Oldu?</h4>
+          <p id="storyWhyText">What Changed analiziyle nedenler listelenir.</p>
+        </article>
+        <article class="story-step">
+          <h4>3) Ne Yapacagiz?</h4>
+          <p id="storyActionText">Oncelikli aksiyon adimlari burada gosterilir.</p>
+        </article>
+      </div>
+    </article>
+
+    <article class="panel">
+      <h3 class="section-title">Notlar ve Yorumlar</h3>
+      <div class="notes-form">
+        <div class="two-col">
+          <label>Not Turu:
+            <select id="reportNoteType">
+              <option value="team">Ekip Notu</option>
+              <option value="client">Musteri Notu</option>
+            </select>
+          </label>
+          <label>Rapor Ayi:
+            <input type="month" id="reportNoteMonth">
+          </label>
+        </div>
+        <textarea id="reportNoteInput" placeholder="Bu ay ozelinde ekip ici notlar, musteriye ozel aciklamalar veya karar kayitlarini ekleyin."></textarea>
+        <div>
+          <button type="button" onclick="saveReportNote()">Notu Kaydet</button>
+        </div>
+      </div>
+      <div id="reportNotesList" class="note-list">
+        <div class="small-note">Henüz not eklenmedi.</div>
+      </div>
+    </article>
+
+    <div class="two-col">
+      <article class="panel">
+        <h3 class="section-title">MoM Performans Grafigi</h3>
+        <canvas id="momChart"></canvas>
+      </article>
+      <article class="panel">
+      <h3 class="section-title">Saglik ve Uyari Ozeti</h3>
+        <div class="metric-grid">
+          <article class="metric-card">
+            <div class="label">Saglik Ortalamasi</div>
+            <div class="value" id="healthAvg">-</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">Egilim Farki</div>
+            <div class="value" id="healthDelta">-</div>
+          </article>
+          <article class="metric-card" style="border-left-color:#dc2626;">
+            <div class="label">Kritik Uyari</div>
+            <div class="value" id="alertCritical">-</div>
+          </article>
+          <article class="metric-card" style="border-left-color:#d97706;">
+            <div class="label">Uyari</div>
+            <div class="value" id="alertWarning">-</div>
+          </article>
+        </div>
+      </article>
+    </div>
+
+    <div class="two-col">
+      <article class="panel">
+        <h3 class="section-title">Musteri Icin One Cikan Bulgular</h3>
+        <ul id="highlightsList" class="list-clean"></ul>
+      </article>
+      <article class="panel">
+        <h3 class="section-title">Aksiyon Onerileri</h3>
+        <ul id="recommendationsList" class="list-clean"></ul>
+      </article>
+    </div>
+
+    <div class="two-col">
+      <article class="panel">
+        <h3 class="section-title">Top Keywordler</h3>
+        <div style="overflow:auto;">
+          <table class="data-table" id="topKeywordsTable">
+            <thead>
+              <tr>
+                <th>Anahtar Kelime</th>
+                <th>Pos</th>
+                <th>Tiklama</th>
+                <th>Gosterim</th>
+                <th>TO</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel">
+        <h3 class="section-title">Firsat Keywordler</h3>
+        <div style="overflow:auto;">
+          <table class="data-table" id="oppKeywordsTable">
+            <thead>
+              <tr>
+                <th>Anahtar Kelime</th>
+                <th>Pos</th>
+                <th>Gosterim</th>
+                <th>TO</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <article class="panel">
+      <h3 class="section-title">Son Alertler</h3>
+      <div style="overflow:auto;">
+        <table class="data-table" id="alertsTable">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Tip</th>
+              <th>Metric</th>
+              <th>Severity</th>
+              <th>Delta%</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="panel">
+      <h3 class="section-title">Rakip Analizi</h3>
+      <div class="small-note">Sadece rakip ekleyin/cikarin. Metrikler otomatik benchmark modeliyle hesaplanir.</div>
+      <div style="overflow:auto; margin-top:10px;">
+        <table class="data-table" id="competitorInputTable">
+          <thead>
+            <tr>
+              <th>Rakip</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn-secondary" onclick="addCompetitorRow()">Rakip Ekle</button>
+        <button type="button" onclick="runCompetitorAnalysis()">Rakip Analizini Calistir</button>
+      </div>
+      <div style="margin-top:12px;">
+        <h4 style="margin:0 0 8px 0;">Gorunurluk Siralamasi</h4>
+        <div style="overflow:auto;">
+          <table class="data-table" id="competitorLeaderboardTable">
+            <thead>
+              <tr>
+                <th>Site</th>
+                <th>Gorunurluk</th>
+                <th>Tiklama</th>
+                <th>Gosterim</th>
+                <th>TO%</th>
+                <th>Pos</th>
+                <th>Top10%</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <div>
+          <h4 style="margin:0 0 8px 0;">Gap ve Firsatlar</h4>
+          <ul id="competitorGapList" class="list-clean"></ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 8px 0;">Rakip Onerileri</h4>
+          <ul id="competitorRecoList" class="list-clean"></ul>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>
+
+<script>
+let currentSiteId = "";
+let reportData = null;
+let competitorData = null;
+let momChart = null;
+let deviceMixChart = null;
+let reportLogoDataUrl = "";
+let reportLogoMeta = { width: 0, height: 0 };
+let extendedInsights = {
+  segment: null,
+  backlink: null,
+  cannibal: null,
+  internal: null,
+  anomalies: null
+};
+let whatChangedData = null;
+let reportNotes = [];
+let storyModeHidden = false;
+
+function t(key, fallback, params) {
+  if (window.GSCRadarI18n && typeof window.GSCRadarI18n.t === "function") {
+    return window.GSCRadarI18n.t(key, fallback, params);
+  }
+  return fallback || key;
+}
+
+function getCurrentMonthValue() {
+  const now = new Date();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  return now.getFullYear() + "-" + m;
+}
+
+function getSelectedReportMonth() {
+  return document.getElementById("monthInput").value || getCurrentMonthValue();
+}
+
+function syncNoteMonthInput() {
+  const month = getSelectedReportMonth();
+  const noteMonth = document.getElementById("reportNoteMonth");
+  if (noteMonth) noteMonth.value = month;
+}
+
+function setStoryStatus(type, text) {
+  const badge = document.getElementById("storyStatusBadge");
+  if (!badge) return;
+  badge.className = "badge " + type;
+  badge.textContent = text;
+}
+
+function toggleStoryMode() {
+  storyModeHidden = !storyModeHidden;
+  const panel = document.getElementById("storyModePanel");
+  if (!panel) return;
+  panel.hidden = storyModeHidden;
+}
+
+function updateSelectedSiteId(siteId) {
+  document.getElementById("selectedSiteId").textContent = siteId || "-";
+  if (window.GSCRadarHeader && typeof window.GSCRadarHeader.setSiteId === "function") {
+    window.GSCRadarHeader.setSiteId(siteId || "");
+  }
+}
+
+function copySiteId() {
+  const siteId = document.getElementById("selectedSiteId").textContent.trim();
+  if (!siteId || siteId === "-") {
+    alert(t("common.no_site_id_to_copy", "Kopyalanacak site id yok"));
+    return;
+  }
+  navigator.clipboard.writeText(siteId)
+    .then(() => alert(t("common.site_id_copied", "Site ID kopyalandi")))
+    .catch(() => alert(t("common.copy_failed", "Kopyalama basarisiz")));
+}
+
+function buildShareUrl() {
+  const siteId = currentSiteId || "";
+  const monthVal = document.getElementById("monthInput").value || getCurrentMonthValue();
+  const client = document.getElementById("clientName").value.trim();
+  const preparedBy = document.getElementById("preparedBy").value.trim();
+  const note = document.getElementById("customNote").value.trim();
+  const color = rgbObjectToHex(getPrimaryColorRgb());
+  const url = new URL(window.location.origin + "/static/monthly-seo-report.html");
+  if (siteId) url.searchParams.set("site", siteId);
+  if (monthVal) url.searchParams.set("month", monthVal);
+  if (client) url.searchParams.set("client", client);
+  if (preparedBy) url.searchParams.set("prepared_by", preparedBy);
+  if (note) url.searchParams.set("note", note);
+  if (color) url.searchParams.set("color", color);
+  return url.toString();
+}
+
+function generateShareLink() {
+  if (!currentSiteId) {
+    alert(t("common.site_not_selected", "Site secilmedi"));
+    return;
+  }
+  const link = buildShareUrl();
+  document.getElementById("reportShareLink").value = link;
+  alert(t("monthly.share_link_ready", "Paylasim linki hazir"));
+}
+
+function copyShareLink() {
+  const input = document.getElementById("reportShareLink");
+  const value = (input.value || "").trim();
+  if (!value) {
+    alert(t("monthly.share_link_missing", "Once paylasim linki olusturun"));
+    return;
+  }
+  navigator.clipboard.writeText(value)
+    .then(() => alert(t("monthly.share_link_copied", "Paylasim linki kopyalandi")))
+    .catch(() => alert(t("common.copy_failed", "Kopyalama basarisiz")));
+}
+
+function applyReportPrefillFromUrl() {
+  const params = new URLSearchParams(window.location.search || "");
+  const month = params.get("month");
+  const client = params.get("client");
+  const preparedBy = params.get("prepared_by");
+  const note = params.get("note");
+  const color = params.get("color");
+  if (month) document.getElementById("monthInput").value = month;
+  if (client) document.getElementById("clientName").value = client;
+  if (preparedBy) document.getElementById("preparedBy").value = preparedBy;
+  if (note) document.getElementById("customNote").value = note;
+  if (color) {
+    const parsed = parseColorInputToRgb(color);
+    if (parsed) syncColorControlsFromHex(rgbObjectToHex(parsed));
+  }
+}
+
+function pctText(v) {
+  const n = Number(v || 0);
+  return (n > 0 ? "+" : "") + n.toFixed(2) + "%";
+}
+
+function clampColorPart(v) {
+  return Math.max(0, Math.min(255, Number(v) || 0));
+}
+
+function hexToRgbObject(hex) {
+  let h = String(hex || "").trim().replace("#", "");
+  if (h.length === 3) h = h.split("").map(x => x + x).join("");
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return { r: 15, g: 76, b: 129 };
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16)
+  };
+}
+
+function rgbObjectToHex(rgb) {
+  const toHex = (n) => clampColorPart(n).toString(16).padStart(2, "0");
+  return "#" + toHex(rgb.r) + toHex(rgb.g) + toHex(rgb.b);
+}
+
+function parseColorInputToRgb(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  if (raw.startsWith("#")) return hexToRgbObject(raw);
+  const rgbMatch = raw.match(/^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i);
+  if (rgbMatch) {
+    return {
+      r: clampColorPart(rgbMatch[1]),
+      g: clampColorPart(rgbMatch[2]),
+      b: clampColorPart(rgbMatch[3])
+    };
+  }
+  return null;
+}
+
+function getPrimaryColorRgb() {
+  const txt = document.getElementById("primaryColorText").value.trim();
+  const parsed = parseColorInputToRgb(txt);
+  return parsed || hexToRgbObject("#0f4c81");
+}
+
+function syncColorControlsFromHex(hex) {
+  const normalized = rgbObjectToHex(hexToRgbObject(hex));
+  document.getElementById("primaryColorPicker").value = normalized;
+  document.getElementById("primaryColorText").value = normalized;
+}
+
+function fillTable(tableId, rowsHtml, emptyMsg) {
+  const tbody = document.querySelector("#" + tableId + " tbody");
+  if (!rowsHtml || rowsHtml.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='10' class='loading-note'>" + emptyMsg + "</td></tr>";
+    return;
+  }
+  tbody.innerHTML = rowsHtml.join("");
+}
+
+function safeFetchJson(url) {
+  return fetch(url)
+    .then(async (res) => {
+      const txt = await res.text();
+      let data = {};
+      try { data = txt ? JSON.parse(txt) : {}; } catch (_) { data = { raw: txt }; }
+      if (!res.ok) {
+        return { ok: false, status: res.status, error: data.detail || data.raw || ("Istek basarisiz (HTTP " + res.status + ")"), data: null };
+      }
+      return { ok: true, status: res.status, error: null, data };
+    })
+    .catch((err) => ({ ok: false, status: 0, error: err.message, data: null }));
+}
+
+function toBadge(el, type, text) {
+  el.className = "badge " + type;
+  el.textContent = text;
+}
+
+function escapeHtml(v) {
+  return String(v || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderStoryMode() {
+  const whatEl = document.getElementById("storyWhatText");
+  const whyEl = document.getElementById("storyWhyText");
+  const actionEl = document.getElementById("storyActionText");
+  if (!whatEl || !whyEl || !actionEl) return;
+  if (!reportData) {
+    whatEl.textContent = "Rapor yuklendikten sonra otomatik doldurulur.";
+    whyEl.textContent = "What Changed analiziyle nedenler listelenir.";
+    actionEl.textContent = "Oncelikli aksiyon adimlari burada gosterilir.";
+    setStoryStatus("warn", "Hazirlaniyor");
+    return;
+  }
+
+  const delta = (reportData.metrics || {}).delta_pct || {};
+  const whatText =
+    "Clicks %" + Number(delta.clicks || 0).toFixed(2) +
+    ", impression %" + Number(delta.impressions || 0).toFixed(2) +
+    ", CTR %" + Number(delta.ctr || 0).toFixed(2) +
+    " degisti. Ortalama pozisyon farki " + Number(delta.position || 0).toFixed(2) + ".";
+  whatEl.textContent = whatText;
+
+  if (whatChangedData && (whatChangedData.reason_breakdown || []).length > 0) {
+    const reasonLines = (whatChangedData.reason_breakdown || []).slice(0, 3).map(r => {
+      return (r.title || "-") + ": " + (r.detail || "-");
+    });
+    whyEl.textContent = reasonLines.join(" | ");
+  } else {
+    whyEl.textContent = "Neden analizi icin What Changed verisi yuklenemedi; metrik dalgalanmasi izlenmeli.";
+  }
+
+  const actionPool = [];
+  ((whatChangedData || {}).actions || []).forEach(a => actionPool.push(a));
+  ((reportData || {}).recommendations || []).forEach(a => actionPool.push(a));
+  const uniqueActions = Array.from(new Set(actionPool.filter(Boolean)));
+  actionEl.textContent = uniqueActions.slice(0, 3).join(" | ") || "Bu ay icin ek aksiyon gereksinimi gorunmuyor.";
+
+  const direction = ((whatChangedData || {}).summary || {}).direction || "stable";
+  if (direction === "down") {
+    setStoryStatus("bad", "Dusus");
+  } else if (direction === "up") {
+    setStoryStatus("good", "Yukselis");
+  } else {
+    setStoryStatus("warn", "Stabil");
+  }
+}
+
+async function loadWhatChangedForStory() {
+  if (!currentSiteId) return;
+  const res = await safeFetchJson("/sites/" + currentSiteId + "/growth/what-changed?days=30&top_pages=6");
+  whatChangedData = res.ok ? (res.data || null) : null;
+  renderStoryMode();
+}
+
+function renderReportNotes() {
+  const host = document.getElementById("reportNotesList");
+  if (!host) return;
+  if (!reportNotes || reportNotes.length === 0) {
+    host.innerHTML = "<div class='small-note'>Bu ay icin not bulunamadi.</div>";
+    return;
+  }
+  host.innerHTML = reportNotes.map((n) => {
+    const noteType = (n.note_type || "team").toLowerCase();
+    const tagLabel = noteType === "client" ? "Musteri Notu" : "Ekip Notu";
+    const createdAt = n.created_at ? new Date(n.created_at).toLocaleString("tr-TR") : "-";
+    return (
+      "<article class='note-item'>" +
+      "<div class='note-meta'>" +
+      "<span class='note-tag " + escapeHtml(noteType) + "'>" + escapeHtml(tagLabel) + "</span>" +
+      "<span class='small-note'>" + escapeHtml(createdAt) + "</span>" +
+      "</div>" +
+      "<div>" + escapeHtml(n.content || "") + "</div>" +
+      "</article>"
+    );
+  }).join("");
+}
+
+async function loadReportNotes() {
+  if (!currentSiteId) return;
+  syncNoteMonthInput();
+  const month = (document.getElementById("reportNoteMonth").value || getSelectedReportMonth()).trim();
+  const res = await safeFetchJson("/sites/" + currentSiteId + "/reports/notes?month=" + encodeURIComponent(month));
+  reportNotes = (res.ok && res.data && Array.isArray(res.data.notes)) ? res.data.notes : [];
+  renderReportNotes();
+}
+
+async function saveReportNote() {
+  if (!currentSiteId) {
+    alert(t("common.site_not_selected", "Site seciniz"));
+    return;
+  }
+  const month = (document.getElementById("reportNoteMonth").value || getSelectedReportMonth()).trim();
+  const noteType = (document.getElementById("reportNoteType").value || "team").trim();
+  const content = (document.getElementById("reportNoteInput").value || "").trim();
+  if (!content) {
+    alert("Lutfen not icerigi girin.");
+    return;
+  }
+  try {
+    const res = await fetch("/sites/" + currentSiteId + "/reports/notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ month, note_type: noteType, content })
+    });
+    const txt = await res.text();
+    let data = {};
+    try { data = txt ? JSON.parse(txt) : {}; } catch (_) { data = {}; }
+    if (!res.ok) {
+      throw new Error((data && data.detail) ? String(data.detail) : ("Istek basarisiz (HTTP " + res.status + ")"));
+    }
+    document.getElementById("reportNoteInput").value = "";
+    await loadReportNotes();
+  } catch (err) {
+    alert("Not kaydedilemedi: " + err.message);
+  }
+}
+
+function createCompetitorRowHTML(row = {}) {
+  return (
+    "<tr>" +
+      "<td><input data-field='name' placeholder='orn: rakip.com' value='" + (row.name || "") + "'></td>" +
+      "<td><button type='button' class='btn-secondary' onclick='removeCompetitorRow(this)'>Sil</button></td>" +
+    "</tr>"
+  );
+}
+
+function addCompetitorRow(row = {}) {
+  const tbody = document.querySelector("#competitorInputTable tbody");
+  tbody.insertAdjacentHTML("beforeend", createCompetitorRowHTML(row));
+}
+
+function removeCompetitorRow(btn) {
+  const tr = btn.closest("tr");
+  if (tr) tr.remove();
+}
+
+function collectCompetitors() {
+  const rows = Array.from(document.querySelectorAll("#competitorInputTable tbody tr"));
+  return rows.map(tr => {
+    const get = (field) => {
+      const el = tr.querySelector("[data-field='" + field + "']");
+      return el ? el.value : "";
+    };
+    return {
+      name: String(get("name") || "").trim(),
+      clicks: 0,
+      impressions: 0,
+      ctr: 0,
+      avg_position: 0,
+      top10_share: 0,
+      indexed_pages: 0,
+      backlinks: 0,
+      priority_keywords: [],
+    };
+  }).filter(c => c.name);
+}
+
+function renderReport(data) {
+  reportData = data;
+
+  document.getElementById("periodLabel").textContent =
+    "Donem: " + data.period.start_date + " - " + data.period.end_date +
+    " | Onceki: " + data.period.previous_start_date + " - " + data.period.previous_end_date;
+  document.getElementById("gscNote").textContent = data.gsc_note || "";
+
+  document.getElementById("kpiVisibility").textContent = data.visibility_index.toFixed(2);
+  document.getElementById("kpiClicks").textContent = Number(data.metrics.current.clicks || 0).toLocaleString();
+  document.getElementById("kpiImpressions").textContent = Number(data.metrics.current.impressions || 0).toLocaleString();
+  document.getElementById("kpiPosition").textContent = Number(data.metrics.current.position || 0).toFixed(2);
+
+  document.getElementById("kpiClicksDelta").textContent = "MoM: " + pctText(data.metrics.delta_pct.clicks);
+  document.getElementById("kpiImprDelta").textContent = "MoM: " + pctText(data.metrics.delta_pct.impressions);
+  document.getElementById("kpiPosDelta").textContent = "MoM fark: " + Number(data.metrics.delta_pct.position || 0).toFixed(2);
+
+  document.getElementById("healthAvg").textContent = Number(data.health.avg_score || 0).toFixed(2);
+  document.getElementById("healthDelta").textContent = Number(data.health.trend_delta || 0).toFixed(2);
+  document.getElementById("alertCritical").textContent = data.alerts.critical || 0;
+  document.getElementById("alertWarning").textContent = data.alerts.warning || 0;
+
+  const highlights = [];
+  highlights.push("Toplam klik: " + Number(data.metrics.current.clicks || 0).toLocaleString());
+  highlights.push("Toplam impression: " + Number(data.metrics.current.impressions || 0).toLocaleString());
+  highlights.push("Ortalama pozisyon: " + Number(data.metrics.current.position || 0).toFixed(2));
+  highlights.push("Top 10 anahtar kelime adedi: " + (data.keywords.top10 || 0));
+  highlights.push("Firsat anahtar kelime adedi: " + ((data.keywords.opportunities || []).length));
+
+  document.getElementById("highlightsList").innerHTML =
+    highlights.map(h => "<li>" + h + "</li>").join("");
+  document.getElementById("recommendationsList").innerHTML =
+    (data.recommendations || []).map(r => "<li>" + r + "</li>").join("");
+
+  fillTable(
+    "topKeywordsTable",
+    (data.keywords.top_keywords || []).slice(0, 20).map(k =>
+      "<tr>" +
+      "<td>" + k.keyword + "</td>" +
+      "<td>" + Number(k.position).toFixed(2) + "</td>" +
+      "<td>" + Number(k.clicks).toLocaleString() + "</td>" +
+      "<td>" + Number(k.impressions).toLocaleString() + "</td>" +
+      "<td>" + Number(k.ctr).toFixed(2) + "%</td>" +
+      "</tr>"
+    ),
+    "Anahtar kelime verisi bulunamadi"
+  );
+
+  fillTable(
+    "oppKeywordsTable",
+    (data.keywords.opportunities || []).slice(0, 20).map(k =>
+      "<tr>" +
+      "<td>" + k.keyword + "</td>" +
+      "<td>" + Number(k.position).toFixed(2) + "</td>" +
+      "<td>" + Number(k.impressions).toLocaleString() + "</td>" +
+      "<td>" + Number(k.ctr).toFixed(2) + "%</td>" +
+      "</tr>"
+    ),
+    "Firsat anahtar kelime bulunamadi"
+  );
+
+  fillTable(
+    "alertsTable",
+    (data.alerts.recent || []).map(a =>
+      "<tr>" +
+      "<td>" + (a.created_at ? a.created_at.split("T")[0] : "-") + "</td>" +
+      "<td>" + (a.type || "-") + "</td>" +
+      "<td>" + (a.metric || "-") + "</td>" +
+      "<td>" + (a.severity || "-") + "</td>" +
+      "<td>" + Number(a.delta_pct || 0).toFixed(2) + "</td>" +
+      "</tr>"
+    ),
+    "Uyari bulunamadi"
+  );
+
+  renderMomChart(data);
+}
+
+function renderCompetitorAnalysis(data) {
+  competitorData = data;
+
+  fillTable(
+    "competitorLeaderboardTable",
+    (data.leaderboard || []).map(r =>
+      "<tr>" +
+      "<td>" + r.name + (r.is_our_site ? " (biz)" : "") + "</td>" +
+      "<td>" + Number(r.visibility_score || 0).toFixed(2) + "</td>" +
+      "<td>" + Number(r.clicks || 0).toLocaleString() + "</td>" +
+      "<td>" + Number(r.impressions || 0).toLocaleString() + "</td>" +
+      "<td>" + Number(r.ctr || 0).toFixed(2) + "</td>" +
+      "<td>" + Number(r.avg_position || 0).toFixed(2) + "</td>" +
+      "<td>" + Number(r.top10_share || 0).toFixed(2) + "</td>" +
+      "</tr>"
+    ),
+    "Rakip leaderboard verisi yok"
+  );
+
+  document.getElementById("competitorGapList").innerHTML = (data.gaps || [])
+    .map(g =>
+      "<li><strong>" + g.competitor + ":</strong> Gorunurluk farki " + Number(g.visibility_gap || 0).toFixed(2) +
+      ", Tiklama farki " + Number(g.click_gap || 0).toFixed(0) +
+      ", TO farki " + Number(g.ctr_gap || 0).toFixed(2) + "%</li>"
+    )
+    .join("") || "<li>Gap verisi yok</li>";
+
+  const keywordGapLines = (data.missing_keyword_opportunities || [])
+    .map(m => "<li><strong>" + m.competitor + ":</strong> " + m.missing_count + " eksik keyword (" + (m.missing_keywords || []).slice(0, 6).join(", ") + ")</li>")
+    .join("");
+
+  const recoLines = (data.recommendations || []).map(r => "<li>" + r + "</li>").join("");
+  document.getElementById("competitorRecoList").innerHTML = (keywordGapLines + recoLines) || "<li>Oneri yok</li>";
+}
+
+function renderMomChart(data) {
+  const ctx = document.getElementById("momChart").getContext("2d");
+  if (momChart) momChart.destroy();
+
+  momChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Tiklama", "Gosterim", "TO(%)"],
+      datasets: [
+        {
+          label: "Mevcut Ay",
+          data: [
+            data.metrics.current.clicks || 0,
+            data.metrics.current.impressions || 0,
+            Number(data.metrics.current.ctr || 0) * 100
+          ],
+          backgroundColor: "rgba(15, 76, 129, 0.75)"
+        },
+        {
+          label: "Onceki Ay",
+          data: [
+            data.metrics.previous.clicks || 0,
+            data.metrics.previous.impressions || 0,
+            Number(data.metrics.previous.ctr || 0) * 100
+          ],
+          backgroundColor: "rgba(100, 116, 139, 0.65)"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true } }
+    }
+  });
+}
+
+function renderDeviceMixChart(deviceData) {
+  const ctx = document.getElementById("deviceMixChart").getContext("2d");
+  if (deviceMixChart) deviceMixChart.destroy();
+  const labels = (deviceData || []).map(d => (d.device || "-").toUpperCase());
+  const values = (deviceData || []).map(d => Number(d.impressions || 0));
+  deviceMixChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: ["#0f4c81", "#1d4ed8", "#0f766e", "#b45309", "#be123c", "#7c3aed"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom" } }
+    }
+  });
+}
+
+async function loadExtendedInsights() {
+  if (!currentSiteId) return;
+  const days = 30;
+  const [segRes, backlinkRes, cannibalRes, internalRes, anomalyRes] = await Promise.all([
+    safeFetchJson("/sites/" + currentSiteId + "/segments/report?days=" + days),
+    safeFetchJson("/sites/" + currentSiteId + "/backlinks/overview"),
+    safeFetchJson("/sites/" + currentSiteId + "/keywords/cannibalization?days=" + days),
+    safeFetchJson("/sites/" + currentSiteId + "/internal-link/suggestions?days=" + days),
+    safeFetchJson("/sites/" + currentSiteId + "/pages/anomalies?days=14&persist_alerts=false")
+  ]);
+
+  const seg = segRes.ok ? segRes.data : {};
+  extendedInsights.segment = segRes.ok ? segRes.data : null;
+  const branded = (seg.segments || {}).branded || {};
+  const nonBranded = (seg.segments || {}).non_branded || {};
+  document.getElementById("segBrandedClicks").textContent = Number(branded.clicks || 0).toLocaleString();
+  document.getElementById("segBrandedCtr").textContent = "TO: " + Number(branded.ctr_pct || 0).toFixed(2) + "%";
+  document.getElementById("segNonBrandedClicks").textContent = Number(nonBranded.clicks || 0).toLocaleString();
+  document.getElementById("segNonBrandedCtr").textContent = "TO: " + Number(nonBranded.ctr_pct || 0).toFixed(2) + "%";
+  document.getElementById("topCountry").textContent = ((seg.country_breakdown || [])[0] || {}).country || "-";
+  renderDeviceMixChart(seg.device_breakdown || []);
+
+  const b = backlinkRes.ok ? backlinkRes.data : {};
+  extendedInsights.backlink = backlinkRes.ok ? backlinkRes.data : null;
+  const s = b.summary || {};
+  document.getElementById("backlinkToxicRatio").textContent = Number(s.toxic_ratio_pct || 0).toFixed(2) + "%";
+  document.getElementById("backlinkDelta").textContent = "Yeni/Kayip: " + (s.new_count || 0) + "/" + (s.lost_count || 0);
+  document.getElementById("toxicBacklinkCount").textContent = String(s.toxic_backlinks || 0);
+
+  const c = cannibalRes.ok ? cannibalRes.data : {};
+  extendedInsights.cannibal = cannibalRes.ok ? cannibalRes.data : null;
+  document.getElementById("cannibalCount").textContent = String(c.count || 0);
+
+  const il = internalRes.ok ? internalRes.data : {};
+  extendedInsights.internal = internalRes.ok ? internalRes.data : null;
+  document.getElementById("internalLinkCount").textContent = String(il.count || 0);
+
+  const an = anomalyRes.ok ? anomalyRes.data : {};
+  extendedInsights.anomalies = anomalyRes.ok ? anomalyRes.data : null;
+  const anCount = (an.anomalies || []).length || 0;
+  document.getElementById("anomalyCount").textContent = String(anCount);
+  const badge = document.getElementById("anomalyBadge");
+  if (!anomalyRes.ok) {
+    toBadge(badge, "warn", t("monthly.data_not_available", "Veri Alinamadi"));
+  } else if (anCount === 0) {
+    toBadge(badge, "good", "Stabil");
+  } else if (anCount <= 5) {
+    toBadge(badge, "warn", "Izlenmeli");
+  } else {
+    toBadge(badge, "bad", "Acil Inceleme");
+  }
+}
+
+function loadReport() {
+  if (!currentSiteId) {
+    alert(t("common.site_not_selected", "Site seciniz"));
+    return;
+  }
+  const month = document.getElementById("monthInput").value || getCurrentMonthValue();
+  fetch("/sites/" + currentSiteId + "/seo/monthly-report?month=" + encodeURIComponent(month))
+    .then(res => res.json())
+    .then(data => {
+      if (data.detail) throw new Error(typeof data.detail === "string" ? data.detail : "Rapor yuklenemedi");
+      renderReport(data);
+      syncNoteMonthInput();
+      renderStoryMode();
+      runCompetitorAnalysis();
+      loadExtendedInsights();
+      loadWhatChangedForStory();
+      loadReportNotes();
+    })
+    .catch(err => {
+      console.error(err);
+      alert(t("monthly.report_load_error", "Rapor yuklenirken hata:") + " " + err.message);
+    });
+}
+
+function runCompetitorAnalysis() {
+  if (!currentSiteId) return;
+  const month = document.getElementById("monthInput").value || getCurrentMonthValue();
+  const competitors = collectCompetitors();
+
+  fetch("/sites/" + currentSiteId + "/seo/competitor-analysis", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      month,
+      objective: "traffic_growth",
+      competitors
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.detail) throw new Error(typeof data.detail === "string" ? data.detail : "Rakip analizi yuklenemedi");
+      renderCompetitorAnalysis(data);
+    })
+    .catch(err => {
+      console.error(err);
+      alert(t("monthly.competitor_error", "Rakip analizi hatasi:") + " " + err.message);
+    });
+}
+
+async function downloadPdf() {
+  if (!reportData) {
+    alert(t("monthly.create_report_first", "Once rapor olusturun"));
+    return;
+  }
+  if (!window.pdfMake) {
+    alert("PDF kutuphanesi yuklenemedi. Sayfayi yenileyip tekrar deneyin.");
+    return;
+  }
+
+  const clientName = document.getElementById("clientName").value.trim() || "Musteri";
+  const preparedBy = document.getElementById("preparedBy").value.trim() || "SEO Team";
+  const customNote = document.getElementById("customNote").value.trim();
+  const month = document.getElementById("monthInput").value || reportData.period.month;
+  const primaryRgb = getPrimaryColorRgb();
+  const primaryHex = rgbObjectToHex(primaryRgb);
+  const primaryColor = primaryHex;
+  const m = reportData.metrics || { current: {}, delta_pct: {} };
+  const seg = extendedInsights.segment || {};
+  const segBranded = (seg.segments || {}).branded || {};
+  const segNon = (seg.segments || {}).non_branded || {};
+  const backlinkSummary = (extendedInsights.backlink || {}).summary || {};
+  const cannibal = extendedInsights.cannibal || {};
+  const internal = extendedInsights.internal || {};
+  const anomalies = extendedInsights.anomalies || {};
+  const story = whatChangedData || {};
+  const notes = Array.isArray(reportNotes) ? reportNotes : [];
+  const shareUrl = (document.getElementById("reportShareLink").value || buildShareUrl()).trim();
+
+  function healthLabel(v) {
+    const n = Number(v || 0);
+    if (n >= 85) return "Iyi";
+    if (n >= 65) return "Izlenmeli";
+    return "Kritik";
+  }
+
+  function pct(v) {
+    return Number(v || 0).toFixed(2) + "%";
+  }
+
+  function fmtNum(v) {
+    return Number(v || 0).toLocaleString("tr-TR");
+  }
+
+  function makeTable(head, body, widths) {
+    return {
+      table: {
+        headerRows: 1,
+        widths: widths || Array(head.length).fill("*"),
+        body: [head].concat(body.length ? body : [Array(head.length).fill("-")])
+      },
+      layout: {
+        fillColor: (rowIdx) => (rowIdx === 0 ? primaryColor : null),
+        hLineColor: () => "#dbe3ee",
+        vLineColor: () => "#dbe3ee",
+      },
+      margin: [0, 8, 0, 0]
+    };
+  }
+
+  function safeNum(v, d) {
+    const n = Number(v || 0);
+    if (!Number.isFinite(n)) return 0;
+    return Number(n.toFixed(d == null ? 2 : d));
+  }
+
+  function pickPriorityBadgeText(v) {
+    const x = String(v || "").toLowerCase();
+    if (x.includes("yuksek") || x.includes("p1")) return "Yuksek";
+    if (x.includes("dusuk") || x.includes("p3")) return "Dusuk";
+    return "Orta";
+  }
+
+  const content = [];
+  if (reportLogoDataUrl) {
+    content.push({ image: reportLogoDataUrl, fit: [140, 45], margin: [0, 0, 0, 6] });
+  }
+  content.push(
+    { text: "Aylık SEO Raporu", style: "title", color: primaryColor },
+    { text: "Musteri: " + clientName + " | Site: " + (reportData.site_domain || "-") + " | Donem: " + month, style: "meta" },
+    { text: "Hazirlayan: " + preparedBy + " | Uretim Tarihi: " + new Date().toLocaleDateString("tr-TR"), style: "meta" }
+  );
+  if (customNote) content.push({ text: "Not: " + customNote, style: "meta", margin: [0, 2, 0, 8] });
+
+  content.push(
+    { text: "Yonetici Ozeti", style: "section", color: primaryColor, margin: [0, 12, 0, 0] },
+    makeTable(
+      ["Metrik", "Deger", "Aylık Degisim"],
+      [
+        ["Gorunurluk Endeksi", Number(reportData.visibility_index || 0).toFixed(2), "-"],
+        ["Tiklama", fmtNum(m.current.clicks), pct(m.delta_pct.clicks)],
+        ["Gosterim", fmtNum(m.current.impressions), pct(m.delta_pct.impressions)],
+        ["Ortalama Pozisyon", Number(m.current.position || 0).toFixed(2), pct(m.delta_pct.position)],
+      ],
+      ["*", 110, 120]
+    ),
+    { text: "Saglik Durumu: " + healthLabel((reportData.health || {}).avg_score || 0) + " (" + Number((reportData.health || {}).avg_score || 0).toFixed(2) + ")", style: "p" },
+    { text: "Alertler (Kritik/Uyari/Bilgi): " + (reportData.alerts.critical || 0) + "/" + (reportData.alerts.warning || 0) + "/" + (reportData.alerts.info || 0), style: "p" }
+  );
+
+  const riskScore = Math.max(
+    0,
+    100
+    - (Number((reportData.alerts || {}).critical || 0) * 8)
+    - (Number((reportData.alerts || {}).warning || 0) * 3)
+    - Math.max(0, Math.abs(Number((m.delta_pct || {}).clicks || 0)) * 0.6)
+  );
+  const riskLabel = riskScore >= 75 ? "Dusuk Risk" : (riskScore >= 50 ? "Orta Risk" : "Yuksek Risk");
+  const riskOwner = riskScore < 50 ? "SEO + Teknik Ekip" : "SEO Ekip";
+  content.push(
+    makeTable(
+      ["Kontrol", "Durum", "Skor", "Sorumlu", "Not"],
+      [[
+        "Aylik Risk Durumu",
+        riskLabel,
+        safeNum(riskScore, 1) + "/100",
+        riskOwner,
+        "Skor; uyari yogunlugu ve metrik dususlerine gore hesaplanmistir."
+      ]],
+      [130, 100, 90, 120, "*"]
+    )
+  );
+
+  const storyDelta = (story.metrics || {}).delta_pct || {};
+  const storyWhatLine =
+    "Clicks %" + Number(storyDelta.clicks || 0).toFixed(2) +
+    ", Impression %" + Number(storyDelta.impressions || 0).toFixed(2) +
+    ", CTR %" + Number(storyDelta.ctr || 0).toFixed(2) +
+    ", Pozisyon farki " + Number(storyDelta.position || 0).toFixed(2);
+  const storyWhyLine = ((story.reason_breakdown || []).slice(0, 3).map(r => (r.title || "-") + ": " + (r.detail || "-")).join(" | "))
+    || "What Changed verisi bulunamadi, metrik degisimleri izlenmeli.";
+  const storyActionLine = ((story.actions || reportData.recommendations || []).slice(0, 3).join(" | "))
+    || "Aksiyon bulunamadi.";
+
+  content.push(
+    { text: "Rapor Hikayesi", style: "sectionMini", color: primaryColor },
+    makeTable(
+      ["Akis", "Icerik"],
+      [
+        ["Ne oldu?", storyWhatLine],
+        ["Neden oldu?", storyWhyLine],
+        ["Ne yapacagiz?", storyActionLine]
+      ],
+      [120, "*"]
+    )
+  );
+
+  if (momChart) {
+    try {
+      content.push({ image: momChart.toBase64Image(), fit: [520, 220], alignment: "center", margin: [0, 8, 0, 0] });
+    } catch (_) {}
+  }
+
+  content.push(
+    { text: "Aksiyon Plani", style: "section", color: primaryColor, margin: [0, 14, 0, 0], pageBreak: "before" },
+    makeTable(
+      ["Oncelik", "Is", "Ne Yapilacak", "Beklenen Etki", "SLA"],
+      (reportData.recommendations || []).slice(0, 10).map((r, idx) => ([
+        idx < 2 ? "Yuksek" : (idx > 6 ? "Dusuk" : "Orta"),
+        "Aksiyon " + (idx + 1),
+        String(r || "-"),
+        idx < 2 ? "Hizli toparlanma" : "Kademeli buyume",
+        idx < 2 ? "7 gun" : "14-30 gun"
+      ])),
+      [70, 70, "*", 120, 70]
+    )
+  );
+
+  const recoveryRows = (story.top_recovering_pages || []).slice(0, 8).map(p => [
+    String(p.page || "-"),
+    fmtNum(p.current ? p.current.clicks : 0),
+    safeNum(p.click_delta_pct || 0, 2) + "%",
+    safeNum(p.impression_delta_pct || 0, 2) + "%",
+    safeNum(p.position_delta || 0, 2),
+    String(p.likely_reason || "-")
+  ]);
+  const lossRows = (story.top_affected_pages || []).slice(0, 10).map(p => [
+    String(p.page || "-"),
+    fmtNum(p.current ? p.current.clicks : 0),
+    safeNum(p.click_delta_pct || 0, 2) + "%",
+    safeNum(p.impression_delta_pct || 0, 2) + "%",
+    safeNum(p.position_delta || 0, 2),
+    String(p.likely_reason || "-")
+  ]);
+  content.push(
+    { text: "Kazanimlar ve Kayiplar", style: "section", color: primaryColor, margin: [0, 14, 0, 0] },
+    { text: "Kayip Yasayan URL'ler", style: "sectionMini", color: primaryColor },
+    makeTable(
+      ["URL", "Clicks", "Click %", "Impr %", "Pozisyon Farki", "Neden"],
+      lossRows,
+      ["*", 75, 75, 75, 90, 140]
+    ),
+    { text: "Toparlanan URL'ler", style: "sectionMini", color: primaryColor },
+    makeTable(
+      ["URL", "Clicks", "Click %", "Impr %", "Pozisyon Farki", "Neden"],
+      recoveryRows,
+      ["*", 75, 75, 75, 90, 140]
+    )
+  );
+
+  content.push(
+    { text: "Derin Icgoru", style: "section", color: primaryColor, margin: [0, 14, 0, 0], pageBreak: "before" },
+    makeTable(
+      ["Panel", "Deger", "Ek Bilgi"],
+      [
+        ["Markali Tiklamalar", fmtNum(segBranded.clicks), "TO " + pct(segBranded.ctr_pct)],
+        ["Markasiz Tiklamalar", fmtNum(segNon.clicks), "TO " + pct(segNon.ctr_pct)],
+        ["Toksik Backlink Orani", pct(backlinkSummary.toxic_ratio_pct), "Yeni/Kayip " + (backlinkSummary.new_count || 0) + "/" + (backlinkSummary.lost_count || 0)],
+        ["Cannibalization", String(cannibal.count || 0), "IC link onerisi: " + (internal.count || 0)],
+        ["Anomali Sayisi", String((anomalies.anomalies || []).length || 0), "Top ulke: " + ((((seg.country_breakdown || [])[0] || {}).country) || "-")]
+      ],
+      [170, 120, "*"]
+    )
+  );
+  if (deviceMixChart) {
+    try {
+      content.push({ image: deviceMixChart.toBase64Image(), fit: [520, 220], alignment: "center", margin: [0, 8, 0, 0] });
+    } catch (_) {}
+  }
+  content.push(makeTable(
+    ["Ulke", "Tiklama", "Gosterim", "TO"],
+    (seg.country_breakdown || []).slice(0, 10).map(c => [
+      c.country || "-",
+      fmtNum(c.clicks),
+      fmtNum(c.impressions),
+      pct(c.ctr_pct)
+    ]),
+    ["*", 100, 100, 80]
+  ));
+
+  content.push(
+    { text: "Anahtar Kelime Performansi", style: "section", color: primaryColor, margin: [0, 14, 0, 0], pageBreak: "before" },
+    makeTable(
+      ["Anahtar Kelime", "Pozisyon", "Tiklama", "Gosterim", "TO"],
+      (reportData.keywords.top_keywords || []).slice(0, 30).map(k => [
+        String(k.keyword || "-"),
+        Number(k.position || 0).toFixed(2),
+        fmtNum(k.clicks),
+        fmtNum(k.impressions),
+        pct(k.ctr)
+      ]),
+      ["*", 80, 90, 100, 70]
+    ),
+    { text: "Firsat Anahtar Kelimeler", style: "sectionMini", color: primaryColor },
+    makeTable(
+      ["Anahtar Kelime", "Pozisyon", "Gosterim", "TO"],
+      (reportData.keywords.opportunities || []).slice(0, 20).map(k => [
+        String(k.keyword || "-"),
+        Number(k.position || 0).toFixed(2),
+        fmtNum(k.impressions),
+        pct(k.ctr)
+      ]),
+      ["*", 80, 110, 80]
+    )
+  );
+
+  content.push(
+    { text: "Risk ve Rekabet", style: "section", color: primaryColor, margin: [0, 14, 0, 0], pageBreak: "before" },
+    makeTable(
+      ["Tarih", "Tip", "Metrik", "Seviye", "Delta"],
+      (reportData.alerts.recent || []).slice(0, 24).map(a => [
+        a.created_at ? String(a.created_at).split("T")[0] : "-",
+        a.type || "-",
+        a.metric || "-",
+        String(a.severity || "-"),
+        pct(a.delta_pct)
+      ]),
+      [90, 110, 90, 70, 80]
+    )
+  );
+
+  if (competitorData && competitorData.leaderboard && competitorData.leaderboard.length) {
+    content.push(
+      { text: "Rakip Karsilastirma", style: "sectionMini", color: primaryColor },
+      makeTable(
+        ["Site", "Gorunurluk", "Tiklama", "Gosterim", "TO", "Pozisyon"],
+        (competitorData.leaderboard || []).slice(0, 12).map(r => [
+          (r.name || "-") + (r.is_our_site ? " (biz)" : ""),
+          Number(r.visibility_score || 0).toFixed(2),
+          fmtNum(r.clicks),
+          fmtNum(r.impressions),
+          pct(r.ctr),
+          Number(r.avg_position || 0).toFixed(2)
+        ]),
+        ["*", 85, 85, 95, 65, 70]
+      )
+    );
+  }
+
+  const roadmapRows = (reportData.recommendations || []).slice(0, 8).map((r, idx) => {
+    const priority = idx < 2 ? "P1" : (idx < 5 ? "P2" : "P3");
+    const owner = idx < 2 ? "SEO + Icerik" : (idx < 5 ? "Icerik Ekibi" : "SEO Ekibi");
+    const effort = idx < 2 ? "Orta" : (idx < 5 ? "Dusuk" : "Orta");
+    const impact = idx < 2 ? "Yuksek" : (idx < 5 ? "Orta" : "Orta");
+    return [priority, "Hafta " + (idx < 2 ? "1" : (idx < 5 ? "2" : "3-4")), owner, impact, effort, String(r || "-")];
+  });
+  content.push(
+    { text: "Onceliklendirilmis Yol Haritasi", style: "section", color: primaryColor, margin: [0, 14, 0, 0], pageBreak: "before" },
+    makeTable(
+      ["Oncelik", "Zaman", "Sahip", "Etki", "Efor", "Yapilacak Is"],
+      roadmapRows,
+      [70, 70, 100, 70, 70, "*"]
+    )
+  );
+
+  const baseClicks = Number((m.current || {}).clicks || 0);
+  const baseImpr = Number((m.current || {}).impressions || 0);
+  const baseCtr = Number((m.current || {}).ctr || 0) * 100;
+  const targetClicks = Math.round(baseClicks * 1.12);
+  const targetImpr = Math.round(baseImpr * 1.10);
+  const targetCtr = safeNum(baseCtr + 0.4, 2);
+  const targetPos = Math.max(1, safeNum(Number((m.current || {}).position || 0) - 0.6, 2));
+  content.push(
+    { text: "Gelecek Ay Hedefleri", style: "section", color: primaryColor, margin: [0, 14, 0, 0] },
+    makeTable(
+      ["Hedef", "Mevcut", "Hedef Deger", "Basari Kriteri"],
+      [
+        ["Tiklama", fmtNum(baseClicks), fmtNum(targetClicks), "Aylik +%12"],
+        ["Gosterim", fmtNum(baseImpr), fmtNum(targetImpr), "Aylik +%10"],
+        ["CTR", safeNum(baseCtr, 2) + "%", targetCtr + "%", "+0.40 puan"],
+        ["Ortalama Pozisyon", safeNum((m.current || {}).position || 0, 2), String(targetPos), "0.60 iyilesme"],
+      ],
+      [140, 110, 110, "*"]
+    )
+  );
+
+  const dataCoverageRows = [
+    ["What Changed", whatChangedData ? "Var" : "Yok", whatChangedData ? "Neden analizi kullanildi." : "Bu bolum icin veri bulunamadi."],
+    ["Segment Raporu", extendedInsights.segment ? "Var" : "Yok", extendedInsights.segment ? "Cihaz/ulke kirilimi eklendi." : "Segment verisi eksik."],
+    ["Backlink Ozet", extendedInsights.backlink ? "Var" : "Yok", extendedInsights.backlink ? "Toksik oran analize katildi." : "Backlink verisi eksik."],
+    ["Anomali Verisi", extendedInsights.anomalies ? "Var" : "Yok", extendedInsights.anomalies ? "Anomali sayfalari rapora eklendi." : "Anomali verisi eksik."],
+    ["Rakip Analizi", (competitorData && competitorData.leaderboard && competitorData.leaderboard.length) ? "Var" : "Yok", (competitorData && competitorData.leaderboard && competitorData.leaderboard.length) ? "Rakip tablosu eklendi." : "Rakip verisi yok."]
+  ];
+  content.push(
+    { text: "Veri Guveni ve Kapsam", style: "sectionMini", color: primaryColor, margin: [0, 12, 0, 0] },
+    makeTable(
+      ["Kaynak", "Durum", "Aciklama"],
+      dataCoverageRows,
+      [120, 80, "*"]
+    )
+  );
+
+  if (notes.length > 0) {
+    content.push(
+      { text: "Notlar ve Yorumlar", style: "sectionMini", color: primaryColor, margin: [0, 12, 0, 0] },
+      makeTable(
+        ["Tur", "Not", "Tarih"],
+        notes.slice(0, 20).map(n => [
+          (String(n.note_type || "team").toLowerCase() === "client") ? "Musteri" : "Ekip",
+          String(n.content || "-"),
+          n.created_at ? String(n.created_at).replace("T", " ").slice(0, 16) : "-"
+        ]),
+        [80, "*", 120]
+      )
+    );
+  }
+
+  content.push(
+    { text: "White-label Paylasim Paketi", style: "section", color: primaryColor, margin: [0, 14, 0, 0], pageBreak: "before" },
+    { text: "Paylasim Linki: " + shareUrl, style: "p" },
+    makeTable(
+      ["Teslim Adimi", "Ne Saglar?", "Aksiyon"],
+      [
+        ["Markali Kapak", "Ajans/marka guvenini artirir", "Logo ve renk secimini her rapor oncesi netlestir"],
+        ["Yonetici Ozeti", "Karar vericiye 1 sayfada durum verir", "KPI + kritik riskleri acik goster"],
+        ["Aksiyon Plani", "Raporu isi tetikleyen belgeye cevirir", "Her aksiyona oncelik, SLA ve etki yaz"],
+        ["Paylasim Linki", "Ayni raporu ekip icinde hizli dagitir", "Linki CRM/Slack/Email akisina ekle"],
+        ["Aylık Tekrar", "Ritmik deger iletisimini korur", "Her ay ayni formatla trendleri karsilastir"]
+      ],
+      [120, "*", "*"]
+    )
+  );
+
+  const safeDomain = (reportData.site_domain || "site").replace(/[^a-zA-Z0-9.-]/g, "_");
+  const filename = "seo_aylik_rapor_" + safeDomain + "_" + month + "_" + primaryHex.replace("#", "") + ".pdf";
+
+  const docDefinition = {
+    pageSize: "A4",
+    pageOrientation: "landscape",
+    pageMargins: [26, 24, 26, 30],
+    footer: function(currentPage, pageCount) {
+      return {
+        columns: [
+          { text: "GSC Radar | " + clientName, alignment: "left", margin: [26, 0, 0, 0], fontSize: 9, color: "#64748b" },
+          { text: "Sayfa " + currentPage + "/" + pageCount, alignment: "right", margin: [0, 0, 26, 0], fontSize: 9, color: "#64748b" }
+        ]
+      };
+    },
+    content: content,
+    styles: {
+      title: { fontSize: 20, bold: true },
+      meta: { fontSize: 10, color: "#475569", margin: [0, 0, 0, 2] },
+      section: { fontSize: 14, bold: true },
+      sectionMini: { fontSize: 12, bold: true, margin: [0, 10, 0, 0] },
+      p: { fontSize: 10, color: "#0f172a", margin: [0, 6, 0, 0] }
+    },
+    defaultStyle: {
+      font: "Roboto",
+      fontSize: 9,
+      color: "#0f172a"
+    }
+  };
+
+  window.pdfMake.createPdf(docDefinition).download(filename);
+}
+
+fetch("/sites")
+  .then(res => res.json())
+  .then(sites => {
+    const select = document.getElementById("siteSelect");
+    sites.forEach(site => {
+      const option = document.createElement("option");
+      option.value = site.id;
+      option.textContent = site.domain;
+      select.appendChild(option);
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const activeSite = params.get("site");
+    if (activeSite) {
+      currentSiteId = activeSite;
+      select.value = activeSite;
+      updateSelectedSiteId(activeSite);
+    } else {
+      updateSelectedSiteId("");
+    }
+
+    document.getElementById("monthInput").value = getCurrentMonthValue();
+    applyReportPrefillFromUrl();
+    syncNoteMonthInput();
+    renderStoryMode();
+    if (currentSiteId) loadReport();
+  });
+
+document.getElementById("siteSelect").addEventListener("change", (e) => {
+  currentSiteId = e.target.value;
+  if (!currentSiteId) return;
+  history.pushState({}, "", "/static/monthly-seo-report.html?site=" + currentSiteId);
+  updateSelectedSiteId(currentSiteId);
+  syncNoteMonthInput();
+  loadReport();
+});
+
+document.getElementById("monthInput").addEventListener("change", () => {
+  syncNoteMonthInput();
+  if (currentSiteId) loadReportNotes();
+});
+
+document.getElementById("reportNoteMonth").addEventListener("change", () => {
+  if (currentSiteId) loadReportNotes();
+});
+
+document.getElementById("primaryColorPicker").addEventListener("input", (e) => {
+  syncColorControlsFromHex(e.target.value);
+});
+
+document.getElementById("primaryColorText").addEventListener("change", (e) => {
+  const parsed = parseColorInputToRgb(e.target.value);
+  if (!parsed) {
+    alert(t("monthly.invalid_color", "Renk formati gecersiz. Ornek: #0f4c81 veya rgb(15,76,129)"));
+    return;
+  }
+  syncColorControlsFromHex(rgbObjectToHex(parsed));
+});
+
+document.querySelectorAll(".swatch").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const c = btn.getAttribute("data-color") || "#0f4c81";
+    syncColorControlsFromHex(c);
+  });
+});
+
+document.getElementById("logoInput").addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) {
+    reportLogoDataUrl = "";
+    reportLogoMeta = { width: 0, height: 0 };
+    const img = document.getElementById("logoPreview");
+    img.style.display = "none";
+    img.removeAttribute("src");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    reportLogoDataUrl = String(reader.result || "");
+    const img = new Image();
+    img.onload = () => {
+      reportLogoMeta = { width: img.naturalWidth || 0, height: img.naturalHeight || 0 };
+      const preview = document.getElementById("logoPreview");
+      preview.src = reportLogoDataUrl;
+      preview.style.display = "inline-block";
+    };
+    img.src = reportLogoDataUrl;
+  };
+  reader.readAsDataURL(file);
+});
+
+syncColorControlsFromHex("#0f4c81");
+</script>
+
+<script src="/static/header.js"></script>
+</body>
+</html>

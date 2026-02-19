@@ -1,0 +1,3453 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gelismis Saglik Paneli</title>
+<meta name="description" content="GSC Radar gelismis panel: trend, uyari, growth tools ve SEO aksiyon analizi.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="/static/advanced-dashboard.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GSC Radar - Gelismis Panel">
+<meta property="og:description" content="Trend, uyari ve buyume araclarini tek panelde yonetin.">
+<meta property="og:url" content="/static/advanced-dashboard.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GSC Radar - Gelismis Panel">
+<meta name="twitter:description" content="Trend ve buyume analizlerini tek noktada yonetin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+.advanced-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 18px 0 28px;
+  position: relative;
+}
+
+.advanced-shell::before,
+.advanced-shell::after {
+  content: "";
+  position: fixed;
+  width: 360px;
+  height: 360px;
+  border-radius: 999px;
+  z-index: -1;
+  filter: blur(40px);
+  opacity: 0.45;
+}
+
+.advanced-shell::before {
+  top: 90px;
+  right: -120px;
+  background: radial-gradient(circle, #8ec5ff 0%, rgba(142, 197, 255, 0) 72%);
+}
+
+.advanced-shell::after {
+  bottom: 60px;
+  left: -140px;
+  background: radial-gradient(circle, #86efac 0%, rgba(134, 239, 172, 0) 72%);
+}
+
+.help-fab {
+  position: fixed;
+  top: 88px;
+  right: 22px;
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #0f4c81;
+  background: #ffffff;
+  color: #0f4c81;
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.aurora-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 28px 26px;
+  margin-bottom: 16px;
+  color: #f8fbff;
+  background:
+    radial-gradient(circle at 86% 12%, rgba(125, 211, 252, 0.35) 0%, transparent 42%),
+    radial-gradient(circle at 14% 90%, rgba(34, 197, 94, 0.28) 0%, transparent 45%),
+    linear-gradient(135deg, #0f4c81 0%, #0b3f6a 54%, #113457 100%);
+  box-shadow: 0 18px 42px rgba(15, 76, 129, 0.28);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(248, 251, 255, 0.16);
+  border: 1px solid rgba(248, 251, 255, 0.28);
+}
+
+.hero-badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #86efac;
+}
+
+.aurora-hero h1 {
+  margin: 10px 0 8px;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -0.8px;
+  line-height: 1.06;
+}
+
+.aurora-hero p {
+  margin: 0;
+  max-width: 760px;
+  font-size: 16px;
+  color: rgba(248, 251, 255, 0.92);
+}
+
+.command-deck {
+  border: 1px solid #d9e6f5;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 14px;
+  margin-bottom: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field.site { grid-column: span 3; }
+.field.range { grid-column: span 3; }
+.field.actions { grid-column: span 3; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.field.siteid { grid-column: span 3; }
+
+.field select, .field input, .field code {
+  width: 100%;
+}
+
+.field.actions button {
+  margin: 0;
+}
+
+.tab-rail {
+  position: sticky;
+  top: 72px;
+  z-index: 40;
+  border: 1px solid #d7e3f2;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  padding: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.workspace {
+  border: 1px solid #d7e3f2;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.07);
+  padding: 16px;
+}
+
+#growthOutput {
+  border: 1px solid #d7e3f2 !important;
+  border-radius: 14px !important;
+  background: #ffffff;
+  padding: 14px;
+  min-height: 420px;
+}
+
+.growth-layout {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.tool-groups {
+  display: grid;
+  gap: 12px;
+}
+
+.tool-group {
+  border: 1px solid #d9e6f5;
+  border-radius: 14px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.tool-group-head {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e6eef8;
+  background: linear-gradient(180deg, #f7fbff 0%, #eef6ff 100%);
+}
+
+.tool-group-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tool-group-sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.tool-grid {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tool-card {
+  border: 1px solid #dbe7f4;
+  border-radius: 12px;
+  background: #fdfefe;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.tool-card h4 {
+  margin: 0;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.tool-card p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.tool-card input,
+.tool-card select {
+  width: 100%;
+}
+
+.tool-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tool-actions button {
+  margin: 0;
+}
+
+.growth-results {
+  position: sticky;
+  top: 126px;
+}
+
+.result-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.result-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.result-note {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.dashboard-customizer {
+  border-top: 1px dashed #d7e3f2;
+  padding-top: 10px;
+}
+
+.customizer-toggle {
+  margin: 0;
+}
+
+.customizer-panel {
+  margin-top: 10px;
+  border: 1px solid #dbe7f4;
+  border-radius: 12px;
+  padding: 10px;
+  background: #f8fbff;
+  display: grid;
+  gap: 10px;
+}
+
+.customizer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.checkbox-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #cad9eb;
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.checkbox-chip input {
+  margin: 0;
+}
+
+.metric-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #64748b;
+  border: 1px solid #d7e3f2;
+  background: #f8fbff;
+  cursor: grab;
+  user-select: none;
+}
+
+.draggable-card.dragging {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+.draggable-card.drop-target {
+  outline: 2px solid rgba(15, 76, 129, 0.45);
+  outline-offset: 2px;
+}
+
+.draggable-card.is-hidden {
+  display: none;
+}
+
+.tool-card.span-2 {
+  grid-column: span 2;
+}
+
+.serp-preview {
+  border: 1px solid #dbe7f4;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.serp-url {
+  color: #166534;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.serp-title {
+  color: #1d4ed8;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.serp-desc {
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0f4c81;
+  font-weight: 700;
+}
+
+.mobile-quick-view {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .field.site,
+  .field.range,
+  .field.actions,
+  .field.siteid {
+    grid-column: span 6;
+  }
+
+  .growth-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .growth-results {
+    position: static;
+  }
+
+  .customizer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .advanced-shell {
+    padding-top: 10px;
+  }
+
+  .help-fab {
+    top: 78px;
+    right: 14px;
+  }
+
+  .field.site,
+  .field.range,
+  .field.actions,
+  .field.siteid {
+    grid-column: span 12;
+  }
+
+  .aurora-hero {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .tool-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tool-card.span-2 {
+    grid-column: span 1;
+  }
+
+  .customizer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-quick-view {
+    display: grid;
+    gap: 8px;
+    border: 1px solid #d7e3f2;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-quick-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mobile-quick-card {
+    border: 1px solid #dbe7f4;
+    border-radius: 10px;
+    background: #f8fbff;
+    padding: 8px;
+  }
+
+  .mobile-quick-card .label {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .mobile-quick-card .value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .mobile-quick-action {
+    border: 1px solid #dbe7f4;
+    border-radius: 10px;
+    padding: 10px;
+    background: #f8fbff;
+    font-size: 13px;
+  }
+}
+
+/* 2026 SaaS Theme Overrides */
+:root {
+  --sx-bg: #eef3f8;
+  --sx-surface: rgba(255, 255, 255, 0.86);
+  --sx-surface-strong: #ffffff;
+  --sx-border: #d6e0ec;
+  --sx-text: #0f172a;
+  --sx-muted: #52637a;
+  --sx-brand: #1b4f8f;
+  --sx-brand-2: #0f766e;
+  --sx-brand-soft: #e7f0ff;
+  --sx-shadow: 0 14px 38px rgba(14, 26, 44, 0.09);
+  --sx-shadow-soft: 0 8px 24px rgba(14, 26, 44, 0.07);
+}
+
+body {
+  background:
+    radial-gradient(980px 520px at -10% -5%, rgba(29, 78, 216, 0.12) 0%, transparent 62%),
+    radial-gradient(820px 440px at 105% -12%, rgba(15, 118, 110, 0.11) 0%, transparent 64%),
+    linear-gradient(180deg, #f7faff 0%, #eff4fa 44%, #ecf2f8 100%);
+  color: var(--sx-text);
+  padding: 16px clamp(12px, 2vw, 26px) 34px;
+}
+
+.advanced-shell {
+  max-width: 1320px;
+  padding: 22px 4px 38px;
+  display: grid;
+  gap: 14px;
+}
+
+.advanced-shell::before,
+.advanced-shell::after {
+  width: 420px;
+  height: 420px;
+  filter: blur(56px);
+  opacity: 0.56;
+}
+
+.advanced-shell::before {
+  top: 80px;
+  right: -150px;
+  background: radial-gradient(circle, rgba(29, 120, 255, 0.54) 0%, rgba(29, 120, 255, 0) 70%);
+}
+
+.advanced-shell::after {
+  bottom: 24px;
+  left: -165px;
+  background: radial-gradient(circle, rgba(14, 178, 153, 0.42) 0%, rgba(14, 178, 153, 0) 72%);
+}
+
+.help-fab {
+  border: 1px solid #d2deec;
+  color: #1c3e67;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.13);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.help-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.19);
+}
+
+.aurora-hero {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background:
+    radial-gradient(circle at 82% 10%, rgba(122, 199, 255, 0.34) 0%, transparent 45%),
+    radial-gradient(circle at 20% 86%, rgba(45, 212, 191, 0.22) 0%, transparent 48%),
+    linear-gradient(130deg, #0f3d73 0%, #154f8f 48%, #0f6f84 100%);
+  box-shadow: 0 22px 44px rgba(15, 58, 107, 0.26);
+  padding: 30px 28px;
+}
+
+.aurora-hero::before {
+  content: "";
+  position: absolute;
+  inset: -70% auto auto -50%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.aurora-hero h1 {
+  margin-top: 12px;
+  margin-bottom: 10px;
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -0.95px;
+  text-wrap: balance;
+}
+
+.aurora-hero p {
+  max-width: 820px;
+  font-size: 16px;
+  color: rgba(247, 250, 255, 0.96);
+}
+
+.hero-badge {
+  letter-spacing: 0.35px;
+  backdrop-filter: blur(8px);
+}
+
+.hero-pulse-row {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hero-pulse-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(231, 241, 255, 0.36);
+  background: rgba(236, 244, 255, 0.16);
+  color: rgba(248, 251, 255, 0.95);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.command-deck,
+.workspace,
+.tab-rail {
+  border-color: var(--sx-border);
+  box-shadow: var(--sx-shadow-soft);
+}
+
+.command-deck,
+.workspace {
+  background: var(--sx-surface);
+  backdrop-filter: blur(10px);
+}
+
+.command-deck {
+  padding: 15px 16px;
+  gap: 12px;
+}
+
+.control-grid {
+  gap: 12px;
+}
+
+.field span {
+  color: #41546d;
+  letter-spacing: 0.4px;
+}
+
+select,
+input,
+button {
+  border-radius: 12px;
+}
+
+.field select,
+.field input,
+.field code,
+.tool-card input,
+.tool-card select {
+  border: 1px solid #cdd9e8;
+  background: #fbfdff;
+  color: var(--sx-text);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.field select:focus,
+.field input:focus,
+.tool-card input:focus,
+.tool-card select:focus {
+  outline: none;
+  border-color: #7ea8d7;
+  box-shadow: 0 0 0 4px rgba(62, 123, 191, 0.14);
+  background: #ffffff;
+}
+
+button {
+  background: linear-gradient(135deg, #1b4f8f 0%, #215faa 100%);
+  border: 1px solid transparent;
+  color: #f8fbff;
+  font-weight: 600;
+  letter-spacing: 0.15px;
+  box-shadow: 0 7px 16px rgba(27, 79, 143, 0.18);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(27, 79, 143, 0.25);
+  filter: brightness(1.04);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #e9f0fb 0%, #dde9f8 100%);
+  color: #24486e;
+  border-color: #c6d7ee;
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 8px 16px rgba(36, 72, 110, 0.13);
+}
+
+.site-id-box {
+  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
+  border-color: #bfd4ed;
+  border-radius: 12px;
+}
+
+.site-id-box code {
+  background: #e7f0fd;
+  border: 1px solid #d0def2;
+}
+
+.dashboard-customizer {
+  border-top-color: #c9d8ea;
+}
+
+.customizer-panel {
+  border-color: #cad9ea;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+}
+
+.checkbox-chip {
+  border-color: #c9d9eb;
+  background: #ffffff;
+}
+
+.growth-command-bar {
+  border: 1px solid #cad9ea;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f9fcff 0%, #eff6ff 100%);
+  box-shadow: 0 8px 20px rgba(21, 45, 73, 0.08);
+  padding: 12px;
+  margin-bottom: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.growth-command-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) 1fr;
+  gap: 10px;
+  align-items: end;
+}
+
+.growth-search-field {
+  display: grid;
+  gap: 6px;
+}
+
+.growth-search-field span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #405670;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.growth-search-field input {
+  width: 100%;
+}
+
+.growth-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.growth-pill {
+  border-radius: 999px;
+  border: 1px solid #c8d8eb;
+  background: #f2f7ff;
+  color: #26486d;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 11px;
+  box-shadow: none;
+}
+
+.growth-pill:hover {
+  transform: none;
+  box-shadow: none;
+  background: #e9f1ff;
+}
+
+.growth-pill.active {
+  border-color: rgba(33, 95, 170, 0.34);
+  background: linear-gradient(135deg, #1b4f8f 0%, #2569b8 100%);
+  color: #ffffff;
+}
+
+.growth-playbook-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.playbook-title {
+  font-size: 12px;
+  color: #435a75;
+  font-weight: 700;
+}
+
+.playbook-btn {
+  border-radius: 10px;
+  border: 1px solid #c4d7ed;
+  background: linear-gradient(135deg, #e5f0ff 0%, #d8ecff 100%);
+  color: #244a6f;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 10px;
+  box-shadow: none;
+}
+
+.playbook-btn:hover {
+  box-shadow: 0 8px 16px rgba(32, 80, 132, 0.12);
+}
+
+.growth-favorite-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-top: 1px dashed #c9d9eb;
+  padding-top: 9px;
+}
+
+.favorite-tag {
+  border: 1px solid #c5d6eb;
+  background: #ffffff;
+  color: #2d4c70;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.favorite-tag:hover {
+  background: #f0f6ff;
+}
+
+.growth-tool-empty {
+  margin: 0;
+  padding-top: 2px;
+}
+
+.tab-rail {
+  top: 74px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+}
+
+.tab-button {
+  border-radius: 11px;
+  border: 1px solid #ccd9e9;
+  background: #f4f8ff;
+  color: #2b4c71;
+  font-weight: 600;
+  box-shadow: none;
+  transform: none;
+}
+
+.tab-button:hover {
+  background: #ebf3ff;
+  box-shadow: none;
+}
+
+.tab-button.active {
+  border-color: rgba(33, 95, 170, 0.32);
+  background: linear-gradient(135deg, #1b4f8f 0%, #2569b8 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(33, 95, 170, 0.22);
+}
+
+.workspace {
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(245, 250, 255, 0.95) 100%);
+  padding: 18px;
+}
+
+.tab {
+  animation: riseFade 0.24s ease;
+}
+
+.metric-grid {
+  gap: 14px;
+}
+
+.metric-card {
+  border: 1px solid #d5e2f1;
+  border-left-color: #2b6fb4;
+  border-left-width: 4px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  box-shadow: 0 6px 14px rgba(14, 31, 54, 0.05);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(14, 31, 54, 0.1);
+  border-color: #bcd0e6;
+}
+
+.metric-card .value {
+  font-size: clamp(28px, 3.1vw, 34px);
+  letter-spacing: -0.35px;
+}
+
+.status-chip {
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.timeline-item {
+  border-color: #d2dfee;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  box-shadow: 0 5px 14px rgba(12, 28, 52, 0.06);
+}
+
+.tool-group {
+  border: 1px solid #cedcf0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.tool-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom-color: #dee9f6;
+  background: linear-gradient(180deg, #f9fcff 0%, #eff6ff 100%);
+}
+
+.tool-group-meta {
+  min-width: 0;
+}
+
+.tool-group-toggle {
+  border-radius: 999px;
+  border: 1px solid #cad9eb;
+  background: #f4f8ff;
+  color: #2b4d71;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  box-shadow: none;
+}
+
+.tool-group-toggle:hover {
+  transform: none;
+  box-shadow: none;
+  background: #e9f2ff;
+}
+
+.tool-group.collapsed .tool-grid {
+  display: none;
+}
+
+.tool-group-hidden {
+  display: none;
+}
+
+.tool-group-title {
+  font-size: 14px;
+}
+
+.tool-grid {
+  gap: 12px;
+  padding: 12px;
+}
+
+.tool-card {
+  border: 1px solid #d2dfef;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 5px 14px rgba(14, 31, 54, 0.05);
+  padding: 12px;
+  position: relative;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.tool-card.tool-hidden {
+  display: none;
+}
+
+.tool-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tool-card-header h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tool-category-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid #c9d8ea;
+  background: #f5f9ff;
+  color: #36587d;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+}
+
+.tool-fav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  border: 1px solid #cedcee;
+  background: #ffffff;
+  color: #74849a;
+  font-size: 16px;
+  line-height: 1;
+  box-shadow: none;
+  padding: 0;
+}
+
+.tool-fav-btn:hover {
+  transform: none;
+  box-shadow: none;
+  color: #2f587f;
+  background: #f2f7ff;
+}
+
+.tool-fav-btn.active {
+  color: #1f6ab8;
+  border-color: #b9d3ef;
+  background: #e9f3ff;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(14, 31, 54, 0.1);
+  border-color: #bfd2e8;
+}
+
+.tool-card h4 {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tool-card h4::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #1f68bd 0%, #0f766e 100%);
+}
+
+.tool-card p {
+  color: var(--sx-muted);
+}
+
+.tool-card.tool-running {
+  border-color: #97b8de;
+  box-shadow: 0 0 0 3px rgba(66, 133, 206, 0.15), 0 12px 24px rgba(14, 31, 54, 0.1);
+}
+
+.tool-card.tool-running::after {
+  content: "Calisiyor";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+  color: #1e5f9f;
+  background: #e8f2ff;
+  border: 1px solid #bed5ef;
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+
+.growth-results {
+  top: 122px;
+}
+
+.growth-results .result-head {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid #d5e1ef;
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.growth-results .result-head.playbook {
+  border-color: #c5d9f0;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+}
+
+.result-title {
+  font-size: 15px;
+}
+
+#growthOutput {
+  border: 1px solid #d2deec !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fcff 100%);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+  min-height: 440px;
+}
+
+.data-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.data-table thead {
+  background: linear-gradient(135deg, #194f90 0%, #1f6cb5 100%);
+}
+
+.data-table th,
+.data-table td {
+  border-bottom-color: #dee7f3;
+}
+
+.data-table tbody tr:hover {
+  background: #edf5ff;
+}
+
+.alert-card {
+  border-radius: 12px;
+  border-width: 1px;
+}
+
+.serp-preview {
+  border-color: #cfe0f2;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.score-pill {
+  background: linear-gradient(135deg, #e0efff 0%, #d5f5f0 100%);
+  border: 1px solid #b5d4f0;
+}
+
+.mobile-quick-view {
+  border-color: #ccd9ea;
+  background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+}
+
+.mobile-quick-card {
+  border-color: #d0def0;
+  background: #ffffff;
+}
+
+.mobile-quick-action {
+  border-color: #ccdcef;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+}
+
+#helpModal > div {
+  border-radius: 16px !important;
+  border-color: #cfdcec !important;
+  box-shadow: 0 24px 46px rgba(15, 23, 42, 0.22);
+}
+
+@keyframes riseFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 980px) {
+  .advanced-shell {
+    padding-top: 16px;
+  }
+
+  .aurora-hero {
+    padding: 24px 20px;
+  }
+
+  .growth-command-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 12px 10px 26px;
+  }
+
+  .aurora-hero h1 {
+    font-size: clamp(28px, 9vw, 36px);
+  }
+
+  .hero-pulse-row {
+    gap: 6px;
+  }
+
+  .hero-pulse-chip {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+
+  .tab-rail {
+    top: 70px;
+  }
+
+  .growth-command-bar {
+    padding: 10px;
+  }
+
+  .growth-playbook-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .playbook-btn {
+    width: 100%;
+  }
+
+  .favorite-tag {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="appHeader"></div>
+<main class="advanced-shell">
+  <button type="button" class="help-fab" onclick="openHelpModal()" title="Hizmet yardimi">?</button>
+
+  <section class="aurora-hero">
+    <span class="hero-badge">Command Center</span>
+    <h1>Gelismis Saglik Analizi</h1>
+    <p>Uyari, trend, keyword niyeti ve growth operasyonlarini tek bir premium kontrol panelinden yonetin.</p>
+    <div class="hero-pulse-row">
+      <span class="hero-pulse-chip">Canli Alarm Takibi</span>
+      <span class="hero-pulse-chip">What Changed Motoru</span>
+      <span class="hero-pulse-chip">SERP CTR Lab</span>
+      <span class="hero-pulse-chip">Kisisel Dashboard</span>
+    </div>
+  </section>
+
+  <section class="command-deck">
+    <div class="control-grid">
+      <label class="field site">
+        <span>Site</span>
+        <select id="siteSelect">
+          <option value="">Site seciniz</option>
+        </select>
+      </label>
+      <label class="field range">
+        <span>Analiz Araligi</span>
+        <select id="range">
+          <option value="1" selected>Bugun (1 Gun)</option>
+          <option value="7">Son 7 Gun</option>
+          <option value="14">Son 14 Gun</option>
+          <option value="30">Son 30 Gun</option>
+        </select>
+      </label>
+      <div class="field actions">
+        <button type="button" onclick="runHealth()">Saglik Hesapla</button>
+        <button type="button" class="btn-secondary" onclick="loadAllData()">Verileri Yenile</button>
+      </div>
+      <div class="field siteid">
+        <span>Site Kimligi</span>
+        <div class="site-id-box" style="margin-left:0;">
+          <code id="selectedSiteId">-</code>
+          <button type="button" onclick="copySiteId()">Kopyala</button>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-customizer">
+      <button type="button" class="btn-secondary customizer-toggle" onclick="toggleDashboardCustomizer()">Dashboard Kisisellestir</button>
+      <div id="dashboardCustomizerPanel" class="customizer-panel" hidden>
+        <div id="dashboardMetricToggles" class="customizer-grid"></div>
+        <div class="tool-actions">
+          <button type="button" class="btn-secondary" onclick="resetDashboardLayout()">Varsayilan Duzen</button>
+          <button type="button" onclick="saveDashboardPreferences(true)">Duzeni Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mobile-quick-view" id="mobileQuickView">
+    <div class="mobile-quick-row">
+      <article class="mobile-quick-card">
+        <div class="label">Skor</div>
+        <div class="value" id="mqScore">-</div>
+      </article>
+      <article class="mobile-quick-card">
+        <div class="label">Kritik</div>
+        <div class="value" id="mqCritical">-</div>
+      </article>
+      <article class="mobile-quick-card">
+        <div class="label">Uyari</div>
+        <div class="value" id="mqWarning">-</div>
+      </article>
+    </div>
+    <div class="mobile-quick-action">
+      <strong>Sonraki Aksiyon:</strong>
+      <div id="mqActionText">What Changed calistirarak nedeni ogrenin.</div>
+      <div style="margin-top:8px;">
+        <button type="button" onclick="openGrowthTabAndRunWhatChanged()">What Changed Calistir</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-rail">
+    <button class="tab-button active" onclick="showTab('overview', this)">Genel Bakis</button>
+    <button class="tab-button" onclick="showTab('timeline', this)">Zaman Cizelgesi</button>
+    <button class="tab-button" onclick="showTab('trend', this)">Egilim</button>
+    <button class="tab-button" onclick="showTab('alerts', this)">Uyarilar</button>
+    <button class="tab-button" onclick="showTab('growth', this)">Buyume Araclari</button>
+    <button class="tab-button" onclick="showTab('chart', this)">Grafik</button>
+  </section>
+
+  <section class="workspace">
+    <div id="overview" class="tab active">
+      <div class="metric-grid">
+        <article class="metric-card draggable-card" data-card-key="health_score" draggable="true">
+          <div class="metric-head">
+            <div class="label">Saglik Skoru</div>
+            <span class="drag-handle" title="Surukle">::</span>
+          </div>
+          <div class="value" id="overviewScore">-</div>
+          <div id="overviewStatus" class="loading-note"></div>
+        </article>
+        <article class="metric-card draggable-card" data-card-key="clicks" draggable="true">
+          <div class="metric-head">
+            <div class="label">Clicks</div>
+            <span class="drag-handle" title="Surukle">::</span>
+          </div>
+          <div class="value" id="overviewClicks">-</div>
+        </article>
+        <article class="metric-card draggable-card" data-card-key="impressions" draggable="true">
+          <div class="metric-head">
+            <div class="label">Impressions</div>
+            <span class="drag-handle" title="Surukle">::</span>
+          </div>
+          <div class="value" id="overviewImpressions">-</div>
+        </article>
+        <article class="metric-card draggable-card" data-card-key="ctr" draggable="true">
+          <div class="metric-head">
+            <div class="label">CTR</div>
+            <span class="drag-handle" title="Surukle">::</span>
+          </div>
+          <div class="value" id="overviewCTR">-</div>
+        </article>
+        <article class="metric-card draggable-card" data-card-key="critical_alerts" draggable="true" style="border-left-color:#dc2626;">
+          <div class="metric-head">
+            <div class="label">Kritik Uyarilar</div>
+            <span class="drag-handle" title="Surukle">::</span>
+          </div>
+          <div class="value" id="overviewCritical">-</div>
+        </article>
+        <article class="metric-card draggable-card" data-card-key="warning_alerts" draggable="true" style="border-left-color:#d97706;">
+          <div class="metric-head">
+            <div class="label">Uyarilar</div>
+            <span class="drag-handle" title="Surukle">::</span>
+          </div>
+          <div class="value" id="overviewWarnings">-</div>
+        </article>
+      </div>
+    </div>
+
+    <div id="timeline" class="tab">
+      <ul id="timelineList" class="timeline-list"></ul>
+    </div>
+
+    <div id="trend" class="tab">
+      <article class="metric-card">
+        <div class="label">Egilim Durumu</div>
+        <div class="value" id="trendStatus">-</div>
+        <p id="trendDetails" class="loading-note" style="margin-top:10px;"></p>
+      </article>
+    </div>
+
+    <div id="alerts" class="tab">
+      <div id="alertsList"></div>
+    </div>
+
+    <div id="growth" class="tab">
+      <div class="growth-command-bar">
+        <div class="growth-command-row">
+          <label class="growth-search-field">
+            <span>Arac Ara</span>
+            <input id="growthToolSearch" type="text" placeholder="ornek: ctr, alarm, internal link, rapor...">
+          </label>
+          <div class="growth-filter-pills" id="growthFilterPills">
+            <button type="button" class="growth-pill active" data-growth-filter="all">Tum Araclar</button>
+            <button type="button" class="growth-pill" data-growth-filter="ai">AI</button>
+            <button type="button" class="growth-pill" data-growth-filter="technical">Icerik/Teknik</button>
+            <button type="button" class="growth-pill" data-growth-filter="ops">Operasyon</button>
+            <button type="button" class="growth-pill" data-growth-filter="favorite">Favoriler</button>
+          </div>
+        </div>
+        <div class="growth-playbook-row">
+          <span class="playbook-title">Hazir Senaryolar</span>
+          <button type="button" class="playbook-btn" onclick="runGrowthPlaybook('drop-diagnosis')">Trafik Dususu Teshisi</button>
+          <button type="button" class="playbook-btn" onclick="runGrowthPlaybook('quick-opportunity')">Hizli Firsat Taramasi</button>
+          <button type="button" class="playbook-btn" onclick="runGrowthPlaybook('report-ready')">Rapor Hazirlik Paketi</button>
+        </div>
+        <div id="growthFavoriteStrip" class="growth-favorite-strip" hidden></div>
+        <p id="growthToolEmpty" class="loading-note growth-tool-empty" hidden>Filtreye uygun arac bulunamadi.</p>
+      </div>
+      <div class="growth-layout">
+        <div class="tool-groups">
+          <section class="tool-group" data-tool-group="ai">
+            <div class="tool-group-head">
+              <h3 class="tool-group-title">AI Icgoruler</h3>
+              <p class="tool-group-sub">Anomali, niyet ve revizyon odakli hizli analizler.</p>
+            </div>
+            <div class="tool-grid">
+              <article class="tool-card">
+                <h4>Akilli Alarm Sistemi</h4>
+                <p>Uyarilari etki skoruna ve kok neden kumesine gore siralar.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadSmartAlerts()">Akilli Uyarilari Getir</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Degisim Nedenleri (What Changed?)</h4>
+                <p>Son 7 gunde neden dustu sorusuna otomatik neden ve aksiyon analizi uretir.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadWhatChanged()">Nedenleri Analiz Et</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Anomali Nedeni Skoru</h4>
+                <p>Trafik dususunde teknik degisiklik, CTR, pozisyon ve talep etkisini yuzdesel skorlar.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadAnomalyCauseScore()">Nedeni Skorla</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>SEO Kurtarma Plani (10/10)</h4>
+                <p>What Changed + Anomali skorunu birlestirip 24 saat/7 gun/30 gun aksiyon plani cikarir.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadRecoveryPlan()">Plani Olustur</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Anahtar Kelime Kumeleme</h4>
+                <p>Keywordleri amaca gore gruplar: bilgi, gezinme, ticari, islem.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadKeywordIntentClusters()">Amaca Gore Kumele</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Sayfa Bazli Revizyon</h4>
+                <p>CTR/pozisyon kaybi olan URL'lerde revizyon onceligi cikartir.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadContentRevisionSuggestions()">Revizyon Onerilerini Getir</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Cannibalization</h4>
+                <p>Ayni sorguda birden fazla URL cakismasini tespit eder.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadCannibalization()">Analiz Et</button>
+                </div>
+              </article>
+              <article class="tool-card span-2">
+                <h4>SERP Snippet Onizleme + CTR Skoru</h4>
+                <p>Title/meta degistirmeden once Google sonuc gorunumunu canli gor ve CTR skorunu olc.</p>
+                <input id="serpKeyword" type="text" placeholder="Hedef keyword">
+                <input id="serpTitle" type="text" placeholder="Title metni">
+                <input id="serpMeta" type="text" placeholder="Meta description">
+                <input id="serpUrl" type="text" placeholder="https://site.com/sayfa">
+                <div class="tool-actions">
+                  <button type="button" onclick="runSerpSnippetScore()">Skor Hesapla</button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tool-group" data-tool-group="technical">
+            <div class="tool-group-head">
+              <h3 class="tool-group-title">Icerik ve Teknik</h3>
+              <p class="tool-group-sub">Crawl, internal link, segment ve kanal performansi.</p>
+            </div>
+            <div class="tool-grid">
+              <article class="tool-card">
+                <h4>Teknik Crawl</h4>
+                <p>Birden fazla URL'yi teknik sinyaller icin tarar.</p>
+                <input id="crawlUrls" type="text" placeholder="https://site.com/,https://site.com/blog">
+                <div class="tool-actions">
+                  <button type="button" onclick="runCrawl()">Calistir</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Internal Link Onerileri</h4>
+                <p>Ic link firsatlarini hizli bir listede sunar.</p>
+                <div class="tool-actions">
+                  <button type="button" onclick="loadInternalLinks()">Getir</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Segment Raporu</h4>
+                <p>Branded/non-branded ve cihaz kirilimini analiz eder.</p>
+                <input id="brandTerms" type="text" placeholder="marka,brand">
+                <div class="tool-actions">
+                  <button type="button" onclick="loadSegmentReport()">Getir</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Kanal ve Firsat Skoru</h4>
+                <p>GA4 ile URL firsat skoru ve kanal kiyasi uretir.</p>
+                <input id="ga4PropertyId" type="text" placeholder="Orn: 123456789 veya properties/123456789">
+                <div class="tool-actions">
+                  <button type="button" onclick="loadOpportunityScore()">Firsat Skoru</button>
+                  <button type="button" class="btn-secondary" onclick="loadChannelCompare()">Kanal Kiyas</button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="tool-group" data-tool-group="ops">
+            <div class="tool-group-head">
+              <h3 class="tool-group-title">Operasyon ve Raporlama</h3>
+              <p class="tool-group-sub">Test, log, KPI, PDF ve otomasyon islemleri.</p>
+            </div>
+            <div class="tool-grid">
+              <article class="tool-card">
+                <h4>SEO Change Log</h4>
+                <p>Degisiklikleri kaydet ve listele.</p>
+                <input id="changeType" type="text" placeholder="deploy/content/redirect">
+                <input id="changeTitle" type="text" placeholder="Degisiklik basligi">
+                <div class="tool-actions">
+                  <button type="button" onclick="addChangeLog()">Ekle</button>
+                  <button type="button" class="btn-secondary" onclick="listChangeLogs()">Listele</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>CTR Test</h4>
+                <p>Varyant testini olustur, snapshot ekle ve sonuclari izle.</p>
+                <input id="ctrPage" type="text" placeholder="https://site.com/page">
+                <input id="ctrVariant" type="text" placeholder="Variant A">
+                <input id="ctrHypothesis" type="text" placeholder="Hipotez (opsiyonel)">
+                <div class="tool-actions">
+                  <button type="button" onclick="createCtrTest()">Test Olustur</button>
+                  <button type="button" class="btn-secondary" onclick="listCtrTests()">Testleri Listele</button>
+                </div>
+                <select id="ctrTestSelect">
+                  <option value="">Test seciniz</option>
+                </select>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <input id="ctrStartDate" type="date">
+                  <input id="ctrEndDate" type="date">
+                </div>
+                <div class="tool-actions">
+                  <button type="button" class="btn-secondary" onclick="snapshotCtrTest()">Snapshot Ekle</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Backlink Watchlist</h4>
+                <p>Webhook ile yeni/kayip/toxic backlink degisimlerini izle.</p>
+                <input id="watchWebhook" type="text" placeholder="https://webhook.site/...">
+                <div class="tool-actions">
+                  <button type="button" onclick="saveWatchlist()">Kaydet</button>
+                  <button type="button" class="btn-secondary" onclick="checkWatchlist()">Kontrol Et</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>KPI Goal</h4>
+                <p>Hedef metrik tanimla ve ilerleme panelini ac.</p>
+                <input id="kpiMetric" type="text" placeholder="clicks/impressions/ctr/position">
+                <input id="kpiTarget" type="number" placeholder="Hedef deger">
+                <div class="tool-actions">
+                  <button type="button" onclick="createGoal()">Hedef Ekle</button>
+                  <button type="button" class="btn-secondary" onclick="loadKpiDashboard()">Panel</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>PDF Sablonu</h4>
+                <p>White-label rapor sablonlarini yonet ve raporu ac.</p>
+                <input id="pdfTemplateName" type="text" placeholder="Aylık Müşteri Raporu">
+                <select id="pdfTheme">
+                  <option value="agency" selected>Agency</option>
+                  <option value="minimal">Minimal</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+                <div class="tool-actions">
+                  <button type="button" onclick="createPdfTemplate()">Sablon Ekle</button>
+                  <button type="button" class="btn-secondary" onclick="listPdfTemplates()">Sablon Listele</button>
+                </div>
+                <input id="pdfTemplateId" type="text" placeholder="template_id">
+                <div class="tool-actions">
+                  <button type="button" class="btn-secondary" onclick="openPdfReport()">Rapor Ac (HTML)</button>
+                </div>
+              </article>
+              <article class="tool-card">
+                <h4>Günlük Sağlık Görevi</h4>
+                <p>Planlı veya manuel saglik taraması yap.</p>
+                <input id="jobHour" type="number" min="0" max="23" value="3">
+                <div class="tool-actions">
+                  <button type="button" onclick="saveDailyJob()">Config Kaydet</button>
+                  <button type="button" class="btn-secondary" onclick="runDailyJobs()">Manuel Çalıştır</button>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="growth-results">
+          <div class="result-head">
+            <h3 class="result-title">Sonuçlar</h3>
+            <p class="result-note">Seçili arac burada detaylı olarak gösterilir.</p>
+          </div>
+          <div id="growthOutput" class="panel">
+            <p class="loading-note">Hazır</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="chart" class="tab">
+      <canvas id="healthChart"></canvas>
+    </div>
+  </section>
+</main>
+
+<div id="helpModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.45); z-index:80; padding:20px;">
+  <div style="max-width:900px; margin:30px auto; background:#fff; border-radius:14px; border:1px solid #cbd5e1; padding:18px; max-height:85vh; overflow:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <h3 style="margin:0;">Büyüme Araçları Yardım</h3>
+      <button type="button" class="btn-secondary" onclick="closeHelpModal()">Kapat</button>
+    </div>
+    <p class="loading-note" style="margin-bottom:10px;">Bu paneldeki hizmetler seçili site ID uzerinden calisir.</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Hizmet</th>
+          <th>Ne Yapar</th>
+          <th>Nasıl Kullanilir</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Akıllı Alarm Sistemi</td><td>Uyari nedenlerini kumeleyip oncelikli aksiyon listesi uretir.</td><td>Akilli Uyarilari Getir ile kok neden + aksiyon penceresini incele.</td></tr>
+        <tr><td>Anahtar Kelime Dağılımı</td><td>Keywordleri arama niyetine gore 4 amacta gruplar.</td><td>Amaca Gore Kumele ile oran barini ve trafik dagilimini gor.</td></tr>
+        <tr><td>Sayfa Bazli Revizyon</td><td>Dusuk CTR / pozisyon kaybi olan URL'ler icin revizyon plani cikarir.</td><td>Revizyon Onerilerini Getir ile oncelik skoruna gore aksiyon al.</td></tr>
+        <tr><td>Anahtar Kelime Cannibalization</td><td>Ayni sorguda birden fazla URL cakisiyor mu bulur.</td><td>Analiz Et butonuna tikla, sorgu bazli cakismalari incele.</td></tr>
+        <tr><td>Teknik Tarama</td><td>URL'lerde title/meta/H1/noindex/canonical kontrolleri yapar.</td><td>URL'leri virgul ile gir, Calistir'a tikla.</td></tr>
+        <tr><td>İç Link Onerileri</td><td>Sayfalar arasi link firsatlarini listeler.</td><td>Getir butonuna tikla, onerilen from-to eslesmelerini uygula.</td></tr>
+        <tr><td>Segment Raporu</td><td>Branded/non-branded, cihaz ve ulke kirilimlarini verir.</td><td>Istersen marka kelimelerini girip Getir'e tikla.</td></tr>
+        <tr><td>Sayfa Öncelik Skoru</td><td>GSC gorunurluk + CTR + GA4 donusum sinyaliyle URL oncelik puani uretir.</td><td>GA4 Property ID gir, Firsat Skoru'na tikla.</td></tr>
+        <tr><td>Trafik Kanalı Kıyas</td><td>Organic/Paid/Direct/Referral kanallarini Session ve Conversion bazli karsilastirir.</td><td>GA4 Property ID gir, Kanal Kiyas'a tikla.</td></tr>
+        <tr><td>SEO Change Log</td><td>Deploy/icerik vb degisiklikleri kaydeder.</td><td>Tur + baslik yaz, Ekle ile kaydet; Listele ile gor.</td></tr>
+        <tr><td>CTR Test</td><td>Title/meta varyant testlerini takip eder.</td><td>Page URL + variant ile test olustur, sonra snapshot ekle.</td></tr>
+        <tr><td>Backlink Takip</td><td>Yeni/kayip/toxic backlink degisimlerini izler.</td><td>Webhook girip Kaydet, Kontrol Et ile anlik tetikle.</td></tr>
+        <tr><td>KPI Hedefi</td><td>Hedef metrikler icin ilerleme takibi yapar.</td><td>Metrik + hedef deger gir, Hedef Ekle ve Panele bak.</td></tr>
+        <tr><td>PDF Şablonu</td><td>Rapor sablonu olusturur ve rapor goruntuler.</td><td>Sablon adi + tema sec, sablon olustur, ID ile raporu ac.</td></tr>
+        <tr><td>Günluk Saglik Gorevi</td><td>Saglik kontrolunu zamanli/manuel calistirir.</td><td>Saat ayarla ve config kaydet; Manuel Calistir ile test et.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let chartInstance = null;
+let currentSiteId = null;
+const DASHBOARD_CARD_DEFS = [
+  { key: "health_score", label: "Saglik Skoru" },
+  { key: "clicks", label: "Clicks" },
+  { key: "impressions", label: "Impressions" },
+  { key: "ctr", label: "CTR" },
+  { key: "critical_alerts", label: "Kritik Uyarilar" },
+  { key: "warning_alerts", label: "Uyarilar" }
+];
+let dashboardPreferences = {
+  order: DASHBOARD_CARD_DEFS.map(x => x.key),
+  hidden: []
+};
+let dragCardKey = "";
+let prefSaveTimer = null;
+let latestMobileAction = "What Changed calistirarak nedeni ogrenin.";
+let growthUiState = {
+  query: "",
+  filter: "all",
+  favoritesBySite: {},
+  recentBySite: {},
+  activeToolId: "",
+  activeToolTimer: null
+};
+const GROWTH_UI_STORE_KEY = "gsc-radar-growth-ui-v2";
+
+function t(key, fallback, params) {
+  if (window.GSCRadarI18n && typeof window.GSCRadarI18n.t === "function") {
+    return window.GSCRadarI18n.t(key, fallback, params);
+  }
+  return fallback || key;
+}
+
+function openHelpModal() {
+  document.getElementById("helpModal").style.display = "block";
+}
+
+function closeHelpModal() {
+  document.getElementById("helpModal").style.display = "none";
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeHelpModal();
+});
+
+document.getElementById("helpModal").addEventListener("click", e => {
+  if (e.target && e.target.id === "helpModal") closeHelpModal();
+});
+
+function showGrowthOutput(data) {
+  clearGrowthToolRun();
+  setGrowthResultMode("tool");
+  const out = document.getElementById("growthOutput");
+  out.innerHTML = "<pre class='loading-note' style='white-space:pre-wrap;'>" +
+    escapeHtml(typeof data === "string" ? data : JSON.stringify(data, null, 2)) +
+    "</pre>";
+}
+
+function showGrowthError(err) {
+  clearGrowthToolRun();
+  setGrowthResultMode("tool");
+  const out = document.getElementById("growthOutput");
+  out.innerHTML = "<div class='alert-card critical'><strong>" + t("advanced.action_error_title", "Islem Hatasi") + "</strong><p>" + escapeHtml(err) + "</p></div>";
+}
+
+function escapeHtml(v) {
+  return String(v || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function n(v, d) {
+  const x = Number(v || 0);
+  return x.toLocaleString(undefined, { maximumFractionDigits: d || 0 });
+}
+
+function setMobileQuickActionText(text) {
+  const el = document.getElementById("mqActionText");
+  latestMobileAction = String(text || "").trim() || "What Changed calistirarak nedeni ogrenin.";
+  if (el) el.textContent = latestMobileAction;
+}
+
+function updateMobileQuickSummary(data) {
+  if (!data || typeof data !== "object") return;
+  const scoreEl = document.getElementById("mqScore");
+  const criticalEl = document.getElementById("mqCritical");
+  const warningEl = document.getElementById("mqWarning");
+  if (scoreEl && data.score !== undefined && data.score !== null) {
+    const val = Number(data.score);
+    scoreEl.textContent = Number.isFinite(val) ? val.toFixed(1) : "-";
+  }
+  if (criticalEl && data.critical !== undefined && data.critical !== null) {
+    criticalEl.textContent = String(data.critical);
+  }
+  if (warningEl && data.warning !== undefined && data.warning !== null) {
+    warningEl.textContent = String(data.warning);
+  }
+}
+
+function growthSiteKey() {
+  return currentSiteId || "_global";
+}
+
+function loadGrowthUiStore() {
+  try {
+    const raw = localStorage.getItem(GROWTH_UI_STORE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") {
+      growthUiState.favoritesBySite = parsed.favoritesBySite || {};
+      growthUiState.recentBySite = parsed.recentBySite || {};
+    }
+  } catch (_) {}
+}
+
+function saveGrowthUiStore() {
+  try {
+    localStorage.setItem(GROWTH_UI_STORE_KEY, JSON.stringify({
+      favoritesBySite: growthUiState.favoritesBySite || {},
+      recentBySite: growthUiState.recentBySite || {},
+    }));
+  } catch (_) {}
+}
+
+function getGrowthFavorites() {
+  const key = growthSiteKey();
+  const rows = growthUiState.favoritesBySite[key];
+  return Array.isArray(rows) ? rows.slice(0, 20) : [];
+}
+
+function setGrowthFavorites(items) {
+  const key = growthSiteKey();
+  growthUiState.favoritesBySite[key] = Array.from(new Set((items || []).filter(Boolean))).slice(0, 20);
+  saveGrowthUiStore();
+}
+
+function getGrowthRecent() {
+  const key = growthSiteKey();
+  const rows = growthUiState.recentBySite[key];
+  return Array.isArray(rows) ? rows.slice(0, 8) : [];
+}
+
+function setGrowthRecent(items) {
+  const key = growthSiteKey();
+  growthUiState.recentBySite[key] = (items || []).slice(0, 8);
+  saveGrowthUiStore();
+}
+
+function slugifyToolId(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || ("tool-" + Math.random().toString(16).slice(2, 8));
+}
+
+function toolCategoryLabel(cat) {
+  if (cat === "ai") return "AI";
+  if (cat === "technical") return "Teknik";
+  return "Ops";
+}
+
+function setGrowthResultMode(mode) {
+  const head = document.querySelector(".growth-results .result-head");
+  if (!head) return;
+  head.classList.toggle("playbook", mode === "playbook");
+}
+
+function setActiveGrowthFilter(filter) {
+  growthUiState.filter = filter || "all";
+  document.querySelectorAll("#growthFilterPills .growth-pill").forEach(btn => {
+    btn.classList.toggle("active", (btn.getAttribute("data-growth-filter") || "all") === growthUiState.filter);
+  });
+  applyGrowthToolFilters();
+}
+
+function toggleGrowthFavorite(toolId) {
+  const favorites = getGrowthFavorites();
+  if (favorites.includes(toolId)) {
+    setGrowthFavorites(favorites.filter(x => x !== toolId));
+  } else {
+    favorites.unshift(toolId);
+    setGrowthFavorites(favorites);
+  }
+  syncGrowthCardFavoriteStates();
+  renderGrowthFavoriteStrip();
+  applyGrowthToolFilters();
+}
+
+function syncGrowthCardFavoriteStates() {
+  const favSet = new Set(getGrowthFavorites());
+  document.querySelectorAll("#growth .tool-card").forEach(card => {
+    const toolId = card.getAttribute("data-tool-id") || "";
+    const favBtn = card.querySelector(".tool-fav-btn");
+    const active = favSet.has(toolId);
+    if (favBtn) {
+      favBtn.classList.toggle("active", active);
+      favBtn.setAttribute("aria-label", active ? "Favorilerden cikar" : "Favorilere ekle");
+      favBtn.textContent = active ? "\u2605" : "\u2606";
+    }
+  });
+}
+
+function focusGrowthTool(toolId) {
+  if (!toolId) return;
+  const card = document.querySelector("#growth .tool-card[data-tool-id='" + toolId + "']");
+  if (!card) return;
+  const group = card.closest(".tool-group");
+  if (group && group.classList.contains("collapsed")) {
+    group.classList.remove("collapsed");
+    const btn = group.querySelector(".tool-group-toggle");
+    if (btn) btn.textContent = "Daralt";
+  }
+  if (growthUiState.filter !== "all") {
+    setActiveGrowthFilter("all");
+  } else {
+    applyGrowthToolFilters();
+  }
+  card.scrollIntoView({ behavior: "smooth", block: "center" });
+  card.classList.add("tool-running");
+  setTimeout(() => card.classList.remove("tool-running"), 1200);
+}
+
+function renderGrowthFavoriteStrip() {
+  const host = document.getElementById("growthFavoriteStrip");
+  if (!host) return;
+  const favorites = getGrowthFavorites();
+  const recent = getGrowthRecent();
+  const idToTitle = {};
+  document.querySelectorAll("#growth .tool-card").forEach(card => {
+    const id = card.getAttribute("data-tool-id") || "";
+    const title = card.getAttribute("data-tool-title") || "";
+    if (id) idToTitle[id] = title;
+  });
+
+  const favTags = favorites
+    .filter(id => idToTitle[id])
+    .map(id => "<button type='button' class='favorite-tag' data-tool-jump='" + escapeHtml(id) + "'>&#9733; " + escapeHtml(idToTitle[id]) + "</button>")
+    .join("");
+  const recentTags = recent
+    .filter(id => idToTitle[id] && !favorites.includes(id))
+    .map(id => "<button type='button' class='favorite-tag' data-tool-jump='" + escapeHtml(id) + "'>" + escapeHtml(idToTitle[id]) + "</button>")
+    .join("");
+
+  if (!favTags && !recentTags) {
+    host.hidden = true;
+    host.innerHTML = "";
+    return;
+  }
+
+  host.hidden = false;
+  host.innerHTML =
+    (favTags ? ("<span class='playbook-title'>Favoriler</span>" + favTags) : "") +
+    (recentTags ? ("<span class='playbook-title'>Son Kullanilanlar</span>" + recentTags) : "");
+
+  host.querySelectorAll("[data-tool-jump]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      focusGrowthTool(btn.getAttribute("data-tool-jump") || "");
+    });
+  });
+}
+
+function markGrowthToolRun(toolId) {
+  clearGrowthToolRun();
+  growthUiState.activeToolId = toolId || "";
+  const card = toolId ? document.querySelector("#growth .tool-card[data-tool-id='" + toolId + "']") : null;
+  if (card) card.classList.add("tool-running");
+  growthUiState.activeToolTimer = setTimeout(() => clearGrowthToolRun(), 5500);
+
+  if (toolId) {
+    const recent = getGrowthRecent().filter(x => x !== toolId);
+    recent.unshift(toolId);
+    setGrowthRecent(recent.slice(0, 8));
+    renderGrowthFavoriteStrip();
+  }
+}
+
+function clearGrowthToolRun() {
+  if (growthUiState.activeToolTimer) {
+    clearTimeout(growthUiState.activeToolTimer);
+    growthUiState.activeToolTimer = null;
+  }
+  if (growthUiState.activeToolId) {
+    const prev = document.querySelector("#growth .tool-card[data-tool-id='" + growthUiState.activeToolId + "']");
+    if (prev) prev.classList.remove("tool-running");
+  }
+  growthUiState.activeToolId = "";
+}
+
+function applyGrowthToolFilters() {
+  const q = (growthUiState.query || "").trim().toLowerCase();
+  const filter = growthUiState.filter || "all";
+  const favorites = new Set(getGrowthFavorites());
+  let visibleToolCount = 0;
+
+  document.querySelectorAll("#growth .tool-card").forEach(card => {
+    const text = (card.getAttribute("data-tool-search") || "").toLowerCase();
+    const cat = card.getAttribute("data-tool-category") || "ops";
+    const toolId = card.getAttribute("data-tool-id") || "";
+
+    const queryOk = !q || text.includes(q);
+    let filterOk = true;
+    if (filter === "favorite") filterOk = favorites.has(toolId);
+    else if (filter !== "all") filterOk = (cat === filter);
+
+    const visible = queryOk && filterOk;
+    card.classList.toggle("tool-hidden", !visible);
+    if (visible) visibleToolCount += 1;
+  });
+
+  document.querySelectorAll("#growth .tool-group").forEach(group => {
+    const visibleCards = group.querySelectorAll(".tool-card:not(.tool-hidden)");
+    group.classList.toggle("tool-group-hidden", visibleCards.length === 0);
+  });
+
+  const emptyNote = document.getElementById("growthToolEmpty");
+  if (emptyNote) emptyNote.hidden = visibleToolCount > 0;
+}
+
+function initGrowthToolGroups() {
+  document.querySelectorAll("#growth .tool-group").forEach(group => {
+    const head = group.querySelector(".tool-group-head");
+    if (!head) return;
+
+    let meta = head.querySelector(".tool-group-meta");
+    if (!meta) {
+      meta = document.createElement("div");
+      meta.className = "tool-group-meta";
+      const title = head.querySelector(".tool-group-title");
+      const sub = head.querySelector(".tool-group-sub");
+      if (title) meta.appendChild(title);
+      if (sub) meta.appendChild(sub);
+      head.prepend(meta);
+    }
+
+    if (!head.querySelector(".tool-group-toggle")) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tool-group-toggle";
+      btn.textContent = "Daralt";
+      btn.addEventListener("click", () => {
+        const collapsed = group.classList.toggle("collapsed");
+        btn.textContent = collapsed ? "Genislet" : "Daralt";
+      });
+      head.appendChild(btn);
+    }
+  });
+}
+
+function initGrowthToolCards() {
+  const titleToCategoryFallback = {
+    "akilli alarm sistemi": "ai",
+    "degisim nedenleri (what changed?)": "ai",
+    "anomali nedeni skoru": "ai",
+    "seo kurtarma plani (10/10)": "ai",
+    "anahtar kelime kumeleme": "ai",
+    "sayfa bazli revizyon": "ai",
+    "cannibalization": "ai",
+  };
+
+  document.querySelectorAll("#growth .tool-card").forEach(card => {
+    const h4 = card.querySelector("h4");
+    if (!h4) return;
+    const rawTitle = (h4.textContent || "").trim();
+    const toolId = card.getAttribute("data-tool-id") || slugifyToolId(rawTitle);
+    card.setAttribute("data-tool-id", toolId);
+    card.setAttribute("data-tool-title", rawTitle);
+
+    const group = card.closest(".tool-group");
+    let category = (group && group.getAttribute("data-tool-group")) || "";
+    if (!category) category = titleToCategoryFallback[rawTitle.toLowerCase()] || "ops";
+    card.setAttribute("data-tool-category", category);
+
+    const desc = (card.querySelector("p") ? card.querySelector("p").textContent : "") || "";
+    card.setAttribute("data-tool-search", [rawTitle, desc, category].join(" "));
+
+    if (!card.querySelector(".tool-card-header")) {
+      const header = document.createElement("div");
+      header.className = "tool-card-header";
+      const parent = h4.parentElement;
+      if (parent) {
+        parent.insertBefore(header, h4);
+        header.appendChild(h4);
+      }
+
+      const catChip = document.createElement("span");
+      catChip.className = "tool-category-chip";
+      catChip.textContent = toolCategoryLabel(category);
+      h4.appendChild(catChip);
+
+      const favBtn = document.createElement("button");
+      favBtn.type = "button";
+      favBtn.className = "tool-fav-btn";
+      favBtn.textContent = "\u2606";
+      favBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleGrowthFavorite(toolId);
+      });
+      header.appendChild(favBtn);
+    }
+
+    card.querySelectorAll(".tool-actions button").forEach(btn => {
+      if (btn.dataset.growthBound === "1") return;
+      btn.dataset.growthBound = "1";
+      btn.addEventListener("click", () => {
+        setGrowthResultMode("tool");
+        markGrowthToolRun(toolId);
+      });
+    });
+  });
+}
+
+function initGrowthFilterUi() {
+  const searchInput = document.getElementById("growthToolSearch");
+  if (searchInput && !searchInput.dataset.bound) {
+    searchInput.dataset.bound = "1";
+    searchInput.addEventListener("input", () => {
+      growthUiState.query = searchInput.value || "";
+      applyGrowthToolFilters();
+    });
+  }
+
+  document.querySelectorAll("#growthFilterPills .growth-pill").forEach(btn => {
+    if (btn.dataset.bound === "1") return;
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", () => {
+      setActiveGrowthFilter(btn.getAttribute("data-growth-filter") || "all");
+    });
+  });
+}
+
+async function runGrowthPlaybook(type) {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const days = Number(document.getElementById("range").value || 7);
+  const clampedDays = Math.max(7, days);
+  const ga4 = getGa4PropertyId();
+  const out = document.getElementById("growthOutput");
+  const kind = (type || "").trim();
+  setGrowthResultMode("playbook");
+  markGrowthToolRun("");
+
+  const playbooks = {
+    "drop-diagnosis": {
+      title: "Trafik Dususu Teshis Akisi",
+      description: "Dusus nedeni + alarm + revizyon adayi tek cikti.",
+      steps: [
+        {
+          label: "What Changed",
+          run: () => apiGet("/sites/" + currentSiteId + "/growth/what-changed?days=" + clampedDays + "&top_pages=8"),
+          summary: (d) => "Top neden: " + (((d.summary || {}).top_driver) || "-"),
+        },
+        {
+          label: "Anomali Nedeni Skoru",
+          run: () => apiGet("/sites/" + currentSiteId + "/growth/anomaly-cause-score?days=" + clampedDays + "&top_pages=8"),
+          summary: (d) => "Baskin neden: " + (((d.summary || {}).dominant_cause) || "-"),
+        },
+        {
+          label: "Akilli Alarm",
+          run: () => apiGet("/sites/" + currentSiteId + "/alerts/smart?days=" + clampedDays),
+          summary: (d) => "Toplam uyari: " + n(((d.summary || {}).total || 0), 0),
+        },
+        {
+          label: "Revizyon Onerileri",
+          run: () => apiGet("/sites/" + currentSiteId + "/content/revision-suggestions?days=" + clampedDays + "&top_pages=10"),
+          summary: (d) => "Aday sayfa: " + n((d.items || []).length, 0),
+        },
+      ],
+    },
+    "quick-opportunity": {
+      title: "Hizli Firsat Taramasi",
+      description: "Firsat skoru + keyword niyeti + internal link kombosu.",
+      steps: [
+        {
+          label: "Sayfa Firsat Skoru",
+          run: () => {
+            let url = "/sites/" + currentSiteId + "/growth/opportunity-score?days=" + clampedDays;
+            if (ga4) url += "&ga4_property_id=" + encodeURIComponent(ga4);
+            return apiGet(url);
+          },
+          summary: (d) => "Oncelikli sayfa: " + (((d.items || [])[0] || {}).page || "-"),
+        },
+        {
+          label: "Intent Kumeleme",
+          run: () => apiGet("/sites/" + currentSiteId + "/keywords/intent-clusters?limit=1200"),
+          summary: (d) => "Toplam keyword: " + n(d.total_keywords || 0, 0),
+        },
+        {
+          label: "Internal Link",
+          run: () => apiGet("/sites/" + currentSiteId + "/internal-link/suggestions?days=" + clampedDays),
+          summary: (d) => "Oneri adedi: " + n(d.count || 0, 0),
+        },
+      ],
+    },
+    "report-ready": {
+      title: "Rapor Hazirlik Paketi",
+      description: "Segment + kanal + KPI ile rapora hazir panel.",
+      steps: [
+        {
+          label: "Segment Raporu",
+          run: () => apiGet("/sites/" + currentSiteId + "/segments/report?days=" + clampedDays + "&brand_terms=" + encodeURIComponent(document.getElementById("brandTerms").value.trim())),
+          summary: (d) => "Branded clicks: " + n((((d.segments || {}).branded || {}).clicks || 0), 0),
+        },
+        {
+          label: "Kanal Kiyas",
+          run: () => {
+            let url = "/sites/" + currentSiteId + "/growth/channel-compare?days=" + clampedDays;
+            if (ga4) url += "&ga4_property_id=" + encodeURIComponent(ga4);
+            return apiGet(url);
+          },
+          summary: (d) => "Toplam session: " + n((((d.totals || {}).sessions || 0)), 0),
+        },
+        {
+          label: "KPI Dashboard",
+          run: () => apiGet("/sites/" + currentSiteId + "/kpi/dashboard"),
+          summary: (d) => "Hedef adedi: " + n((d.goals || []).length, 0),
+        },
+      ],
+    },
+  };
+
+  const pb = playbooks[kind];
+  if (!pb) return;
+
+  out.innerHTML = "<p class='loading-note'>Playbook calisiyor, adimlar sirayla isleniyor...</p>";
+  const rows = [];
+  for (const step of pb.steps) {
+    try {
+      const data = await step.run();
+      rows.push({ step: step.label, status: "OK", detail: step.summary(data) });
+    } catch (e) {
+      rows.push({ step: step.label, status: "Hata", detail: (e && e.message ? e.message : "Islem basarisiz") });
+    }
+  }
+
+  const failCount = rows.filter(r => r.status !== "OK").length;
+  out.innerHTML =
+    "<h3 style='margin:0 0 10px;'>" + escapeHtml(pb.title) + "</h3>" +
+    "<p class='loading-note' style='margin:0 0 10px;'>" + escapeHtml(pb.description) + "</p>" +
+    renderKeyValueGrid([
+      { k: "Adim", v: n(rows.length, 0) },
+      { k: "Basarili", v: n(rows.length - failCount, 0) },
+      { k: "Hata", v: n(failCount, 0) },
+      { k: "Aralik", v: clampedDays + " gun" }
+    ]) +
+    renderSimpleTable(["Adim", "Durum", "Ozet"], rows.map(r => [r.step, r.status, r.detail]));
+
+  clearGrowthToolRun();
+}
+
+function initGrowthToolsExperience() {
+  loadGrowthUiStore();
+  initGrowthToolGroups();
+  initGrowthToolCards();
+  initGrowthFilterUi();
+  syncGrowthCardFavoriteStates();
+  renderGrowthFavoriteStrip();
+  applyGrowthToolFilters();
+}
+
+function normalizeDashboardPreferences(prefs) {
+  const valid = DASHBOARD_CARD_DEFS.map(x => x.key);
+  const order = [];
+  const hidden = [];
+  const srcOrder = (prefs && Array.isArray(prefs.order)) ? prefs.order : [];
+  const srcHidden = (prefs && Array.isArray(prefs.hidden)) ? prefs.hidden : [];
+
+  srcOrder.forEach(k => {
+    if (valid.includes(k) && !order.includes(k)) order.push(k);
+  });
+  valid.forEach(k => {
+    if (!order.includes(k)) order.push(k);
+  });
+  srcHidden.forEach(k => {
+    if (valid.includes(k) && !hidden.includes(k)) hidden.push(k);
+  });
+  return { order, hidden };
+}
+
+function getMetricGrid() {
+  return document.querySelector("#overview .metric-grid");
+}
+
+function getCurrentMetricOrderFromDom() {
+  return Array.from(document.querySelectorAll("#overview .draggable-card"))
+    .map(card => card.getAttribute("data-card-key") || "")
+    .filter(Boolean);
+}
+
+function applyDashboardPreferences() {
+  dashboardPreferences = normalizeDashboardPreferences(dashboardPreferences);
+  const grid = getMetricGrid();
+  if (!grid) return;
+
+  const cards = Array.from(grid.querySelectorAll(".draggable-card"));
+  const byKey = {};
+  cards.forEach(card => {
+    const key = card.getAttribute("data-card-key") || "";
+    if (key) byKey[key] = card;
+  });
+
+  dashboardPreferences.order.forEach(key => {
+    if (byKey[key]) grid.appendChild(byKey[key]);
+  });
+
+  cards.forEach(card => {
+    const key = card.getAttribute("data-card-key") || "";
+    card.classList.toggle("is-hidden", dashboardPreferences.hidden.includes(key));
+  });
+}
+
+function renderDashboardMetricToggles() {
+  const host = document.getElementById("dashboardMetricToggles");
+  if (!host) return;
+  host.innerHTML = DASHBOARD_CARD_DEFS.map(item => {
+    const checked = dashboardPreferences.hidden.includes(item.key) ? "" : "checked";
+    return (
+      "<label class='checkbox-chip'>" +
+      "<input type='checkbox' data-card-toggle='" + escapeHtml(item.key) + "' " + checked + ">" +
+      "<span>" + escapeHtml(item.label) + "</span>" +
+      "</label>"
+    );
+  }).join("");
+  host.querySelectorAll("input[data-card-toggle]").forEach(input => {
+    input.addEventListener("change", () => {
+      const key = input.getAttribute("data-card-toggle") || "";
+      if (!key) return;
+      if (input.checked) {
+        dashboardPreferences.hidden = dashboardPreferences.hidden.filter(x => x !== key);
+      } else if (!dashboardPreferences.hidden.includes(key)) {
+        dashboardPreferences.hidden.push(key);
+      }
+      applyDashboardPreferences();
+      queuePreferenceSave();
+    });
+  });
+}
+
+function toggleDashboardCustomizer() {
+  const panel = document.getElementById("dashboardCustomizerPanel");
+  if (!panel) return;
+  panel.hidden = !panel.hidden;
+  if (!panel.hidden) renderDashboardMetricToggles();
+}
+
+function queuePreferenceSave() {
+  if (!currentSiteId) return;
+  if (prefSaveTimer) clearTimeout(prefSaveTimer);
+  prefSaveTimer = setTimeout(() => saveDashboardPreferences(false), 450);
+}
+
+function saveDashboardPreferences(showToast) {
+  if (!currentSiteId) return Promise.resolve();
+  dashboardPreferences.order = getCurrentMetricOrderFromDom();
+  dashboardPreferences = normalizeDashboardPreferences(dashboardPreferences);
+  return apiPost("/sites/" + currentSiteId + "/dashboard/preferences", dashboardPreferences)
+    .then(() => {
+      if (showToast) alert("Dashboard duzeni kaydedildi.");
+    })
+    .catch(e => {
+      if (showToast) showGrowthError(e.message);
+    });
+}
+
+function loadDashboardPreferences() {
+  if (!currentSiteId) return;
+  apiGet("/sites/" + currentSiteId + "/dashboard/preferences")
+    .then(data => {
+      dashboardPreferences = normalizeDashboardPreferences((data || {}).preferences || {});
+      applyDashboardPreferences();
+      renderDashboardMetricToggles();
+    })
+    .catch(() => {
+      dashboardPreferences = normalizeDashboardPreferences({});
+      applyDashboardPreferences();
+      renderDashboardMetricToggles();
+    });
+}
+
+function resetDashboardLayout() {
+  dashboardPreferences = {
+    order: DASHBOARD_CARD_DEFS.map(x => x.key),
+    hidden: []
+  };
+  applyDashboardPreferences();
+  renderDashboardMetricToggles();
+  saveDashboardPreferences(false);
+}
+
+function initMetricCardDragDrop() {
+  const grid = getMetricGrid();
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll(".draggable-card"));
+  cards.forEach(card => {
+    if (card.dataset.dndInit === "1") return;
+    card.dataset.dndInit = "1";
+    card.addEventListener("dragstart", (event) => {
+      dragCardKey = card.getAttribute("data-card-key") || "";
+      card.classList.add("dragging");
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", dragCardKey);
+      }
+    });
+    card.addEventListener("dragend", () => {
+      dragCardKey = "";
+      card.classList.remove("dragging");
+      cards.forEach(c => c.classList.remove("drop-target"));
+    });
+    card.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      card.classList.add("drop-target");
+    });
+    card.addEventListener("dragleave", () => {
+      card.classList.remove("drop-target");
+    });
+    card.addEventListener("drop", (event) => {
+      event.preventDefault();
+      card.classList.remove("drop-target");
+      const sourceKey = dragCardKey || (event.dataTransfer ? event.dataTransfer.getData("text/plain") : "");
+      const source = sourceKey ? grid.querySelector(".draggable-card[data-card-key='" + sourceKey + "']") : null;
+      if (!source || source === card) return;
+      const rect = card.getBoundingClientRect();
+      const after = event.clientY > (rect.top + rect.height / 2);
+      if (after) {
+        card.insertAdjacentElement("afterend", source);
+      } else {
+        card.insertAdjacentElement("beforebegin", source);
+      }
+      dashboardPreferences.order = getCurrentMetricOrderFromDom();
+      renderDashboardMetricToggles();
+      queuePreferenceSave();
+    });
+  });
+}
+
+function openGrowthTabAndRunWhatChanged() {
+  const growthBtn = document.querySelector(".tab-rail .tab-button[onclick*=\"showTab('growth'\"]");
+  showTab("growth", growthBtn || null);
+  loadWhatChanged();
+}
+
+function renderKeyValueGrid(items) {
+  return "<div class='metric-grid'>" + items.map(it =>
+    "<article class='metric-card'><div class='label'>" + escapeHtml(it.k) + "</div><div class='value'>" + escapeHtml(it.v) + "</div></article>"
+  ).join("") + "</div>";
+}
+
+function renderSimpleTable(headers, rows) {
+  if (!rows || rows.length === 0) return "<p class='loading-note'>" + t("common.no_data", "Veri bulunamadi.") + "</p>";
+  return "<table class='data-table'><thead><tr>" +
+    headers.map(h => "<th>" + escapeHtml(h) + "</th>").join("") +
+    "</tr></thead><tbody>" +
+    rows.map(r => "<tr>" + r.map(c => "<td>" + escapeHtml(c) + "</td>").join("") + "</tr>").join("") +
+    "</tbody></table>";
+}
+
+function renderGrowthResult(type, data) {
+  clearGrowthToolRun();
+  setGrowthResultMode("tool");
+  const out = document.getElementById("growthOutput");
+  if (!data || typeof data !== "object") return showGrowthOutput(data);
+
+  if (type === "cannibalization") {
+    const rows = (data.queries || []).slice(0, 20).map(q => [
+      q.query || "-",
+      n(q.total_impressions, 0),
+      n(q.page_count, 0),
+      (q.dominance_pct || 0) + "%"
+    ]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Cannibalization Sonucu</h3>" +
+      renderKeyValueGrid([
+        { k: "Sorgu Sayisi", v: n(data.count || 0, 0) },
+        { k: "Periyot", v: (data.period ? (data.period.start + " - " + data.period.end) : "-") }
+      ]) +
+      renderSimpleTable(["Query", "Impressions", "URL Sayisi", "Dominance"], rows);
+    return;
+  }
+
+  if (type === "smart-alerts") {
+    const s = data.summary || {};
+    const rows = (data.insights || []).map(i => [
+      i.severity_label || "-",
+      i.metric || "-",
+      (i.change_pct || 0) + "%",
+      i.root_cause || "-",
+      i.action_window || "-"
+    ]);
+    const causeRows = (data.top_cause_clusters || []).map(c => [
+      c.cluster || "-",
+      n(c.count || 0, 0),
+      n(c.impact_score || 0, 2)
+    ]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Akilli Alarm Sistemi</h3>" +
+      renderKeyValueGrid([
+        { k: "Toplam Uyari", v: n(s.total || 0, 0) },
+        { k: "Critical", v: n(s.critical || 0, 0) },
+        { k: "Warning", v: n(s.warning || 0, 0) },
+        { k: "Info", v: n(s.info || 0, 0) }
+      ]) +
+      "<h3 style='margin:16px 0 10px;'>Neden Kume Ozeti</h3>" +
+      renderSimpleTable(["Kume", "Adet", "Etki Skoru"], causeRows) +
+      "<h3 style='margin:16px 0 10px;'>Oncelikli Aksiyonlar</h3>" +
+      renderSimpleTable(["Seviye", "Metrik", "Degisim", "Tahmini Kok Neden", "Aksiyon Penceresi"], rows);
+    return;
+  }
+
+  if (type === "what-changed") {
+    const metrics = data.metrics || {};
+    const delta = metrics.delta_pct || {};
+    const reasons = (data.reason_breakdown || []).map(r => [
+      r.title || "-",
+      r.detail || "-",
+      r.impact || "-"
+    ]);
+    const pages = (data.top_affected_pages || []).map(p => [
+      p.page || "-",
+      n(p.click_diff || 0, 0),
+      (p.click_delta_pct || 0) + "%",
+      (p.impression_delta_pct || 0) + "%",
+      (p.ctr_delta_pct || 0) + "%",
+      p.position_delta,
+      p.likely_reason || "-"
+    ]);
+    const actions = (data.actions || []).map((a, idx) =>
+      "<li><strong>Adim " + (idx + 1) + ":</strong> " + escapeHtml(a) + "</li>"
+    ).join("");
+    const topAction = (data.actions || [])[0] || "What Changed sonucu icin once analiz calistirin.";
+    setMobileQuickActionText(topAction);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>What Changed Analizi</h3>" +
+      "<p class='loading-note' style='margin:0 0 10px;'>" + escapeHtml(data.headline || "-") + "</p>" +
+      renderKeyValueGrid([
+        { k: "Clicks Degisim", v: (delta.clicks || 0) + "%" },
+        { k: "Impressions Degisim", v: (delta.impressions || 0) + "%" },
+        { k: "CTR Degisim", v: (delta.ctr || 0) + "%" },
+        { k: "Pozisyon Farki", v: (delta.position || 0) }
+      ]) +
+      "<h3 style='margin:16px 0 10px;'>Neden Oldu?</h3>" +
+      renderSimpleTable(["Neden", "Aciklama", "Etki"], reasons) +
+      "<h3 style='margin:16px 0 10px;'>En Cok Etkilenen Sayfalar</h3>" +
+      renderSimpleTable(["Sayfa", "Click Farki", "Click%", "Impr%", "CTR%", "Pos Farki", "Tahmini Neden"], pages) +
+      "<h3 style='margin:16px 0 10px;'>Ne Yapacagiz?</h3>" +
+      "<ul class='list-clean'>" + (actions || "<li>Aksiyon onerisi bulunamadi.</li>") + "</ul>";
+    return;
+  }
+
+  if (type === "anomaly-cause-score") {
+    const summary = data.summary || {};
+    const deltas = summary.delta_pct || {};
+    const causes = data.cause_scores || [];
+    const causeRows = causes.map(c => [
+      c.label || "-",
+      n(c.score || 0, 2),
+      (c.share_pct || 0) + "%",
+      c.confidence || "-",
+      c.evidence_count || 0
+    ]);
+    const bars = causes.map(c => {
+      const w = Math.max(4, Number(c.share_pct || 0));
+      const label = (c.label || "-") + " %" + (c.share_pct || 0);
+      return (
+        "<div style='display:flex;align-items:center;gap:8px;margin-bottom:6px;'>" +
+        "<div style='width:160px;font-size:12px;color:#475569;'>" + escapeHtml(c.label || "-") + "</div>" +
+        "<div style='flex:1;height:10px;background:#e5edf8;border-radius:999px;overflow:hidden;'>" +
+        "<div style='height:100%;width:" + w + "%;background:linear-gradient(90deg,#0f4c81,#2563eb);'></div>" +
+        "</div>" +
+        "<div style='width:54px;text-align:right;font-size:12px;font-weight:700;color:#0f172a;'>" + escapeHtml(String((c.share_pct || 0) + "%")) + "</div>" +
+        "</div>"
+      );
+    }).join("");
+    const pages = (data.top_page_signals || []).map(p => [
+      p.page || "-",
+      n(p.click_diff || 0, 0),
+      (p.click_delta_pct || 0) + "%",
+      (p.impression_delta_pct || 0) + "%",
+      (p.ctr_delta_pct || 0) + "%",
+      p.position_delta,
+      p.primary_signal || "-"
+    ]);
+    const actions = (data.actions || []).map((a, idx) =>
+      "<li><strong>Adim " + (idx + 1) + ":</strong> " + escapeHtml(a) + "</li>"
+    ).join("");
+    const topAction = (data.actions || [])[0] || "What Changed analizini calistirip sinyalleri birlikte yorumlayin.";
+    setMobileQuickActionText(topAction);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Anomali Nedeni Skoru</h3>" +
+      "<p class='loading-note' style='margin:0 0 10px;'>Baskin neden: <strong>" + escapeHtml(summary.dominant_cause || "-") + "</strong> (%" + escapeHtml(String(summary.dominant_cause_share_pct || 0)) + ", " + escapeHtml(summary.dominant_confidence || "Low") + ")</p>" +
+      renderKeyValueGrid([
+        { k: "Clicks Degisim", v: (deltas.clicks || 0) + "%" },
+        { k: "Impressions Degisim", v: (deltas.impressions || 0) + "%" },
+        { k: "CTR Degisim", v: (deltas.ctr || 0) + "%" },
+        { k: "Pozisyon Farki", v: (deltas.position || 0) },
+        { k: "Dusen Sayfa", v: n(summary.dropped_pages || 0, 0) },
+        { k: "Toplam Negatif Click", v: n(summary.total_negative_clicks || 0, 0) }
+      ]) +
+      "<h3 style='margin:16px 0 10px;'>Neden Dagilimi</h3>" +
+      "<div style='border:1px solid #dbe3ee;border-radius:10px;background:#fff;padding:10px;margin-bottom:10px;'>" + (bars || "<p class='loading-note' style='margin:0;'>Neden skoru olusmadi.</p>") + "</div>" +
+      renderSimpleTable(["Neden", "Skor", "Pay", "Guven", "Kanit"], causeRows) +
+      "<h3 style='margin:16px 0 10px;'>En Cok Etkilenen Sayfalar</h3>" +
+      renderSimpleTable(["Sayfa", "Click Farki", "Click%", "Impr%", "CTR%", "Pos Farki", "Sinyal"], pages) +
+      "<h3 style='margin:16px 0 10px;'>Oncelikli Aksiyonlar</h3>" +
+      "<ul class='list-clean'>" + (actions || "<li>Aksiyon onerisi bulunamadi.</li>") + "</ul>";
+    return;
+  }
+
+  if (type === "recovery-plan") {
+    const summary = data.summary || {};
+    const tasks = data.tasks || [];
+    const timelineRows = (data.timeline || []).map(tl => [tl.phase || "-", tl.goal || "-"]);
+    const taskRows = tasks.map(t => [
+      t.priority || "-",
+      t.phase || "-",
+      t.title || "-",
+      t.owner || "-",
+      n(t.impact_score || 0, 2),
+      t.confidence || "-"
+    ]);
+    const details = tasks.slice(0, 8).map((t, idx) =>
+      "<div class='alert-card " + (t.priority === "P1" ? "critical" : (t.priority === "P2" ? "warning" : "info")) + "'>" +
+      "<strong>Adim " + (idx + 1) + ": " + escapeHtml(t.title || "-") + " (" + escapeHtml(t.priority || "-") + ")</strong>" +
+      "<p><strong>Neden:</strong> " + escapeHtml(t.why || "-") + "</p>" +
+      "<p><strong>Aksiyon:</strong> " + escapeHtml(t.action || "-") + "</p>" +
+      "<p><strong>Basari Metrigi:</strong> " + escapeHtml(t.success_metric || "-") + "</p>" +
+      "</div>"
+    ).join("");
+    const topAction = (tasks[0] && tasks[0].action) ? tasks[0].action : "What Changed ve Anomali Nedeni Skoru araclarini birlikte calistirin.";
+    setMobileQuickActionText(topAction);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>SEO Kurtarma Plani</h3>" +
+      "<p class='loading-note' style='margin:0 0 10px;'>" + escapeHtml(data.headline || "-") + "</p>" +
+      renderKeyValueGrid([
+        { k: "Recovery Skoru", v: n(data.recovery_score || 0, 0) + "/100" },
+        { k: "Plan Guveni", v: data.plan_confidence || "-" },
+        { k: "Clicks Degisim", v: (summary.clicks_delta_pct || 0) + "%" },
+        { k: "Impressions Degisim", v: (summary.impressions_delta_pct || 0) + "%" },
+        { k: "CTR Degisim", v: (summary.ctr_delta_pct || 0) + "%" },
+        { k: "Baskin Neden", v: summary.dominant_cause || "-" }
+      ]) +
+      "<h3 style='margin:16px 0 10px;'>Uygulama Takvimi</h3>" +
+      renderSimpleTable(["Faz", "Hedef"], timelineRows) +
+      "<h3 style='margin:16px 0 10px;'>Oncelikli Gorevler</h3>" +
+      renderSimpleTable(["Oncelik", "Faz", "Gorev", "Sahip", "Etki", "Guven"], taskRows) +
+      "<h3 style='margin:16px 0 10px;'>Aksiyon Detayi</h3>" +
+      (details || "<p class='loading-note'>Gorev bulunamadi.</p>");
+    return;
+  }
+
+  if (type === "serp-snippet") {
+    const score = Number(data.ctr_score || 0);
+    const grade = data.grade || "-";
+    const preview = data.preview || {};
+    const tips = (data.suggestions || []).map(tip => "<li>" + escapeHtml(tip) + "</li>").join("");
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>SERP Snippet Onizleme</h3>" +
+      "<div style='display:flex; align-items:center; gap:10px; margin-bottom:10px;'>" +
+      "<span class='score-pill'>CTR " + escapeHtml(String(score)) + "</span>" +
+      "<span class='loading-note'>Skor Seviyesi: <strong>" + escapeHtml(grade) + "</strong></span>" +
+      "</div>" +
+      "<div class='serp-preview'>" +
+      "<div class='serp-url'>" + escapeHtml(preview.display_url || "-") + "</div>" +
+      "<div class='serp-title'>" + escapeHtml(preview.title || "-") + "</div>" +
+      "<div class='serp-desc'>" + escapeHtml(preview.meta_description || "-") + "</div>" +
+      "</div>" +
+      "<h3 style='margin:16px 0 10px;'>CTR Iyilestirme Onerileri</h3>" +
+      "<ul class='list-clean'>" + (tips || "<li>Ek oneriniz yok, snippet dengeli gorunuyor.</li>") + "</ul>";
+    return;
+  }
+
+  if (type === "intent-clusters") {
+    const clusters = data.clusters || [];
+    const bar = clusters.map(c => {
+      const w = Math.max(2, Number(c.keyword_share_pct || 0));
+      return "<div title='" + escapeHtml(c.label || "-") + " %" + escapeHtml(String(c.keyword_share_pct || 0)) + "' style='height:16px;width:" + w + "%;background:" + escapeHtml(c.color || "#94a3b8") + ";'></div>";
+    }).join("");
+    const rows = clusters.map(c => [
+      c.label || "-",
+      "%" + (c.keyword_share_pct || 0),
+      n(c.keyword_count || 0, 0),
+      n(c.traffic_clicks || 0, 0),
+      (c.examples || []).slice(0, 2).join(", ")
+    ]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Amaca Gore Anahtar Kelimeler</h3>" +
+      "<div style='display:flex; width:100%; border-radius:8px; overflow:hidden; border:1px solid #dbe3ee; margin:0 0 12px;'>" + bar + "</div>" +
+      renderKeyValueGrid([
+        { k: "Toplam Keyword", v: n(data.total_keywords || 0, 0) },
+        { k: "Toplam Trafik (Clicks)", v: n(data.total_clicks || 0, 0) }
+      ]) +
+      renderSimpleTable(["Amac", "Anahtar Kelime Payi", "Anahtar Kelime", "Trafik", "Ornek"], rows);
+    return;
+  }
+
+  if (type === "revision-suggestions") {
+    const rows = (data.items || []).map(i => [
+      i.priority || "-",
+      i.page || "-",
+      n(i.priority_score || 0, 2),
+      n(((i.metrics || {}).impressions || 0), 0),
+      ((i.metrics || {}).ctr_pct || 0) + "%",
+      ((i.reasons || [])[0] || "-")
+    ]);
+    const detail = (data.items || []).slice(0, 8).map(i =>
+      "<div class='alert-card " + (i.priority === "High" ? "critical" : (i.priority === "Medium" ? "warning" : "info")) + "'>" +
+      "<strong>" + escapeHtml(i.page || "-") + " | " + escapeHtml(i.priority || "-") + " (" + escapeHtml(String(i.priority_score || 0)) + ")</strong>" +
+      "<p><strong>Neden:</strong> " + escapeHtml((i.reasons || []).join(" | ")) + "</p>" +
+      "<p><strong>Aksiyon:</strong> " + escapeHtml((i.actions || []).join(" | ")) + "</p>" +
+      "</div>"
+    ).join("");
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Sayfa Bazli Icerik Revizyon Onerileri</h3>" +
+      renderKeyValueGrid([
+        { k: "Site CTR Ort.", v: (data.site_ctr_pct || 0) + "%" },
+        { k: "Aday Sayfa", v: n((data.items || []).length, 0) }
+      ]) +
+      renderSimpleTable(["Oncelik", "Sayfa", "Skor", "Impressions", "CTR", "Ana Neden"], rows) +
+      "<h3 style='margin:16px 0 10px;'>Aksiyon Detayi</h3>" +
+      (detail || "<p class='loading-note'>Revizyon onerisi bulunamadi.</p>");
+    return;
+  }
+
+  if (type === "crawl") {
+    const results = data.results || [];
+    const bad = results.filter(r => (r.issues || []).length > 0).length;
+    const rows = results.map(r => [
+      r.url || "-",
+      r.status_code || "-",
+      r.ok ? "OK" : "Sorunlu",
+      (r.issues || []).join(" | ")
+    ]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Teknik Crawl Sonucu</h3>" +
+      renderKeyValueGrid([
+        { k: "Taranan URL", v: n(data.crawled || 0, 0) },
+        { k: "Sorunlu URL", v: n(bad, 0) }
+      ]) +
+      renderSimpleTable(["URL", "HTTP", "Durum", "Sorunlar"], rows);
+    return;
+  }
+
+  if (type === "internal") {
+    const rows = (data.suggestions || []).slice(0, 20).map(s => [
+      s.from_page || "-", s.to_page || "-", s.suggested_anchor || "-"
+    ]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Internal Link Onerileri</h3>" +
+      renderKeyValueGrid([{ k: "Toplam Oneri", v: n(data.count || 0, 0) }]) +
+      renderSimpleTable(["From", "To", "Anchor"], rows);
+    return;
+  }
+
+  if (type === "segment") {
+    const seg = data.segments || {};
+    const rows = (data.device_breakdown || []).map(d => [d.device, d.clicks, d.impressions, (d.ctr_pct || 0) + "%"]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Segment Raporu</h3>" +
+      renderKeyValueGrid([
+        { k: "Branded Clicks", v: n((seg.branded || {}).clicks || 0, 0) },
+        { k: "Non-Branded Clicks", v: n((seg.non_branded || {}).clicks || 0, 0) }
+      ]) +
+      renderSimpleTable(["Device", "Clicks", "Impressions", "CTR"], rows);
+    return;
+  }
+
+  if (type === "opportunity-score") {
+    const rows = (data.items || []).map(i => [
+      i.priority || "-",
+      i.page || "-",
+      n(i.opportunity_score || 0, 2),
+      n(i.impressions || 0, 0),
+      (i.ctr_pct || 0) + "%",
+      (i.conversion_rate_pct || 0) + "%"
+    ]);
+    const bm = data.benchmarks || {};
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Sayfa Oncelik Skoru</h3>" +
+      renderKeyValueGrid([
+        { k: "GA4 Property", v: data.ga4_property_id || "-" },
+        { k: "Secim Modu", v: data.ga4_resolution_mode || "-" },
+        { k: "Toplam Sayfa", v: n(data.count || 0, 0) },
+        { k: "Ortalama CTR", v: (bm.avg_ctr_pct || 0) + "%" },
+        { k: "Ortalama Donusum", v: (bm.avg_conversion_rate_pct || 0) + "%" }
+      ]) +
+      renderSimpleTable(["Oncelik", "Sayfa", "Skor", "Impressions", "CTR", "Donusum"], rows);
+    return;
+  }
+
+  if (type === "channel-compare") {
+    const rows = (data.channels || []).map(c => [
+      c.channel || "-",
+      n(c.sessions || 0, 0),
+      (c.session_share_pct || 0) + "%",
+      (c.engagement_rate_pct || 0) + "%",
+      (c.conversion_rate_pct || 0) + "%",
+      n(c.revenue || 0, 2)
+    ]);
+    const sourceRows = (data.top_sources || []).map(s => [
+      s.source_medium || "-",
+      n(s.sessions || 0, 0),
+      (s.session_share_pct || 0) + "%",
+      (s.engagement_rate_pct || 0) + "%",
+      (s.conversion_rate_pct || 0) + "%",
+      n(s.revenue || 0, 2)
+    ]);
+    const tt = data.totals || {};
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Kanal Kiyaslama</h3>" +
+      renderKeyValueGrid([
+        { k: "GA4 Property", v: data.ga4_property_id || "-" },
+        { k: "Secim Modu", v: data.ga4_resolution_mode || "-" },
+        { k: "Toplam Session", v: n(tt.sessions || 0, 0) },
+        { k: "Toplam Conversion", v: n(tt.conversions || 0, 2) },
+        { k: "Toplam Revenue", v: n(tt.revenue || 0, 2) }
+      ]) +
+      renderSimpleTable(["Kanal", "Session", "Pay", "Engagement", "Conversion", "Revenue"], rows) +
+      "<h3 style='margin:16px 0 10px;'>Oturum Kaynaklari</h3>" +
+      renderSimpleTable(["Kaynak / Arac", "Session", "Pay", "Engagement", "Conversion", "Revenue"], sourceRows);
+    return;
+  }
+
+  if (type === "change-list") {
+    const rows = (data.items || []).map(i => [i.change_type || "-", i.title || "-", (i.changed_at || "").replace("T", " ").slice(0, 16)]);
+    out.innerHTML = "<h3 style='margin:0 0 10px;'>SEO Change Log</h3>" + renderSimpleTable(["Tur", "Baslik", "Tarih"], rows);
+    return;
+  }
+
+  if (type === "ctr-list") {
+    const tests = data.tests || [];
+    const rows = tests.map(t => [
+      t.id || "-",
+      t.variant_name || "-",
+      t.status || "-",
+      (t.baseline_ctr_pct ?? "-"),
+      (t.latest_ctr_pct ?? "-"),
+      (t.ctr_uplift_pct ?? "-") + "%"
+    ]);
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>CTR Testleri</h3>" +
+      renderKeyValueGrid([
+        { k: "Toplam Test", v: n(tests.length, 0) },
+        { k: "Aktif Test", v: n(tests.filter(t => (t.status || '') === 'running').length, 0) }
+      ]) +
+      renderSimpleTable(["Test ID", "Variant", "Durum", "Baseline CTR", "Latest CTR", "Uplift"], rows);
+    hydrateCtrTestSelect(tests);
+    return;
+  }
+
+  if (type === "kpi-dashboard") {
+    const rows = (data.goals || []).map(g => [g.metric, g.current_value, g.target_value, (g.progress_pct || 0) + "%", g.is_risk ? "Risk" : "Yolunda"]);
+    out.innerHTML = "<h3 style='margin:0 0 10px;'>KPI Paneli</h3>" + renderSimpleTable(["Metrik", "Mevcut", "Hedef", "Ilerleme", "Durum"], rows);
+    return;
+  }
+
+  if (type === "pdf-list") {
+    const rows = (data.templates || []).map(t => [t.id, t.name, t.theme, (t.include_sections || []).join(", ")]);
+    out.innerHTML = "<h3 style='margin:0 0 10px;'>PDF Sablon Listesi</h3>" + renderSimpleTable(["ID", "Ad", "Tema", "Bolumler"], rows);
+    return;
+  }
+
+  if (type === "watch-check") {
+    const s = data.summary || {};
+    out.innerHTML =
+      "<h3 style='margin:0 0 10px;'>Backlink Watchlist Sonucu</h3>" +
+      renderKeyValueGrid([
+        { k: "Yeni Backlink", v: n(s.new_count || 0, 0) },
+        { k: "Kayip Backlink", v: n(s.lost_count || 0, 0) },
+        { k: "Toxic Orani", v: (s.toxic_ratio_pct || 0) + "%" }
+      ]);
+    return;
+  }
+
+  // create/update gibi basit yanitlar
+  const entries = Object.entries(data).slice(0, 8).map(([k, v]) => ({
+    k: k,
+    v: (typeof v === "object" ? JSON.stringify(v) : String(v))
+  }));
+  out.innerHTML = "<h3 style='margin:0 0 10px;'>Islem Sonucu</h3>" + renderKeyValueGrid(entries);
+}
+
+function apiGet(url) {
+  return fetch(url).then(async res => {
+    const txt = await res.text();
+    let data = {};
+    try { data = txt ? JSON.parse(txt) : {}; } catch (_) { data = { raw: txt }; }
+    if (!res.ok) {
+      throw new Error((data && data.detail) ? JSON.stringify(data.detail) : ("Istek basarisiz (HTTP " + res.status + ")"));
+    }
+    return data;
+  });
+}
+
+function apiPost(url, payload) {
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: payload ? JSON.stringify(payload) : null
+  }).then(async res => {
+    const txt = await res.text();
+    let data = {};
+    try { data = txt ? JSON.parse(txt) : {}; } catch (_) { data = { raw: txt }; }
+    if (!res.ok) {
+      throw new Error((data && data.detail) ? JSON.stringify(data.detail) : ("Istek basarisiz (HTTP " + res.status + ")"));
+    }
+    return data;
+  });
+}
+
+function updateSelectedSiteId(siteId) {
+  document.getElementById("selectedSiteId").textContent = siteId || "-";
+  if (window.GSCRadarHeader && typeof window.GSCRadarHeader.setSiteId === "function") {
+    window.GSCRadarHeader.setSiteId(siteId || "");
+  }
+}
+
+function copySiteId() {
+  const siteId = document.getElementById("selectedSiteId").textContent.trim();
+  if (!siteId || siteId === "-") {
+    alert(t("common.no_site_id_to_copy", "Kopyalanacak site id yok"));
+    return;
+  }
+  navigator.clipboard.writeText(siteId)
+    .then(() => alert(t("common.site_id_copied", "Site ID kopyalandi")))
+    .catch(() => alert(t("common.copy_failed", "Kopyalama basarisiz")));
+}
+
+function getStatusChip(status) {
+  if (!status) return "-";
+  return '<span class="status-chip ' + status + '">' + status + "</span>";
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if (btn) btn.classList.add("active");
+  if (id === "growth" && currentSiteId) {
+    listCtrTests();
+  }
+}
+
+function runHealth() {
+  if (!currentSiteId) {
+    alert(t("common.site_not_selected", "Site secilmedi"));
+    return;
+  }
+  const days = document.getElementById("range").value;
+  fetch("/sites/" + currentSiteId + "/health/run?days=" + days, { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.alerts_detected > 0) {
+        alert(t("advanced.new_alerts_detected", "{{count}} yeni uyari tespit edildi.", { count: data.alerts_detected }));
+      }
+      loadAllData();
+    })
+    .catch(err => {
+      console.error(err);
+      alert(t("health.run_error", "Saglik hesaplanirken hata olustu"));
+    });
+}
+
+function loadAllData() {
+  if (!currentSiteId) return;
+  const days = document.getElementById("range").value;
+  loadOverview(days);
+  loadTimeline(days);
+  loadTrend(days);
+  loadAlerts(days);
+}
+
+function loadOverview(days) {
+  fetch("/sites/" + currentSiteId + "/overview?days=" + days)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("overviewScore").textContent =
+        data.current_health.score ? data.current_health.score.toFixed(1) : "-";
+      document.getElementById("overviewStatus").innerHTML =
+        data.current_health.status ? getStatusChip(data.current_health.status) : "";
+      document.getElementById("overviewClicks").textContent = data.metrics.clicks.toLocaleString();
+      document.getElementById("overviewImpressions").textContent = data.metrics.impressions.toLocaleString();
+      document.getElementById("overviewCTR").textContent = (data.metrics.ctr * 100).toFixed(2) + "%";
+      document.getElementById("overviewCritical").textContent = data.alerts.critical;
+      document.getElementById("overviewWarnings").textContent = data.alerts.warning;
+      updateMobileQuickSummary({
+        score: data.current_health.score,
+        critical: data.alerts.critical,
+        warning: data.alerts.warning
+      });
+    });
+}
+
+function loadTimeline(days) {
+  fetch("/sites/" + currentSiteId + "/health/timeline?days=" + days)
+    .then(res => res.json())
+    .then(data => {
+      renderTimeline(data.points || []);
+      renderChart(data.points || []);
+    });
+}
+
+function loadTrend(days) {
+  fetch("/sites/" + currentSiteId + "/trend?days=" + days)
+    .then(res => res.json())
+    .then(data => {
+      const map = {
+        improving: "Yukselis",
+        declining: "Dususte",
+        stable: "Stabil",
+        insufficient_data: "Yetersiz Veri"
+      };
+      const trendLabel = map[data.trend] || "Bilinmiyor";
+      document.getElementById("trendStatus").textContent = trendLabel;
+      if (data.data_points >= 2) {
+        document.getElementById("trendDetails").innerHTML =
+          "<strong>Degisim:</strong> " + (data.change_pct > 0 ? "+" : "") + data.change_pct + "%<br>" +
+          "<strong>Ilk Skor:</strong> " + data.first_score + "<br>" +
+          "<strong>Son Skor:</strong> " + data.last_score + "<br>" +
+          "<strong>Veri Noktasi:</strong> " + data.data_points;
+      } else {
+        document.getElementById("trendDetails").textContent = "Egilim analizi icin en az 2 anlik goruntu gerekir.";
+      }
+    });
+}
+
+function loadAlerts(days) {
+  fetch("/sites/" + currentSiteId + "/alerts?days=" + days)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("alertsList");
+      const criticalCount = (data.alerts || []).filter(a => Number(a.severity || 0) === 3).length;
+      const warningCount = (data.alerts || []).filter(a => Number(a.severity || 0) === 2).length;
+      updateMobileQuickSummary({ critical: criticalCount, warning: warningCount });
+      if (data.total_alerts === 0) {
+        container.innerHTML = "<p class='loading-note'>Bu donemde uyari yok.</p>";
+        return;
+      }
+      container.innerHTML = data.alerts.map(alert => {
+        const cls = alert.severity === 1 ? "info" : (alert.severity === 2 ? "warning" : "critical");
+        return (
+          '<div class="alert-card ' + cls + '">' +
+            "<strong>" + alert.severity_label + ": " + alert.type + "</strong>" +
+            "<p><strong>Metrik:</strong> " + alert.metric + "</p>" +
+            "<p><strong>Degisim:</strong> " + alert.change_pct.toFixed(1) + "%</p>" +
+            "<p><strong>Aciklama:</strong> " + alert.reason + "</p>" +
+            "<p><strong>Oneri:</strong> " + alert.recommendation + "</p>" +
+            "<p class='loading-note'>" + new Date(alert.created_at).toLocaleString("tr-TR") + "</p>" +
+          "</div>"
+        );
+      }).join("");
+    });
+}
+
+function renderTimeline(points) {
+  const ul = document.getElementById("timelineList");
+  ul.innerHTML = "";
+  points.forEach(p => {
+    const li = document.createElement("li");
+    li.className = "timeline-item";
+    li.innerHTML =
+      "<div><strong>" + p.date.split("T")[0] + "</strong></div>" +
+      '<div class="timeline-meta">' +
+      "<span>Skor: <strong>" + p.score + "</strong></span>" +
+      getStatusChip(p.status) +
+      "<span>Uyarilar: " + (p.alerts || 0) + "</span>" +
+      "</div>";
+    ul.appendChild(li);
+  });
+}
+
+function renderChart(points) {
+  const ctx = document.getElementById("healthChart").getContext("2d");
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: points.map(p => p.date.split("T")[0]),
+      datasets: [{
+        label: "Saglik Skoru",
+        data: points.map(p => p.score),
+        borderColor: "#0f4c81",
+        backgroundColor: "rgba(15, 76, 129, 0.12)",
+        borderWidth: 2,
+        tension: 0.25,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, max: 100 } }
+    }
+  });
+}
+
+function loadCannibalization() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const days = document.getElementById("range").value;
+  apiGet("/sites/" + currentSiteId + "/keywords/cannibalization?days=" + days)
+    .then(data => renderGrowthResult("cannibalization", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadSmartAlerts() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const days = document.getElementById("range").value;
+  apiGet("/sites/" + currentSiteId + "/alerts/smart?days=" + days)
+    .then(data => renderGrowthResult("smart-alerts", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadWhatChanged() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const selectedDays = Number(document.getElementById("range").value || 7);
+  const days = Math.max(3, selectedDays);
+  apiGet("/sites/" + currentSiteId + "/growth/what-changed?days=" + days + "&top_pages=10")
+    .then(data => renderGrowthResult("what-changed", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadAnomalyCauseScore() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const selectedDays = Number(document.getElementById("range").value || 14);
+  const days = Math.max(7, selectedDays);
+  apiGet("/sites/" + currentSiteId + "/growth/anomaly-cause-score?days=" + days + "&top_pages=10")
+    .then(data => renderGrowthResult("anomaly-cause-score", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadRecoveryPlan() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const selectedDays = Number(document.getElementById("range").value || 14);
+  const days = Math.max(7, selectedDays);
+  const out = document.getElementById("growthOutput");
+  if (out) {
+    out.innerHTML =
+      "<div class='panel'>" +
+      "<h3 style='margin:0 0 8px;'>SEO Kurtarma Plani hazirlaniyor...</h3>" +
+      "<p class='loading-note' style='margin:0;'>Veriler analiz ediliyor, lutfen bekleyin.</p>" +
+      "</div>";
+  }
+  apiGet("/sites/" + currentSiteId + "/growth/recovery-plan?days=" + days + "&top_pages=8")
+    .then(data => renderGrowthResult("recovery-plan", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function runSerpSnippetScore() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const title = document.getElementById("serpTitle").value.trim();
+  if (!title) {
+    return alert("Lutfen en az title girin.");
+  }
+  const payload = {
+    keyword: document.getElementById("serpKeyword").value.trim(),
+    title: title,
+    meta_description: document.getElementById("serpMeta").value.trim(),
+    page_url: document.getElementById("serpUrl").value.trim()
+  };
+  apiPost("/sites/" + currentSiteId + "/growth/serp-snippet-score", payload)
+    .then(data => renderGrowthResult("serp-snippet", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadKeywordIntentClusters() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  apiGet("/sites/" + currentSiteId + "/keywords/intent-clusters?limit=1200")
+    .then(data => renderGrowthResult("intent-clusters", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadContentRevisionSuggestions() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const selectedDays = Number(document.getElementById("range").value || 7);
+  const days = Math.max(7, selectedDays);
+  apiGet("/sites/" + currentSiteId + "/content/revision-suggestions?days=" + days + "&top_pages=20")
+    .then(data => renderGrowthResult("revision-suggestions", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function runCrawl() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const raw = document.getElementById("crawlUrls").value.trim();
+  const urls = raw ? raw.split(",").map(x => x.trim()).filter(Boolean) : [];
+  apiPost("/sites/" + currentSiteId + "/technical/crawl", { urls: urls, timeout_sec: 12 })
+    .then(data => renderGrowthResult("crawl", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadInternalLinks() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const days = document.getElementById("range").value;
+  apiGet("/sites/" + currentSiteId + "/internal-link/suggestions?days=" + days)
+    .then(data => renderGrowthResult("internal", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadSegmentReport() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const days = document.getElementById("range").value;
+  const brand = encodeURIComponent(document.getElementById("brandTerms").value.trim());
+  apiGet("/sites/" + currentSiteId + "/segments/report?days=" + days + "&brand_terms=" + brand)
+    .then(data => renderGrowthResult("segment", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function getGa4PropertyId() {
+  const raw = document.getElementById("ga4PropertyId").value.trim();
+  return raw.replace("properties/", "");
+}
+
+function loadOpportunityScore() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const ga4 = getGa4PropertyId();
+  const days = document.getElementById("range").value;
+  let url = "/sites/" + currentSiteId + "/growth/opportunity-score?days=" + days;
+  if (ga4) url += "&ga4_property_id=" + encodeURIComponent(ga4);
+  apiGet(url)
+    .then(data => renderGrowthResult("opportunity-score", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadChannelCompare() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const ga4 = getGa4PropertyId();
+  const days = document.getElementById("range").value;
+  let url = "/sites/" + currentSiteId + "/growth/channel-compare?days=" + days;
+  if (ga4) url += "&ga4_property_id=" + encodeURIComponent(ga4);
+  apiGet(url)
+    .then(data => renderGrowthResult("channel-compare", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function addChangeLog() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const changeType = document.getElementById("changeType").value.trim() || "content";
+  const title = document.getElementById("changeTitle").value.trim() || "Degisiklik";
+  apiPost("/sites/" + currentSiteId + "/seo/change-log", {
+    change_type: changeType, title: title
+  }).then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function listChangeLogs() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const days = document.getElementById("range").value;
+  apiGet("/sites/" + currentSiteId + "/seo/change-log?days=" + days)
+    .then(data => renderGrowthResult("change-list", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function createCtrTest() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const page = document.getElementById("ctrPage").value.trim();
+  const variant = document.getElementById("ctrVariant").value.trim() || "Variant A";
+  const hypothesis = document.getElementById("ctrHypothesis").value.trim();
+  if (!page) return alert(t("advanced.enter_page_url", "Page URL girin"));
+  apiPost("/sites/" + currentSiteId + "/ctr-tests", {
+    page_url: page, variant_name: variant, hypothesis: hypothesis
+  }).then(data => renderGrowthResult("default", data))
+    .then(() => listCtrTests())
+    .catch(e => showGrowthError(e.message));
+}
+
+function snapshotCtrTest() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const testId = document.getElementById("ctrTestSelect").value.trim();
+  if (!testId) return alert(t("advanced.select_test", "Test secin"));
+  const start = document.getElementById("ctrStartDate").value;
+  const end = document.getElementById("ctrEndDate").value;
+  if (!start || !end) return alert(t("advanced.select_date_range", "Tarih araligi secin"));
+  if (start > end) return alert(t("advanced.invalid_date_range", "Baslangic tarihi bitis tarihinden buyuk olamaz"));
+  apiPost("/sites/" + currentSiteId + "/ctr-tests/" + encodeURIComponent(testId) + "/snapshot", {
+    start_date: start, end_date: end
+  }).then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function listCtrTests() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  apiGet("/sites/" + currentSiteId + "/ctr-tests")
+    .then(data => renderGrowthResult("ctr-list", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function hydrateCtrTestSelect(tests) {
+  const sel = document.getElementById("ctrTestSelect");
+  const prev = sel.value;
+  sel.innerHTML = "<option value=''>Test seciniz</option>";
+  (tests || []).forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t.id;
+    opt.textContent = (t.variant_name || t.id) + " | " + (t.status || "-") + " | uplift " + ((t.ctr_uplift_pct ?? "-") + "%");
+    sel.appendChild(opt);
+  });
+  if (prev) sel.value = prev;
+}
+
+function saveWatchlist() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const webhook = document.getElementById("watchWebhook").value.trim();
+  apiPost("/sites/" + currentSiteId + "/backlinks/watchlist", {
+    webhook_url: webhook, notify_new: true, notify_lost: true, notify_toxic: true, enabled: true
+  }).then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function checkWatchlist() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  apiPost("/sites/" + currentSiteId + "/backlinks/watchlist/check", {})
+    .then(data => renderGrowthResult("watch-check", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function createGoal() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const metric = document.getElementById("kpiMetric").value.trim() || "clicks";
+  const target = parseFloat(document.getElementById("kpiTarget").value || "0");
+  if (!target || target <= 0) return alert(t("advanced.enter_target_value", "Hedef deger girin"));
+  const now = new Date();
+  const end = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const fmt = d => d.toISOString().slice(0, 10);
+  apiPost("/sites/" + currentSiteId + "/kpi/goals", {
+    metric: metric, target_value: target, start_date: fmt(now), end_date: fmt(end), note: ""
+  }).then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function loadKpiDashboard() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  apiGet("/sites/" + currentSiteId + "/kpi/dashboard")
+    .then(data => renderGrowthResult("kpi-dashboard", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function createPdfTemplate() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const name = document.getElementById("pdfTemplateName").value.trim() || "Sablon";
+  const theme = document.getElementById("pdfTheme").value || "agency";
+  apiPost("/sites/" + currentSiteId + "/pdf/templates", {
+    name: name, theme: theme, include_sections: ["overview","alerts","keywords","recommendations"]
+  }).then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function listPdfTemplates() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  apiGet("/sites/" + currentSiteId + "/pdf/templates")
+    .then(data => renderGrowthResult("pdf-list", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function openPdfReport() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const tpl = document.getElementById("pdfTemplateId").value.trim();
+  const url = "/sites/" + currentSiteId + "/pdf/report?format=html" + (tpl ? ("&template_id=" + encodeURIComponent(tpl)) : "");
+  window.open(url, "_blank");
+}
+
+function saveDailyJob() {
+  if (!currentSiteId) return alert(t("common.site_not_selected", "Site secilmedi"));
+  const hour = parseInt(document.getElementById("jobHour").value || "3", 10);
+  apiPost("/sites/" + currentSiteId + "/jobs/daily-health/config", {
+    enabled: true, run_hour_utc: isNaN(hour) ? 3 : hour
+  }).then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function runDailyJobs() {
+  apiPost("/jobs/health/daily/run", {})
+    .then(data => renderGrowthResult("default", data))
+    .catch(e => showGrowthError(e.message));
+}
+
+function initCtrDateDefaults() {
+  const today = new Date();
+  const end = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const start = new Date(end.getTime() - 6 * 24 * 60 * 60 * 1000);
+  const fmt = d => d.toISOString().slice(0, 10);
+  const s = document.getElementById("ctrStartDate");
+  const e = document.getElementById("ctrEndDate");
+  if (s && !s.value) s.value = fmt(start);
+  if (e && !e.value) e.value = fmt(end);
+}
+
+initMetricCardDragDrop();
+renderDashboardMetricToggles();
+applyDashboardPreferences();
+setMobileQuickActionText(latestMobileAction);
+initGrowthToolsExperience();
+
+fetch("/sites")
+  .then(res => res.json())
+  .then(sites => {
+    const select = document.getElementById("siteSelect");
+    sites.forEach(site => {
+      const option = document.createElement("option");
+      option.value = site.id;
+      option.textContent = site.domain;
+      select.appendChild(option);
+    });
+    const params = new URLSearchParams(window.location.search);
+    const activeSite = params.get("site");
+    if (activeSite) {
+      select.value = activeSite;
+      currentSiteId = activeSite;
+      updateSelectedSiteId(activeSite);
+      syncGrowthCardFavoriteStates();
+      renderGrowthFavoriteStrip();
+      applyGrowthToolFilters();
+      loadDashboardPreferences();
+      loadAllData();
+    } else {
+      dashboardPreferences = normalizeDashboardPreferences({});
+      applyDashboardPreferences();
+      renderDashboardMetricToggles();
+      updateSelectedSiteId("");
+      syncGrowthCardFavoriteStates();
+      renderGrowthFavoriteStrip();
+      applyGrowthToolFilters();
+    }
+  });
+
+document.getElementById("siteSelect").addEventListener("change", e => {
+  currentSiteId = e.target.value;
+  updateSelectedSiteId(currentSiteId || "");
+  syncGrowthCardFavoriteStates();
+  renderGrowthFavoriteStrip();
+  applyGrowthToolFilters();
+  if (!currentSiteId) {
+    history.pushState({}, "", window.location.pathname);
+    dashboardPreferences = normalizeDashboardPreferences({});
+    applyDashboardPreferences();
+    renderDashboardMetricToggles();
+    return;
+  }
+  history.pushState({}, "", "?site=" + currentSiteId);
+  loadDashboardPreferences();
+  loadAllData();
+});
+
+document.getElementById("range").addEventListener("change", () => {
+  if (currentSiteId) loadAllData();
+});
+
+initCtrDateDefaults();
+</script>
+
+<script src="/static/header.js"></script>
+</body>
+</html>

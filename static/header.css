@@ -1,0 +1,249 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.app-header-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.app-brand {
+  color: #f8fafc;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.app-nav-dropdown {
+  position: relative;
+}
+
+.app-nav-dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+.app-nav-link {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.app-nav-toggle {
+  border: 1px solid transparent;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-nav-caret {
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.9;
+  transition: transform 0.18s ease;
+}
+
+.app-nav-link:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.app-nav-link.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.app-nav-dropdown.active .app-nav-toggle {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.app-nav-dropdown:hover .app-nav-caret,
+.app-nav-dropdown:focus-within .app-nav-caret,
+.app-nav-dropdown.active .app-nav-caret,
+.app-nav-dropdown.open .app-nav-caret {
+  transform: rotate(180deg);
+}
+
+.app-submenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 210px;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  padding: 6px;
+  display: none;
+  z-index: 1200;
+}
+
+.app-nav-dropdown:hover .app-submenu,
+.app-nav-dropdown:focus-within .app-submenu,
+.app-nav-dropdown.open .app-submenu {
+  display: block;
+}
+
+.app-nav-dropdown.open .app-nav-toggle {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.app-submenu-link {
+  display: block;
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.app-submenu-link:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.app-submenu-link.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+body.has-app-header {
+  padding-top: 0;
+}
+
+.global-footer {
+  margin: 42px auto 10px;
+  max-width: 1200px;
+  border: 1px solid #dbe3ee;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: 22px;
+}
+
+.global-footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 16px;
+}
+
+.global-footer-brand h4 {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+}
+
+.global-footer-brand p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.global-footer-col h5 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #0f4c81;
+}
+
+.global-footer-col a {
+  display: block;
+  color: #334155;
+  text-decoration: none;
+  margin-bottom: 7px;
+}
+
+.global-footer-col a:hover {
+  color: #0f4c81;
+}
+
+.global-footer-bottom {
+  border-top: 1px solid #dbe3ee;
+  margin-top: 16px;
+  padding-top: 12px;
+  color: #64748b;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.lang-switcher {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1100;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.lang-btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.lang-btn.active {
+  background: #0f4c81;
+  border-color: #0f4c81;
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .lang-switcher {
+    right: 10px;
+    bottom: 10px;
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .lang-btn {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .global-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

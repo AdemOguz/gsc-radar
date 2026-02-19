@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Secimi - GSC Radar</title>
+<meta name="description" content="GSC Radar icin Search Console property secimi ve site aktivasyonu ekrani.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="/static/site-select.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GSC Radar - Site Secimi">
+<meta property="og:description" content="Search Console property secerek siteyi hizli sekilde aktive edin.">
+<meta property="og:url" content="/static/site-select.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GSC Radar - Site Secimi">
+<meta name="twitter:description" content="Search Console property secimi ve aktivasyon ekrani.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<style>
+.list-shell {
+  margin-top: 12px;
+}
+
+.site-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.site-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brand);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.site-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 76, 129, 0.12);
+}
+
+.site-card .name {
+  font-weight: 700;
+}
+
+.site-card .meta {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.empty-state {
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+<div id="appHeader"></div>
+<div class="page">
+  <section class="hero">
+    <h2 class="hero-title" data-i18n="site.hero_title">Google Search Console Sitelerin</h2>
+    <p class="hero-subtitle" data-i18n="site.hero_subtitle">Analiz etmek istedigin property seç; seçim yapinca site otomatik olusturulur.</p>
+  </section>
+
+  <section class="panel list-shell">
+    <ul id="siteList" class="site-list">
+      <li class="empty-state" data-i18n="site.loading">Yukleniyor...</li>
+    </ul>
+  </section>
+</div>
+
+<script src="/static/header.js"></script>
+<script>
+function t(key, fallback, params) {
+  if (window.GSCRadarI18n && typeof window.GSCRadarI18n.t === "function") {
+    return window.GSCRadarI18n.t(key, fallback, params);
+  }
+  return fallback || key;
+}
+
+fetch("/gsc/sites")
+  .then(async res => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.detail || t("site.fetch_error", "GSC site listesi alinamadi"));
+    return data;
+  })
+  .then(data => {
+    const list = document.getElementById("siteList");
+    list.innerHTML = "";
+
+    const allowedPermissions = new Set(["siteOwner", "siteFullUser", "siteRestrictedUser"]);
+    const sites = (data.siteEntry || []).filter(site =>
+      allowedPermissions.has(String(site && site.permissionLevel ? site.permissionLevel : ""))
+    );
+    if (sites.length === 0) {
+      list.innerHTML = "<li class='empty-state'>" + t("site.empty", "Hic site bulunamadi") + "</li>";
+      return;
+    }
+
+    sites.forEach(site => {
+      const propertyUrl = site.siteUrl;
+      const label = propertyUrl.startsWith("sc-domain:")
+        ? "DOMAIN: " + propertyUrl.replace("sc-domain:", "")
+        : propertyUrl;
+
+      const li = document.createElement("li");
+      li.className = "site-card";
+      li.innerHTML =
+        '<div class="name">' + label + "</div>" +
+        '<div class="meta">' + t("site.permission", "Yetki") + ': ' + site.permissionLevel + "</div>";
+      li.dataset.gscPropertyUrl = propertyUrl;
+      li.addEventListener("click", handleSiteClick);
+      list.appendChild(li);
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("siteList").innerHTML =
+      "<li class='empty-state'>" + t("common.error_prefix", "Hata:") + " " + err.message + "</li>";
+  });
+
+function handleSiteClick(e) {
+  const gscPropertyUrl = e.currentTarget.dataset.gscPropertyUrl;
+
+  fetch("/sites/from-gsc", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ gsc_property_url: gscPropertyUrl })
+  })
+    .then(async res => {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.detail || t("site.create_error", "Site olusturulamadi"));
+      return data;
+    })
+    .then(data => {
+      if (!data.site_id) throw new Error(t("site.missing_id", "API site_id dondurmedi"));
+      window.location.href = "/static/health-dashboard.html?site=" + data.site_id;
+    })
+    .catch(err => {
+      console.error(err);
+      alert(t("site.select_error_prefix", "Site secimi sirasinda hata:") + " " + err.message);
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSC Radar - Kullanim Rehberi</title>
+<meta name="description" content="GSC Radar kullanim rehberi: tum moduller, adim adim senaryolar ve %100 verim icin operasyon plani.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="/static/guide.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<style>
+.guide-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+}
+
+.guide-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #bbd6f3;
+  border-radius: 20px;
+  padding: 28px 24px;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(125, 211, 252, 0.3) 0%, transparent 40%),
+    radial-gradient(circle at 14% 88%, rgba(34, 197, 94, 0.2) 0%, transparent 46%),
+    linear-gradient(135deg, #0f3d73 0%, #15508e 54%, #0f6f84 100%);
+  color: #f8fbff;
+  box-shadow: 0 24px 46px rgba(15, 58, 107, 0.28);
+}
+
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+}
+
+.hero-kicker::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #86efac;
+}
+
+.guide-hero h1 {
+  margin: 12px 0 10px;
+  font-size: clamp(30px, 4.2vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.8px;
+}
+
+.guide-hero p {
+  margin: 0 0 14px;
+  max-width: 860px;
+  color: rgba(245, 250, 255, 0.96);
+  line-height: 1.58;
+}
+
+.hero-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.hero-stat {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+}
+
+.hero-stat strong {
+  display: block;
+  font-size: 20px;
+}
+
+.hero-stat span {
+  font-size: 12px;
+  color: #dbeafe;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hero-actions a {
+  text-decoration: none;
+}
+
+.hero-actions button {
+  margin: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.hero-actions .primary {
+  background: #22c55e;
+  border-color: transparent;
+  box-shadow: 0 10px 22px rgba(34, 197, 94, 0.26);
+}
+
+.hero-actions .ghost {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+}
+
+.guide-intro {
+  border: 1px solid #d6e3f4;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+  padding: 14px;
+}
+
+.progress-wrap {
+  margin-top: 8px;
+  border: 1px solid #d4e1f3;
+  border-radius: 999px;
+  height: 10px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #0f4c81 0%, #1d4ed8 70%, #22c55e 100%);
+  transition: width 0.15s ease;
+}
+
+.guide-layout {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.guide-toc {
+  position: sticky;
+  top: 82px;
+  border: 1px solid #d6e3f4;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.toc-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
+  color: #475569;
+}
+
+.toc-list {
+  display: grid;
+  gap: 6px;
+}
+
+.toc-link {
+  display: block;
+  text-decoration: none;
+  border: 1px solid #dbe5f2;
+  border-radius: 10px;
+  background: #f8fbff;
+  color: #1e3a56;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.toc-link:hover {
+  border-color: #b7d1ed;
+  background: #eff6ff;
+}
+
+.toc-link.active {
+  border-color: rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #1b4f8f 0%, #2569b8 100%);
+  color: #ffffff;
+}
+
+.guide-content {
+  display: grid;
+  gap: 12px;
+}
+
+.guide-section {
+  border: 1px solid #dbe5f2;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 16px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  scroll-margin-top: 92px;
+}
+
+.guide-section h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #0f172a;
+}
+
+.guide-section > p {
+  margin: 0 0 10px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.module-card {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: 12px;
+}
+
+.module-card h3 {
+  margin: 0 0 7px;
+  font-size: 16px;
+}
+
+.module-card p {
+  margin: 0 0 10px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.module-card a {
+  text-decoration: none;
+}
+
+.module-card button {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.feature-group {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfdff;
+  margin-bottom: 10px;
+}
+
+.feature-group h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.feature-group ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+}
+
+.feature-note {
+  margin-top: 8px;
+  border: 1px dashed #bfd4ed;
+  border-radius: 10px;
+  background: #eef6ff;
+  padding: 9px 10px;
+  color: #1f3b56;
+  font-size: 13px;
+}
+
+.scenario-list {
+  display: grid;
+  gap: 10px;
+}
+
+.scenario-item {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.scenario-toggle {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+  color: #0f172a;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.scenario-toggle span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.scenario-body {
+  display: none;
+  padding: 12px;
+}
+
+.scenario-item.open .scenario-body {
+  display: block;
+}
+
+.scenario-item.open .scenario-toggle {
+  background: linear-gradient(135deg, #eff6ff 0%, #e6f1ff 100%);
+}
+
+.scenario-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.scenario-meta div {
+  border: 1px solid #d7e3f2;
+  border-radius: 10px;
+  background: #f8fbff;
+  padding: 8px;
+}
+
+.scenario-meta strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.scenario-meta span {
+  display: block;
+  margin-top: 3px;
+  font-weight: 600;
+}
+
+.scenario-body ol {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  color: #334155;
+}
+
+.decision-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.decision-table th,
+.decision-table td {
+  border-bottom: 1px solid #dbe5f2;
+  text-align: left;
+  padding: 9px 8px;
+  vertical-align: top;
+}
+
+.decision-table thead th {
+  background: #123f67;
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.check-card {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  background: #f8fbff;
+  padding: 10px;
+}
+
+.check-card h3 {
+  margin: 0 0 7px;
+  font-size: 15px;
+}
+
+.check-card ul {
+  margin: 0;
+  padding-left: 17px;
+  display: grid;
+  gap: 5px;
+}
+
+.roadmap {
+  display: grid;
+  gap: 8px;
+}
+
+.roadmap-item {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  padding: 10px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.roadmap-day {
+  border: 1px solid #bfd4ed;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #0f4c81;
+  font-weight: 700;
+  text-align: center;
+  padding: 7px 8px;
+}
+
+.roadmap-item h4 {
+  margin: 0 0 6px;
+}
+
+.roadmap-item p {
+  margin: 0;
+  color: #475569;
+}
+
+.best-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.best-card {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.best-card.good {
+  background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-color: #b7e4c7;
+}
+
+.best-card.risk {
+  background: linear-gradient(180deg, #fff7ed 0%, #fff1f2 100%);
+  border-color: #fecaca;
+}
+
+.best-card h3 {
+  margin: 0 0 7px;
+}
+
+.best-card ul {
+  margin: 0;
+  padding-left: 17px;
+  display: grid;
+  gap: 5px;
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.quick-link {
+  border: 1px solid #dbe5f2;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: 11px;
+}
+
+.quick-link h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.quick-link p {
+  margin: 0 0 8px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.quick-link a {
+  text-decoration: none;
+}
+
+.quick-link button {
+  margin: 0;
+  width: 100%;
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+
+@media (max-width: 1080px) {
+  .guide-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-toc {
+    position: static;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .module-grid,
+  .check-grid,
+  .quick-links {
+    grid-template-columns: 1fr;
+  }
+
+  .best-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 10px;
+  }
+
+  .guide-hero {
+    padding: 22px 16px;
+  }
+
+  .roadmap-item {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div id="appHeader"></div>
+<main class="guide-shell">
+  <section class="guide-hero">
+    <div class="hero-kicker">Master Guide 2026</div>
+    <h1>GSC Radar Tam Kullanim Rehberi</h1>
+    <p>
+      Bu sayfa, GSC Radar'i sadece "kullanmak" icin degil, sistemden gercek etki almak icin hazirlandi.
+      Tum modulleri, adim adim kullanim senaryolarini ve operasyon rutinlerini tek yerde bulacaksin.
+      Rehberi bitirdiginde bir SEO operasyonunu baslangictan rapora kadar tek akisla yurutebilir seviyeye gelirsin.
+    </p>
+    <div class="hero-stat-row">
+      <div class="hero-stat"><strong>15+</strong><span>aktif modul ve arac</span></div>
+      <div class="hero-stat"><strong>6 kritik</strong><span>gercek hayattan senaryo</span></div>
+      <div class="hero-stat"><strong>7 gun</strong><span>hizli ogrenme plani</span></div>
+      <div class="hero-stat"><strong>1 panel</strong><span>analiz + aksiyon + rapor</span></div>
+    </div>
+    <div class="hero-actions">
+      <a data-base-href="/static/site-select.html" href="/static/site-select.html"><button type="button" class="primary">Siteyi Aktif Et</button></a>
+      <a data-base-href="/static/advanced-dashboard.html" href="/static/advanced-dashboard.html"><button type="button" class="ghost">Growth Tools Ac</button></a>
+      <a data-base-href="/static/monthly-seo-report.html" href="/static/monthly-seo-report.html"><button type="button" class="ghost">Aylik Rapor Ac</button></a>
+    </div>
+  </section>
+
+  <section class="guide-intro">
+    <strong>Bu rehberi nasil kullanmalisin?</strong>
+    <div>1) Once Platform Haritasi bolumunu oku. 2) Sonra "Kullanim Senaryolari" ile kendi durumuna en yakin akisla ilerle. 3) En sonda operasyon rutinini uygula.</div>
+    <div class="progress-wrap"><div class="progress-bar" id="readingProgress"></div></div>
+  </section>
+
+  <div class="guide-layout">
+    <aside class="guide-toc">
+      <p class="toc-title">Icerik Haritasi</p>
+      <div class="toc-list">
+        <a class="toc-link" href="#platform-haritasi">Platform Haritasi</a>
+        <a class="toc-link" href="#ozellik-rehberi">Tum Ozellikler</a>
+        <a class="toc-link" href="#kullanim-senaryolari">Kullanim Senaryolari</a>
+        <a class="toc-link" href="#karar-matrisi">Hizli Karar Matrisi</a>
+        <a class="toc-link" href="#operasyon-rutini">Operasyon Rutini</a>
+        <a class="toc-link" href="#yedi-gun-plani">7 Gunluk Ogrenme</a>
+        <a class="toc-link" href="#en-iyi-pratikler">En Iyi Pratikler</a>
+        <a class="toc-link" href="#hizli-linkler">Hizli Linkler</a>
+      </div>
+    </aside>
+
+    <article class="guide-content">
+      <section id="platform-haritasi" class="guide-section" data-guide-section>
+        <h2>Platform Haritasi</h2>
+        <p>GSC Radar bir "tek ekranda her sey" sistemi degil; her modulu net bir sorunu cozer. Dogru modulu dogru anda acarsan hizli sonuc alirsin.</p>
+        <div class="module-grid">
+          <article class="module-card">
+            <h3>1) Uye Girisi + Google Baglantisi</h3>
+            <p>Kullanici kaydi, oturum yonetimi ve Google Search Console/Analytics erisimini tanimlarsin.</p>
+            <a data-base-href="/static/login.html" href="/static/login.html"><button type="button">Login Paneline Git</button></a>
+          </article>
+          <article class="module-card">
+            <h3>2) Site Aktivasyonu</h3>
+            <p>GSC property secimi yapilir, site sisteme baglanir ve tum panellerde ayni site baglami kullanilir.</p>
+            <a data-base-href="/static/site-select.html" href="/static/site-select.html"><button type="button">Site Secim Ekrani</button></a>
+          </article>
+          <article class="module-card">
+            <h3>3) Saglik Komuta Merkezi</h3>
+            <p>Skor, trend, gunluk timeline ve risk seviyesi ile "ne kadar acil?" sorusunu cevaplar.</p>
+            <a data-base-href="/static/health-dashboard.html" href="/static/health-dashboard.html"><button type="button">Saglik Paneli</button></a>
+          </article>
+          <article class="module-card">
+            <h3>4) Anahtar Kelime Takibi</h3>
+            <p>Pozisyon, clicks, impressions, CTR, siralama ve export filtreleriyle keyword operasyonunu yonetirsin.</p>
+            <a data-base-href="/static/keywords-dashboard.html" href="/static/keywords-dashboard.html"><button type="button">Keyword Paneli</button></a>
+          </article>
+          <article class="module-card">
+            <h3>5) Growth Tools</h3>
+            <p>What Changed, akilli alarm, intent clustering, revizyon onerileri, crawl, KPI ve otomasyon araclari.</p>
+            <a data-base-href="/static/advanced-dashboard.html" href="/static/advanced-dashboard.html"><button type="button">Growth Tools</button></a>
+          </article>
+          <article class="module-card">
+            <h3>6) Aylik SEO Raporu</h3>
+            <p>Yonetici ozeti, hikaye modu, rakip analizi, notlar, paylasim linki ve white-label PDF ciktilari.</p>
+            <a data-base-href="/static/monthly-seo-report.html" href="/static/monthly-seo-report.html"><button type="button">Aylik Rapor</button></a>
+          </article>
+          <article class="module-card">
+            <h3>7) Admin Uye ve Islem Loglari</h3>
+            <p>Yonetici olarak kullanici listesi ve kullanicilarin yaptigi API/islem log kayitlarini gorursun.</p>
+            <a data-base-href="/static/admin-users.html" href="/static/admin-users.html"><button type="button">Admin Paneli</button></a>
+          </article>
+          <article class="module-card">
+            <h3>8) Coklu Dil + Turkce Uyum</h3>
+            <p>TR/EN dil gecisi, Turkce arama normalizasyonu ve raporlarda karakter uyumlu cikti destegi.</p>
+            <a data-base-href="/static/home.html" href="/static/home.html"><button type="button">Ana Sayfa</button></a>
+          </article>
+        </div>
+      </section>
+
+      <section id="ozellik-rehberi" class="guide-section" data-guide-section>
+        <h2>Tum Ozellikler: Ne Is Yapar, Ne Zaman Kullanilir?</h2>
+        <div class="feature-group">
+          <h3>Saglik Komuta Merkezi</h3>
+          <ul>
+            <li>Analiz araligi secimi: 1/7/14/30 gun.</li>
+            <li>Saglik hesapla: yeni snapshot olusturur.</li>
+            <li>Tarihe gore liste: gunluk skor + durum + uyari.</li>
+            <li>Grafik: dusus/yukselis egilimini gorsellestirir.</li>
+            <li>Ozet: min/max/son skor ve toplam uyari.</li>
+          </ul>
+          <div class="feature-note">Ne zaman? Sorunun buyuklugunu hizla olcmek ve "acil mi?" kararini vermek istediginde ilk ekran burasi olmali.</div>
+        </div>
+
+        <div class="feature-group">
+          <h3>Anahtar Kelime Paneli</h3>
+          <ul>
+            <li>GSC'den secilen aralikta keyword fetch.</li>
+            <li>Tabloda siralama: position/clicks/impressions/CTR.</li>
+            <li>Arama ve kolon filtreleri (Clicks/Impressions/CTR goster-gizle).</li>
+            <li>Analitik sekmesi: top movers, top losers, dusuk CTR firsatlari.</li>
+            <li>Keyword history: tek sorgunun tarihsel egilimi.</li>
+            <li>PDF/XLSX export + min/max position, min clicks, min impressions, min CTR filtreleri.</li>
+          </ul>
+          <div class="feature-note">Ne zaman? "Hangi sorgular kaydiriyor, hangileri firsat?" sorusunu sayisal cevapla yonetmek istediginde.</div>
+        </div>
+
+        <div class="feature-group">
+          <h3>Growth Tools - AI Icgoruler</h3>
+          <ul>
+            <li>Akilli Alarm Sistemi: uyarilari etki ve kok nedenle siralar.</li>
+            <li>What Changed: "neden dustu?" sorusuna metrik + sebep + aksiyon cikarir.</li>
+            <li>Anahtar Kelime Kumeleme: informational / navigational / commercial / transactional dagilimi.</li>
+            <li>Sayfa Bazli Revizyon: CTR/pozisyon kaybi olan URL'ler icin oncelik skoru.</li>
+            <li>Cannibalization: ayni sorguda URL cakismasi tespiti.</li>
+            <li>SERP Snippet + CTR Skoru: title/meta degisimi oncesi onizleme.</li>
+          </ul>
+          <div class="feature-note">Ne zaman? Kaybin nedenini bulmak, firsati buyutmek ve icerik planini veriyle yonetmek istediginde.</div>
+        </div>
+
+        <div class="feature-group">
+          <h3>Growth Tools - Icerik/Teknik</h3>
+          <ul>
+            <li>Teknik Crawl: title/meta/H1/noindex/canonical kontrolleri.</li>
+            <li>Internal Link Onerileri: from-to anchor firsat listesi.</li>
+            <li>Segment Raporu: branded/non-branded ve cihaz kirilimlari.</li>
+            <li>Kanal Kiyas + Firsat Skoru: GA4 session/conversion/revenue sinyaliyla URL onceliklendirme.</li>
+          </ul>
+          <div class="feature-note">Ne zaman? Teknik bozulma supheliyse veya "trafik var ama gelir etkisi zayif" diyorsan.</div>
+        </div>
+
+        <div class="feature-group">
+          <h3>Growth Tools - Operasyon ve Raporlama</h3>
+          <ul>
+            <li>SEO Change Log: deploy/redirect/icerik degisiklik kaydi.</li>
+            <li>CTR Test: varyant olusturma + snapshot ile test takibi.</li>
+            <li>Backlink Watchlist: yeni/kayip/toxic degisimi + webhook.</li>
+            <li>KPI Goal: hedef metrik tanimi ve dashboard takibi.</li>
+            <li>PDF Template: white-label tema/sablon yonetimi.</li>
+            <li>Gunluk Saglik Gorevi: zamanli veya manuel job calistirma.</li>
+            <li>Playbook akislari: Traffic Drop, Quick Opportunity, Report Ready.</li>
+          </ul>
+          <div class="feature-note">Ne zaman? SEO'yu kisilere bagli degil, sistemli ve tekrar edilebilir bir operasyona cevirmek istediginde.</div>
+        </div>
+
+        <div class="feature-group">
+          <h3>Aylik SEO Raporu</h3>
+          <ul>
+            <li>Yonetici ozeti KPI kartlari.</li>
+            <li>Derin icgoru paneli: segment, backlink risk, anomaly, cihaz dagilimi.</li>
+            <li>Hikaye modu: Ne oldu -> Neden oldu -> Ne yapacagiz.</li>
+            <li>Notlar ve yorumlar: ekip notu / musteri notu ayrimi.</li>
+            <li>Top keyword, firsat keyword, alert tablolari.</li>
+            <li>Rakip analizi: gorunurluk leaderboard + gap/reco listesi.</li>
+            <li>Share link, logo/renk ozellestirme ve PDF indirme.</li>
+          </ul>
+          <div class="feature-note">Ne zaman? Musteri toplantisi, yonetim ozetleri ve "is etkisi ne oldu?" sorusunu net gostermek istediginde.</div>
+        </div>
+      </section>
+      <section id="kullanim-senaryolari" class="guide-section" data-guide-section>
+        <h2>Kullanim Senaryolari (Adim Adim)</h2>
+        <p>Asagidaki senaryolardan birini secip birebir uygula. Her senaryo sahada en cok karsilasilan durumlara gore tasarlandi.</p>
+        <div class="scenario-list">
+          <article class="scenario-item open">
+            <button type="button" class="scenario-toggle">Siralama kaybettim, GSC Radar'i nasil kullanirim?<span>Temel kriz akisi</span></button>
+            <div class="scenario-body">
+              <div class="scenario-meta">
+                <div><strong>Basla</strong><span>Saglik Paneli</span></div>
+                <div><strong>Derin Analiz</strong><span>What Changed + Smart Alerts</span></div>
+                <div><strong>Kapanis</strong><span>Revizyon + Rapor</span></div>
+              </div>
+              <ol>
+                <li>Saglik Komuta Merkezi'nde son 7/14 gun trendini ac, dususun basladigi tarihi tespit et.</li>
+                <li>Growth Tools icinde What Changed calistir, hangi metrik kaynakli dustugunu netlestir.</li>
+                <li>Akilli Alarm sisteminden kok nedeni ve oncelikli aksiyon penceresini al.</li>
+                <li>Sayfa Bazli Revizyon aracinda high priority URL'leri cikar.</li>
+                <li>Keyword panelinde ayni donem top losers sorgularini dogrula.</li>
+                <li>Aylik raporda "Neden oldu -> Ne yapacagiz" hikayesine cevirip takvimlendir.</li>
+              </ol>
+            </div>
+          </article>
+
+          <article class="scenario-item">
+            <button type="button" class="scenario-toggle">CTR dustu ama pozisyon sabit, ne yapmaliyim?<span>Snippet odakli optimizasyon</span></button>
+            <div class="scenario-body">
+              <div class="scenario-meta">
+                <div><strong>Basla</strong><span>Keyword Analytics</span></div>
+                <div><strong>Arac</strong><span>SERP Snippet + CTR Score</span></div>
+                <div><strong>Takip</strong><span>CTR Test + Snapshot</span></div>
+              </div>
+              <ol>
+                <li>Anahtar kelime panelinde yuksek impression + dusuk CTR sorgularini filtrele.</li>
+                <li>SERP Snippet onizlemede title/meta alternatiflerini skorla.</li>
+                <li>CTR Test araci ile varyant olustur ve ilgili sayfayi teste al.</li>
+                <li>7 gunluk snapshot ekleyerek uplift kontrolu yap.</li>
+                <li>Kazanan varyanti Change Log'a kaydet, sonrasinda yayina al.</li>
+              </ol>
+            </div>
+          </article>
+
+          <article class="scenario-item">
+            <button type="button" class="scenario-toggle">Trafik var ama donusum zayif, nasil aksiyon alirim?<span>GA4 destekli onceliklendirme</span></button>
+            <div class="scenario-body">
+              <div class="scenario-meta">
+                <div><strong>Basla</strong><span>Opportunity Score</span></div>
+                <div><strong>Ikinci Adim</strong><span>Channel Compare</span></div>
+                <div><strong>Kapanis</strong><span>KPI Goal</span></div>
+              </div>
+              <ol>
+                <li>GA4 property ID dogrula ve Opportunity Score'u calistir.</li>
+                <li>High score URL'lerde conversion rate dusuklugunu tespit et.</li>
+                <li>Channel Compare ile hangi kanal trafik getirip donusume donmuyor bak.</li>
+                <li>Internal link onerileriyle kritik sayfalara destek akisi kur.</li>
+                <li>KPI Goal tanimlayip 30 gunluk hedef takibini baslat.</li>
+              </ol>
+            </div>
+          </article>
+
+          <article class="scenario-item">
+            <button type="button" class="scenario-toggle">Yeni musteri aldim, ilk 72 saatte nasil kurulum yapayim?<span>Onboarding akisi</span></button>
+            <div class="scenario-body">
+              <div class="scenario-meta">
+                <div><strong>Gun 1</strong><span>Baglanti + Baseline</span></div>
+                <div><strong>Gun 2</strong><span>Risk/Firsat Cikarma</span></div>
+                <div><strong>Gun 3</strong><span>Plan + Rapor</span></div>
+              </div>
+              <ol>
+                <li>Kullanici ve Google baglantilarini tamamla, siteyi aktive et.</li>
+                <li>Saglik panelinden baseline skor ve alert durumunu cikar.</li>
+                <li>Keyword fetch + analytics ile ilk kayip/firsat alanlarini listele.</li>
+                <li>Growth Tools playbook: Traffic Drop ve Quick Opportunity calistir.</li>
+                <li>Aylik raporda musteriye ozel notlar ve ilk 30 gun aksiyon plani olustur.</li>
+              </ol>
+            </div>
+          </article>
+
+          <article class="scenario-item">
+            <button type="button" class="scenario-toggle">Ay sonu raporunu nasil profesyonel cikaririm?<span>Ajans sunum akisi</span></button>
+            <div class="scenario-body">
+              <div class="scenario-meta">
+                <div><strong>Hazirlik</strong><span>Story Mode</span></div>
+                <div><strong>Icerik</strong><span>Insights + Competitor</span></div>
+                <div><strong>Teslim</strong><span>Share + White-label PDF</span></div>
+              </div>
+              <ol>
+                <li>Aylik rapor ayini secip raporu yukle, KPI farklarini dogrula.</li>
+                <li>Hikaye modunu acip 3 adimli anlatimi (Ne oldu/Neden/Ne yapacagiz) netlestir.</li>
+                <li>Rakip leaderboard ve gap listesinden 2-3 stratejik icgoru ekle.</li>
+                <li>Musteri notlari bolumune aksiyon ve sorumluluk kayitlarini yaz.</li>
+                <li>Logo/renk ile white-label hale getir, share link ve PDF ciktiyi gonder.</li>
+              </ol>
+            </div>
+          </article>
+
+          <article class="scenario-item">
+            <button type="button" class="scenario-toggle">Teknik sorun supheliyim, nereden baslamaliyim?<span>Teknik kontrol akisi</span></button>
+            <div class="scenario-body">
+              <div class="scenario-meta">
+                <div><strong>Kontrol</strong><span>Crawl + Alerts</span></div>
+                <div><strong>Etki</strong><span>What Changed</span></div>
+                <div><strong>Kanit</strong><span>Change Log</span></div>
+              </div>
+              <ol>
+                <li>Teknik Crawl araci ile kritik URL setini tara.</li>
+                <li>Noindex/canonical/title-h1 sorunlarini etiketle.</li>
+                <li>Smart Alerts ve What Changed ile metrik etkisini bagla.</li>
+                <li>Duzeltmeleri Change Log'a kaydet ve deployment tarihini isaretle.</li>
+                <li>7 gun sonra trend/alert degisimini tekrar olcerek sonuc dogrula.</li>
+              </ol>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="karar-matrisi" class="guide-section" data-guide-section>
+        <h2>Hizli Karar Matrisi</h2>
+        <p>Problem turune gore hangi ekrani once acacagini bu tabloda sabitle. Ekipte standart karar dili olusur.</p>
+        <div style="overflow:auto;">
+          <table class="decision-table">
+            <thead>
+              <tr>
+                <th>Durum</th>
+                <th>1. Ekran</th>
+                <th>2. Ekran</th>
+                <th>Aksiyon Ciktisi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Skor sert dustu</td>
+                <td>Saglik Komuta Merkezi</td>
+                <td>Growth -> What Changed</td>
+                <td>Oncelikli sayfa/sorgu listesi</td>
+              </tr>
+              <tr>
+                <td>Keyword kaybi var</td>
+                <td>Anahtar Kelime Paneli</td>
+                <td>Growth -> Revizyon + Cannibalization</td>
+                <td>URL bazli revizyon backlog'u</td>
+              </tr>
+              <tr>
+                <td>CTR dusuk</td>
+                <td>Keyword Analytics</td>
+                <td>Growth -> SERP Snippet + CTR Test</td>
+                <td>Kazanan title/meta varyanti</td>
+              </tr>
+              <tr>
+                <td>Trafik var, gelir zayif</td>
+                <td>Growth -> Opportunity Score</td>
+                <td>Growth -> Channel Compare</td>
+                <td>Donusum odakli URL oncelik listesi</td>
+              </tr>
+              <tr>
+                <td>Ay sonu musteri raporu</td>
+                <td>Aylik SEO Raporu</td>
+                <td>Hikaye modu + Notlar + Rakip</td>
+                <td>White-label PDF + Share Link</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="operasyon-rutini" class="guide-section" data-guide-section>
+        <h2>Operasyon Rutini: %100 Verim Icin Standart Isletim</h2>
+        <div class="check-grid">
+          <article class="check-card">
+            <h3>Gunluk (15-20 dk)</h3>
+            <ul>
+              <li>Saglik skoru ve kritik uyari kontrolu</li>
+              <li>Akilli alarmda yeni high impact kayitlari ayiklama</li>
+              <li>Keyword tablosunda ani dusus sorgulari kontrolu</li>
+              <li>Change Log'a yapilan degisiklikleri isleme</li>
+            </ul>
+          </article>
+          <article class="check-card">
+            <h3>Haftalik (60-90 dk)</h3>
+            <ul>
+              <li>What Changed + Revizyon oncelik listesi guncelleme</li>
+              <li>Internal link onerilerini uygulama planina alma</li>
+              <li>CTR test snapshot ve kazanan varyant analizi</li>
+              <li>KPI hedef sapmasi kontrolu</li>
+            </ul>
+          </article>
+          <article class="check-card">
+            <h3>Aylik (2-3 saat)</h3>
+            <ul>
+              <li>Aylik rapor + hikaye modu olusturma</li>
+              <li>Rakip analizi ve gap yorumlarini guncelleme</li>
+              <li>Musteri notlari + aksiyon sahipligini yazma</li>
+              <li>White-label PDF ve share link teslimi</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="yedi-gun-plani" class="guide-section" data-guide-section>
+        <h2>7 Gunluk Ogrenme Plani</h2>
+        <p>Yeni ekip uyesi icin hizli onboarding standardi. Bir haftada sisteme hakim olmasini saglar.</p>
+        <div class="roadmap">
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 1</div>
+            <div><h4>Kurulum ve Yetki</h4><p>Uye girisi, Google baglantisi, site aktivasyonu ve temel panel tanitimi.</p></div>
+          </article>
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 2</div>
+            <div><h4>Saglik Okuma</h4><p>Skor/trend/timeline okumasi, kritik-uyari farki ve ilk risk listesi.</p></div>
+          </article>
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 3</div>
+            <div><h4>Keyword Operasyonu</h4><p>Fetch, siralama, analytics, export ve keyword history calismasi.</p></div>
+          </article>
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 4</div>
+            <div><h4>Growth Tools - Analiz</h4><p>What Changed, Smart Alerts, Cannibalization, Revision akislari.</p></div>
+          </article>
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 5</div>
+            <div><h4>Growth Tools - Uygulama</h4><p>Internal link, crawl, segment, channel compare, opportunity score.</p></div>
+          </article>
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 6</div>
+            <div><h4>Raporlama</h4><p>Aylik rapor, story mode, notlar, rakip ve PDF cikti hazirlama.</p></div>
+          </article>
+          <article class="roadmap-item">
+            <div class="roadmap-day">Gun 7</div>
+            <div><h4>Kapanis Simulasyonu</h4><p>"Siralama kaybi" senaryosunu uctan uca canli kosup aksiyon plani cikarma.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="en-iyi-pratikler" class="guide-section" data-guide-section>
+        <h2>En Iyi Pratikler (Yap / Yapma)</h2>
+        <div class="best-grid">
+          <article class="best-card good">
+            <h3>Yap</h3>
+            <ul>
+              <li>Her degisikligi Change Log'a ayni gun kaydet.</li>
+              <li>Raporlari "Neden -> Aksiyon -> Etki" formatinda sun.</li>
+              <li>Sadece trafik degil, conversion/revenue sinyallerini de takip et.</li>
+              <li>Keyword tablosunda export filtreleriyle odakli calis.</li>
+              <li>Playbooklari ekibin standart SOP dokumani yap.</li>
+            </ul>
+          </article>
+          <article class="best-card risk">
+            <h3>Yapma</h3>
+            <ul>
+              <li>Tek bir metrikle karar verme (ornegin sadece clicks).</li>
+              <li>GA4 property id'yi account id ile karistirma.</li>
+              <li>Sorun ciktiginda rastgele URL duzeltmesi yapma.</li>
+              <li>Aylik raporu sadece tablo olarak birakma; hikaye akisi olmadan gonderme.</li>
+              <li>Alertleri backlog'a yazmadan unutulmaya birakma.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="hizli-linkler" class="guide-section" data-guide-section>
+        <h2>Hizli Linkler</h2>
+        <p>Duruma gore dogrudan ilgili ekrana gecmek icin kisayollar.</p>
+        <div class="quick-links">
+          <article class="quick-link">
+            <h3>Kriz Takibi</h3>
+            <p>Skor dususu, alert ve trend kontrolunu hizli ac.</p>
+            <a data-base-href="/static/health-dashboard.html" href="/static/health-dashboard.html"><button type="button">Saglik Panelini Ac</button></a>
+          </article>
+          <article class="quick-link">
+            <h3>Keyword Operasyonu</h3>
+            <p>Siralama, CTR ve export filtreleriyle sorgu seviyesinde calis.</p>
+            <a data-base-href="/static/keywords-dashboard.html" href="/static/keywords-dashboard.html"><button type="button">Keyword Panelini Ac</button></a>
+          </article>
+          <article class="quick-link">
+            <h3>Buyume ve Aksiyon</h3>
+            <p>What Changed, playbookler ve operasyon araclarini tek yerde yonet.</p>
+            <a data-base-href="/static/advanced-dashboard.html" href="/static/advanced-dashboard.html"><button type="button">Growth Tools Ac</button></a>
+          </article>
+          <article class="quick-link">
+            <h3>Musteri Raporu</h3>
+            <p>Hikaye modu, notlar, rakip analizi ve PDF cikti olustur.</p>
+            <a data-base-href="/static/monthly-seo-report.html" href="/static/monthly-seo-report.html"><button type="button">Aylik Rapor Ac</button></a>
+          </article>
+          <article class="quick-link">
+            <h3>Site Aktivasyonu</h3>
+            <p>Yeni site ekle, dogru baglamla tum panelleri hazirla.</p>
+            <a data-base-href="/static/site-select.html" href="/static/site-select.html"><button type="button">Site Secim Ekrani</button></a>
+          </article>
+          <article class="quick-link">
+            <h3>Yonetici Kontrolu</h3>
+            <p>Kullanicilarin yaptigi islemleri ve log kayitlarini izle.</p>
+            <a data-base-href="/static/admin-users.html" href="/static/admin-users.html"><button type="button">Admin Panelini Ac</button></a>
+          </article>
+        </div>
+      </section>
+    </article>
+  </div>
+</main>
+
+<script src="/static/header.js"></script>
+<script>
+(function () {
+  function getSiteId() {
+    var params = new URLSearchParams(window.location.search || "");
+    return params.get("site") || "";
+  }
+
+  function withSiteContext(baseHref, siteId) {
+    if (!baseHref) return "#";
+    if (!siteId) return baseHref;
+    if (baseHref.indexOf("?") >= 0) return baseHref + "&site=" + encodeURIComponent(siteId);
+    return baseHref + "?site=" + encodeURIComponent(siteId);
+  }
+
+  function applyContextLinks() {
+    var siteId = getSiteId();
+    document.querySelectorAll("[data-base-href]").forEach(function (node) {
+      var base = node.getAttribute("data-base-href");
+      if (!base) return;
+      node.setAttribute("href", withSiteContext(base, siteId));
+    });
+    if (window.GSCRadarHeader && typeof window.GSCRadarHeader.setSiteId === "function") {
+      window.GSCRadarHeader.setSiteId(siteId);
+    }
+  }
+
+  function initScenarioAccordions() {
+    document.querySelectorAll(".scenario-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var card = btn.closest(".scenario-item");
+        if (!card) return;
+        card.classList.toggle("open");
+      });
+    });
+  }
+
+  function initTocTracking() {
+    var links = Array.from(document.querySelectorAll(".toc-link"));
+    var sectionById = {};
+    links.forEach(function (link) {
+      var id = (link.getAttribute("href") || "").replace("#", "");
+      if (!id) return;
+      sectionById[id] = document.getElementById(id);
+    });
+
+    function activate(id) {
+      links.forEach(function (l) {
+        l.classList.toggle("active", l.getAttribute("href") === "#" + id);
+      });
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      var visible = entries
+        .filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      if (visible.length > 0) {
+        activate(visible[0].target.id);
+      }
+    }, { rootMargin: "-30% 0px -55% 0px", threshold: [0.1, 0.35, 0.6] });
+
+    Object.keys(sectionById).forEach(function (id) {
+      var sec = sectionById[id];
+      if (sec) observer.observe(sec);
+    });
+  }
+
+  function initReadingProgress() {
+    var bar = document.getElementById("readingProgress");
+    if (!bar) return;
+    function render() {
+      var doc = document.documentElement;
+      var max = (doc.scrollHeight - window.innerHeight);
+      var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+      bar.style.width = pct.toFixed(1) + "%";
+    }
+    window.addEventListener("scroll", render, { passive: true });
+    window.addEventListener("resize", render);
+    render();
+  }
+
+  applyContextLinks();
+  initScenarioAccordions();
+  initTocTracking();
+  initReadingProgress();
+})();
+</script>
+</body>
+</html>

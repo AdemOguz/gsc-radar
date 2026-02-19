@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSC Radar - Ana Sayfa</title>
+<meta name="description" content="GSC Radar ile SEO performansinizi tek panelde yonetin: GSC + GA4 analizi, keyword intelligence, growth tools ve white-label raporlama.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="/static/home.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GSC Radar - SEO Buyume Komuta Merkezi">
+<meta property="og:description" content="SEO ekipleri ve ajanslar icin tek panelde performans takibi, icgoru ve aksiyon yonetimi.">
+<meta property="og:url" content="/static/home.html">
+<meta property="og:site_name" content="GSC Radar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GSC Radar - SEO Buyume Komuta Merkezi">
+<meta name="twitter:description" content="GSC + GA4 verilerini birlestir, kayiplari erken yakala, buyumeyi hizlandir.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "GSC Radar",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "SEO ekipleri ve ajanslar icin performans komuta merkezi.",
+  "url": "/static/home.html"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<style>
+.services-flow {
+  margin-top: 20px;
+}
+
+.page {
+  position: relative;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: -20px -20px auto -20px;
+  height: 220px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(59,130,246,0.14), transparent 42%),
+    radial-gradient(circle at 88% 0%, rgba(14,165,233,0.12), transparent 38%);
+  z-index: -1;
+}
+
+.promo-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid #bfdbfe;
+  padding: 26px 24px;
+  margin-bottom: 16px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(59,130,246,0.3), transparent 35%),
+    radial-gradient(circle at 95% 100%, rgba(14,165,233,0.24), transparent 40%),
+    linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0f4c81 100%);
+  color: #eff6ff;
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.22);
+}
+
+.promo-banner::before {
+  content: "";
+  position: absolute;
+  right: -46px;
+  top: -36px;
+  width: 230px;
+  height: 230px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,255,255,0.24), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.promo-banner h1 {
+  margin: 0 0 10px 0;
+  font-size: clamp(28px, 4.3vw, 44px);
+  line-height: 1.08;
+  letter-spacing: 0.2px;
+}
+
+.promo-banner p {
+  margin: 0 0 14px 0;
+  max-width: 760px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #dbeafe;
+}
+
+.promo-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.promo-actions .cta-primary {
+  background: #22c55e;
+  border-color: transparent;
+  box-shadow: 0 12px 22px rgba(34, 197, 94, 0.25);
+}
+
+.promo-actions .cta-secondary {
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.35);
+}
+
+.promo-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.promo-kpi {
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(255,255,255,0.08);
+}
+
+.promo-kpi strong {
+  display: block;
+  font-size: 20px;
+}
+
+.promo-kpi span {
+  font-size: 12px;
+  color: #dbeafe;
+}
+
+.service-split {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+  align-items: center;
+  margin: 50px 0;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.service-split:hover {
+  transform: translateY(-3px);
+  border-color: #bfdbfe;
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.1);
+}
+
+.service-split.reverse {
+  grid-template-columns: 0.95fr 1.05fr;
+}
+
+.service-copy h3 {
+  margin: 0 0 10px 0;
+  font-size: 30px;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.service-copy p {
+  margin: 0 0 14px 0;
+  color: #475569;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.service-copy .service-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.service-visual {
+  min-height: 210px;
+  border-radius: 14px;
+  border: 1px solid #dbeafe;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(59, 130, 246, 0.26), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(14, 165, 233, 0.2), transparent 48%),
+    linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f4c81 100%);
+}
+
+.service-visual::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06));
+}
+
+.service-visual::after {
+  content: attr(data-visual);
+  position: absolute;
+  left: 28px;
+  bottom: 26px;
+  color: #eff6ff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.service-visual .mock {
+  position: absolute;
+  top: 26px;
+  left: 26px;
+  right: 26px;
+  height: 82px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08));
+}
+
+.service-visual .mock::before,
+.service-visual .mock::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.45);
+}
+
+.service-visual .mock::before { top: 14px; }
+.service-visual .mock::after { top: 34px; width: 65%; }
+
+.proof-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.proof-item {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  transition: border-color .2s ease, transform .2s ease;
+}
+
+.proof-item:hover {
+  border-color: #bfdbfe;
+  transform: translateY(-2px);
+}
+
+.proof-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f4c81;
+  line-height: 1;
+}
+
+.proof-label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.acq-cta {
+  margin: 10px 0 6px;
+  border-radius: 16px;
+  border: 1px solid #c7d2fe;
+  padding: 20px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 55%, #dbeafe 100%);
+  box-shadow: 0 10px 24px rgba(30, 58, 138, 0.08);
+}
+
+.acq-cta h3 {
+  margin: 0 0 8px 0;
+  font-size: 26px;
+}
+
+.acq-cta p {
+  margin: 0 0 12px 0;
+  color: #334155;
+  max-width: 780px;
+}
+
+.acq-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: revealUp .55s ease forwards;
+}
+
+.reveal:nth-child(1) { animation-delay: .02s; }
+.reveal:nth-child(2) { animation-delay: .07s; }
+.reveal:nth-child(3) { animation-delay: .12s; }
+.reveal:nth-child(4) { animation-delay: .16s; }
+
+@keyframes revealUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+@media (max-width: 920px) {
+  .service-split,
+  .service-split.reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .service-copy h3 {
+    font-size: 25px;
+  }
+
+  .proof-strip {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .promo-kpis {
+    grid-template-columns: 1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+<div id="appHeader"></div>
+<div class="page">
+  <section class="promo-banner reveal">
+    <h1>GSC Radar ile SEO performansinizi olc, yorumla ve hizla buyut.</h1>
+    <p>
+      GSC ve GA4 verilerini tek ekranda birlestiren GSC Radar; saglik takibi, keyword intelligence,
+      growth tools ve white-label raporlama ile ekiplerine net aksiyon ve olculebilir buyume sunar.
+    </p>
+    <div class="promo-actions">
+      <a href="/static/login.html"><button type="button" class="cta-primary">Hemen Basla</button></a>
+      <a id="linkMonthlyReportTop" data-base="/static/monthly-seo-report.html" href="/static/monthly-seo-report.html"><button type="button" class="cta-secondary">Ornek Aylik Raporu Ac</button></a>
+    </div>
+    <div class="promo-kpis">
+      <div class="promo-kpi"><strong>7/24</strong><span>Canli SEO saglik takibi</span></div>
+      <div class="promo-kpi"><strong>Tek Akis</strong><span>Analiz + Aksiyon + Raporlama</span></div>
+      <div class="promo-kpi"><strong>White-label</strong><span>Musteriye hazir premium cikti</span></div>
+    </div>
+  </section>
+
+  <section class="hero reveal">
+    <h2 class="hero-title" data-i18n="home.hero_title">SEO Buyumenin Komuta Merkezi</h2>
+    <p class="hero-subtitle" data-i18n="home.hero_subtitle">GSC ve GA4 sinyallerini tek yerde birlestir, kayiplari erken yakala ve buyume firsatlarini aninda aksiyona cevir.</p>
+  </section>
+
+  <section class="proof-strip reveal">
+    <article class="proof-item">
+      <div class="proof-value">7/24</div>
+      <div class="proof-label">Otomatik izleme ve alarm akislari</div>
+    </article>
+    <article class="proof-item">
+      <div class="proof-value">Tek Panel</div>
+      <div class="proof-label">GSC + GA4 + Growth Tools yonetimi</div>
+    </article>
+    <article class="proof-item">
+      <div class="proof-value">Aksiyon</div>
+      <div class="proof-label">Veriden direkt uygulanabilir gorevlere gecis</div>
+    </article>
+    <article class="proof-item">
+      <div class="proof-value">White-label</div>
+      <div class="proof-label">Musteriye hazir markali rapor ciktilari</div>
+    </article>
+  </section>
+
+  <section class="acq-cta reveal">
+    <h3>Musteri kazanmak icin rapor degil, sonuc goster.</h3>
+    <p>
+      GSC Radar ile her ay ayni hikayeyi degil, olculebilir ilerlemeyi sunarsin:
+      kayiplar, firsatlar, cozum aksiyonlari ve net etki beklentisi tek akista.
+    </p>
+    <div class="acq-actions">
+      <a href="/static/login.html"><button type="button" class="btn-success">14 Gunluk Denemeyi Baslat</button></a>
+      <a href="/static/site-select.html"><button type="button" class="btn-secondary">Canli Demoya Gec</button></a>
+      <a id="linkMonthlyReportTop2" data-base="/static/monthly-seo-report.html" href="/static/monthly-seo-report.html"><button type="button">Rapor Ornegini Incele</button></a>
+    </div>
+  </section>
+
+  <section class="services-flow">
+    <article class="service-split reveal">
+      <div class="service-copy">
+        <h3 data-i18n="home.card.login_title">Hizli Baslangic</h3>
+        <p data-i18n="home.card.login_desc">Dakikalar icinde hesap ac, Google baglantisini tamamla ve veri toplamayi baslat.</p>
+        <a class="service-action" href="/static/login.html"><button type="button" data-i18n="common.open">Ac</button></a>
+      </div>
+      <div class="service-visual" data-visual="Google + Uye Girisi"><div class="mock"></div></div>
+    </article>
+
+    <article class="service-split reverse reveal">
+      <div class="service-visual" data-visual="Property Aktivasyonu"><div class="mock"></div></div>
+      <div class="service-copy">
+        <h3 data-i18n="home.card.site_title">Site Aktivasyonu</h3>
+        <p data-i18n="home.card.site_desc">Property secimini yap, sistemi tek tikla analize hazir hale getir.</p>
+        <a class="service-action" href="/static/site-select.html"><button type="button" data-i18n="common.open">Ac</button></a>
+      </div>
+    </article>
+
+    <article class="service-split reveal">
+      <div class="service-copy">
+        <h3 data-i18n="home.card.health_title">Saglik Komuta Merkezi</h3>
+        <p data-i18n="home.card.health_desc">Skor, trend ve alarm akisini ayni ekranda gor; sorunlari buyumeden durdur.</p>
+        <a class="service-action" id="linkHealth" data-base="/static/health-dashboard.html" href="/static/health-dashboard.html"><button type="button" data-i18n="common.open">Ac</button></a>
+      </div>
+      <div class="service-visual" data-visual="Skor + Trend + Alarm"><div class="mock"></div></div>
+    </article>
+
+    <article class="service-split reverse reveal">
+      <div class="service-visual" data-visual="Growth Tools"><div class="mock"></div></div>
+      <div class="service-copy">
+        <h3 data-i18n="home.card.advanced_title">Growth Tools</h3>
+        <p data-i18n="home.card.advanced_desc">Firsat skoru, kanal karsilastirma ve gelir etkisi yuksek optimizasyon adimlari.</p>
+        <a class="service-action" id="linkAdvanced" data-base="/static/advanced-dashboard.html" href="/static/advanced-dashboard.html"><button type="button" data-i18n="common.open">Ac</button></a>
+      </div>
+    </article>
+
+    <article class="service-split reveal">
+      <div class="service-copy">
+        <h3 data-i18n="home.card.keywords_title">Keyword Intelligence</h3>
+        <p data-i18n="home.card.keywords_desc">Pozisyon hareketi, firsat sorgulari ve kayip alanlarini otomatik tespit et.</p>
+        <a class="service-action" id="linkKeywords" data-base="/static/keywords-dashboard.html" href="/static/keywords-dashboard.html"><button type="button" data-i18n="common.open">Ac</button></a>
+      </div>
+      <div class="service-visual" data-visual="Keyword Intelligence"><div class="mock"></div></div>
+    </article>
+
+    <article class="service-split reverse reveal">
+      <div class="service-visual" data-visual="White-label PDF + Share"><div class="mock"></div></div>
+      <div class="service-copy">
+        <h3 data-i18n="home.card.monthly_title">White-label Aylik Rapor</h3>
+        <p data-i18n="home.card.monthly_desc">Markali PDF, aksiyon plani ve paylasim linki ile musterine premium raporlama deneyimi sun.</p>
+        <a class="service-action" id="linkMonthlyReport" data-base="/static/monthly-seo-report.html" href="/static/monthly-seo-report.html"><button type="button" data-i18n="common.open">Ac</button></a>
+      </div>
+    </article>
+  </section>
+
+</div>
+
+<script src="/static/header.js"></script>
+<script>
+function applySiteContext(siteId) {
+  const links = ["linkHealth", "linkAdvanced", "linkKeywords", "linkMonthlyReport", "linkMonthlyReportTop", "linkMonthlyReportTop2"];
+  links.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const base = el.dataset.base;
+    el.href = siteId ? (base + "?site=" + encodeURIComponent(siteId)) : base;
+  });
+
+  if (window.GSCRadarHeader && typeof window.GSCRadarHeader.setSiteId === "function") {
+    window.GSCRadarHeader.setSiteId(siteId || "");
+  }
+}
+
+applySiteContext("");
+</script>
+</body>
+</html>

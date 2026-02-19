@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSC Radar - Uyelik</title>
+<meta name="description" content="GSC Radar giris ve hesap olusturma ekrani. SEO operasyonlarinizi tek merkezden yonetmeye baslayin.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="/static/login.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GSC Radar - Uyelik ve Giris">
+<meta property="og:description" content="Hesabinizi olusturun, Google baglantinizi tamamlayin, SEO operasyonunu tek panelden yonetin.">
+<meta property="og:url" content="/static/login.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GSC Radar - Uyelik ve Giris">
+<meta name="twitter:description" content="Hizli kurulum ile GSC Radar'a baslayin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/header.css">
+<link rel="stylesheet" href="/static/dashboard-theme.css">
+<style>
+.auth-shell {
+  min-height: calc(100vh - 148px);
+  display: grid;
+  align-items: center;
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid #c7d4e3;
+  background: linear-gradient(155deg, #f5f9ff 0%, #ffffff 42%, #eef6ff 100%);
+  box-shadow: 0 26px 60px rgba(15, 76, 129, 0.2);
+  display: grid;
+  grid-template-columns: 0.95fr 1.25fr;
+  animation: rise-in 420ms ease-out;
+}
+
+.auth-card::before,
+.auth-card::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.auth-card::before {
+  width: 260px;
+  height: 260px;
+  top: -110px;
+  left: -80px;
+  background: radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.28) 0%, rgba(37, 99, 235, 0) 68%);
+}
+
+.auth-card::after {
+  width: 320px;
+  height: 320px;
+  right: -90px;
+  bottom: -170px;
+  background: radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.22) 0%, rgba(2, 132, 199, 0) 72%);
+}
+
+.auth-side {
+  position: relative;
+  background: linear-gradient(160deg, #0f4c81 0%, #0f6fa8 58%, #1f8bcc 100%);
+  color: #f8fbff;
+  padding: 34px 28px;
+  z-index: 1;
+}
+
+.auth-side h3 {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 29px;
+  line-height: 1.12;
+}
+
+.auth-side p {
+  margin: 14px 0 0;
+  color: #dbeafe;
+  line-height: 1.55;
+  max-width: 30ch;
+}
+
+.auth-badges {
+  margin: 26px 0 0;
+  display: grid;
+  gap: 10px;
+}
+
+.auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 250, 252, 0.35);
+  background: rgba(248, 250, 252, 0.1);
+  font-size: 12px;
+  letter-spacing: 0.25px;
+}
+
+.auth-main {
+  position: relative;
+  z-index: 1;
+  padding: 28px;
+}
+
+.auth-main h3 {
+  margin: 0 0 14px;
+  font-family: "Inter", sans-serif;
+  font-size: 24px;
+}
+
+.auth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.auth-grid .auth-row:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.auth-row {
+  display: grid;
+  gap: 8px;
+}
+
+.auth-row label {
+  font-size: 12px;
+  letter-spacing: 0.22px;
+  text-transform: uppercase;
+  color: #4b5f77;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.auth-actions button {
+  min-width: 130px;
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.status-box {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fbff 0%, #f1f7ff 100%);
+  border: 1px solid #ccdbeb;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 920px) {
+  .auth-card {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-side {
+    padding: 24px 22px;
+  }
+
+  .auth-side h3 {
+    font-size: 24px;
+  }
+
+  .auth-main {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-grid .auth-row:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .auth-actions button {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="appHeader"></div>
+<div class="page">
+  <section class="hero">
+    <h2 class="hero-title" data-i18n="login.hero_title">Uyelik ve Google Baglantisi</h2>
+    <p class="hero-subtitle" data-i18n="login.hero_subtitle">Once hesap olustur/giris yap, sonra Google Search Console baglantisini tamamla.</p>
+  </section>
+
+  <section class="auth-shell">
+    <article class="auth-card">
+      <aside class="auth-side">
+        <h3 data-i18n="login.side_title">Hizli Giris<br>Temiz Akis</h3>
+        <p data-i18n="login.side_desc">Hesabini olustur, oturumunu ac ve Google Search Console baglantisini tek ekrandan yonet.</p>
+        <div class="auth-badges">
+          <span class="auth-badge" data-i18n="login.badge.membership">Uyelik</span>
+          <span class="auth-badge" data-i18n="login.badge.google">Google Baglantisi</span>
+          <span class="auth-badge" data-i18n="login.badge.panel">Panel Erisimi</span>
+        </div>
+      </aside>
+
+      <div class="auth-main">
+        <h3 data-i18n="login.panel_title">Uyelik Islemleri</h3>
+
+        <div class="auth-grid">
+          <div class="auth-row">
+            <label data-i18n="login.field_name">Ad Soyad</label>
+            <input id="regName" type="text" placeholder="Orn: Ali Yilmaz" data-i18n-placeholder="login.name_placeholder">
+          </div>
+          <div class="auth-row">
+            <label data-i18n="login.field_email">E-posta</label>
+            <input id="email" type="email" placeholder="ornek@mail.com" data-i18n-placeholder="login.email_placeholder">
+          </div>
+          <div class="auth-row">
+            <label data-i18n="login.field_password">Sifre</label>
+            <input id="password" type="password" placeholder="en az 6 karakter" data-i18n-placeholder="login.password_placeholder">
+          </div>
+        </div>
+
+        <div class="auth-actions">
+          <button type="button" onclick="register()" data-i18n="login.register">Kayit Ol</button>
+          <button type="button" class="btn-secondary" onclick="login()" data-i18n="login.login">Giris Yap</button>
+          <button type="button" class="btn-secondary" onclick="logout()" data-i18n="login.logout">Cikis Yap</button>
+        </div>
+
+        <div class="status-box">
+          <div id="userStatus" data-i18n="login.status_checking">Oturum kontrol ediliyor...</div>
+          <div class="auth-actions" style="margin-top:8px;">
+            <button type="button" class="btn-success" onclick="connectGoogle()" data-i18n="login.connect_google">Google Search Console Bagla</button>
+            <button type="button" onclick="goSiteSelect()" data-i18n="login.goto_site_select">Site Secim Ekranina Git</button>
+          </div>
+          <div class="muted" style="margin-top:8px;" data-i18n="login.google_note">
+            Google baglantisi icin once giris yapmis olman gerekir.
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>
+
+<script src="/static/header.js"></script>
+<script>
+function t(key, fallback, params) {
+  if (window.GSCRadarI18n && typeof window.GSCRadarI18n.t === "function") {
+    return window.GSCRadarI18n.t(key, fallback, params);
+  }
+  return fallback || key;
+}
+
+function setStatus(text) {
+  document.getElementById("userStatus").textContent = text;
+}
+
+async function refreshMe() {
+  try {
+    const res = await fetch("/auth/me");
+    if (!res.ok) {
+      setStatus(t("login.status_none", "Oturum yok"));
+      return null;
+    }
+    const me = await res.json();
+    setStatus(t("login.status_connected", "Giris yapildi: {{name}} ({{email}}) | Google bagli: {{connected}}", {
+      name: me.name,
+      email: me.email,
+      connected: me.google_connected ? t("login.connected_yes", "Evet") : t("login.connected_no", "Hayir")
+    }));
+    return me;
+  } catch {
+    setStatus(t("login.status_error", "Oturum kontrol hatasi"));
+    return null;
+  }
+}
+
+async function register() {
+  const name = document.getElementById("regName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const res = await fetch("/auth/register", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ name, email, password })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    alert(data.detail || t("login.error_register", "Kayit hatasi"));
+    return;
+  }
+  alert(t("login.success_register", "Kayit basarili. Simdi giris yapabilirsiniz."));
+}
+
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const res = await fetch("/auth/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    alert(data.detail || t("login.error_login", "Giris hatasi"));
+    return;
+  }
+  await refreshMe();
+}
+
+async function logout() {
+  await fetch("/auth/logout", { method: "POST" });
+  await refreshMe();
+}
+
+async function connectGoogle() {
+  const me = await refreshMe();
+  if (!me) {
+    alert(t("login.login_required", "Once giris yapin"));
+    return;
+  }
+  window.location.href = "/auth/google/login";
+}
+
+function goSiteSelect() {
+  window.location.href = "/static/site-select.html";
+}
+
+window.addEventListener("gsc:lang-changed", function () {
+  refreshMe();
+});
+
+refreshMe();
+</script>
+</body>
+</html>
