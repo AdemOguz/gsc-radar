@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, Request
+﻿from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 import os
@@ -13,12 +13,16 @@ from googleapiclient.discovery import build
 from pydantic import BaseModel, EmailStr
 import hashlib
 import secrets
+import hmac
 
 router = APIRouter()
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+REDIRECT_URI = (os.getenv("GOOGLE_REDIRECT_URI") or "").strip()
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "1") == "1"
+OAUTH_STATE_COOKIE = "oauth_state_token"
+OAUTH_STATE_TTL_SEC = 600
 
 
 SCOPES = [
@@ -61,6 +65,11 @@ def require_env():
         raise HTTPException(
             status_code=500,
             detail="GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET env degiskenleri eksik."
+        )
+    if not REDIRECT_URI:
+        raise HTTPException(
+            status_code=500,
+            detail="GOOGLE_REDIRECT_URI env degiskeni eksik."
         )
 
 
@@ -157,7 +166,9 @@ def login(payload: LoginIn, response: Response, db: Session = Depends(get_db)):
         value=token,
         httponly=True,
         samesite="lax",
-        max_age=SESSION_DAYS * 24 * 60 * 60
+        secure=SESSION_COOKIE_SECURE,
+        max_age=SESSION_DAYS * 24 * 60 * 60,
+        path="/",
     )
     return {
         "message": "Login basarili",
@@ -171,7 +182,7 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     if token:
         db.query(UserSession).filter(UserSession.token == token).delete()
         db.commit()
-    response.delete_cookie("session_token")
+    response.delete_cookie("session_token", path="/")
     return {"message": "Logout basarili"}
 
 
@@ -196,6 +207,7 @@ def me(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
 @router.get("/auth/google/login")
 def google_login(user: User = Depends(get_current_user)):
     require_env()
+    state = secrets.token_urlsafe(32)
     params = {
         "client_id": GOOGLE_CLIENT_ID,
         "redirect_uri": REDIRECT_URI,
@@ -203,18 +215,34 @@ def google_login(user: User = Depends(get_current_user)):
         "scope": " ".join(SCOPES),
         "access_type": "offline",
         "prompt": "consent",
+        "state": state,
     }
     url = GOOGLE_AUTH_URL + "?" + urlencode(params)
-    return RedirectResponse(url)
+    response = RedirectResponse(url)
+    response.set_cookie(
+        key=OAUTH_STATE_COOKIE,
+        value=state,
+        httponly=True,
+        samesite="lax",
+        secure=SESSION_COOKIE_SECURE,
+        max_age=OAUTH_STATE_TTL_SEC,
+        path="/",
+    )
+    return response
 
 
 @router.get("/auth/google/callback")
 def google_callback(
     code: str,
+    state: str = "",
+    request: Request = None,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     require_env()
+    expected_state = (request.cookies.get(OAUTH_STATE_COOKIE) if request else "")
+    if not expected_state or not state or not hmac.compare_digest(state, expected_state):
+        raise HTTPException(status_code=400, detail="OAuth state dogrulanamadi. Tekrar Google baglantisi baslatin.")
 
     data = {
         "client_id": GOOGLE_CLIENT_ID,
@@ -242,7 +270,9 @@ def google_callback(
 
     if not refresh_token:
         if row:
-            return RedirectResponse("/static/site-select.html")
+            response = RedirectResponse("/static/site-select.html")
+            response.delete_cookie(OAUTH_STATE_COOKIE, path="/")
+            return response
         raise HTTPException(
             status_code=400,
             detail="refresh_token gelmedi. Google login ekraninda prompt=consent olmali."
@@ -260,7 +290,9 @@ def google_callback(
         row.updated_at = datetime.now(timezone.utc)
 
     db.commit()
-    return RedirectResponse("/static/site-select.html")
+    response = RedirectResponse("/static/site-select.html")
+    response.delete_cookie(OAUTH_STATE_COOKIE, path="/")
+    return response
 
 
 @router.get("/gsc/sites")
@@ -460,3 +492,4 @@ def get_access_token_from_refresh(refresh_token: str) -> str:
     response.raise_for_status()
 
     return response.json()["access_token"]
+
