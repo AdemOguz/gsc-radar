@@ -47,6 +47,12 @@ class LoginIn(BaseModel):
     password: str
 
 
+class PasswordResetByKeyIn(BaseModel):
+    email: EmailStr
+    new_password: str
+    reset_key: str
+
+
 def hash_password(password: str) -> str:
     salt = os.getenv("APP_PASSWORD_SALT", "gsc-radar-default-salt")
     return hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
@@ -71,6 +77,16 @@ def require_env():
             status_code=500,
             detail="GOOGLE_REDIRECT_URI env degiskeni eksik."
         )
+
+
+def require_password_reset_key() -> str:
+    key = (os.getenv("APP_PASSWORD_RESET_KEY") or "").strip()
+    if not key:
+        raise HTTPException(
+            status_code=500,
+            detail="APP_PASSWORD_RESET_KEY env degiskeni eksik."
+        )
+    return key
 
 
 def get_refresh_token(db: Session, user_id: str = None) -> str:
@@ -184,6 +200,28 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)):
         db.commit()
     response.delete_cookie("session_token", path="/")
     return {"message": "Logout basarili"}
+
+
+@router.post("/auth/reset-password/by-key")
+def reset_password_by_key(payload: PasswordResetByKeyIn, db: Session = Depends(get_db)):
+    server_key = require_password_reset_key()
+    provided_key = (payload.reset_key or "").strip()
+    if not provided_key or not hmac.compare_digest(provided_key, server_key):
+        raise HTTPException(status_code=403, detail="Gecersiz sifre sifirlama anahtari")
+
+    if len(payload.new_password or "") < 8:
+        raise HTTPException(status_code=400, detail="Yeni sifre en az 8 karakter olmali")
+
+    email = (payload.email or "").strip().lower()
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Kullanici bulunamadi")
+
+    user.password_hash = hash_password(payload.new_password)
+    db.query(UserSession).filter(UserSession.user_id == user.id).delete()
+    db.commit()
+
+    return {"message": "Sifre guncellendi. Lutfen yeniden giris yapin."}
 
 
 @router.get("/auth/me")
