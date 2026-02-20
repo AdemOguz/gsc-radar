@@ -52,6 +52,7 @@ from collections import Counter, defaultdict
 from html import escape
 import requests
 import os
+import logging
 import threading
 import time as time_mod
 from urllib.parse import urlparse
@@ -67,6 +68,8 @@ from database import SessionLocal
 
 
 app = FastAPI(title="GSC Radar")
+logger = logging.getLogger("gsc_radar")
+APP_DEBUG = os.getenv("APP_DEBUG", "0") == "1"
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -396,6 +399,20 @@ async def http_exception_handler_tr(request: Request, exc: Exception):
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler_tr(request: Request, exc: Exception):
+    logger.exception(
+        "Unhandled exception on %s %s",
+        (request.method or "GET"),
+        (request.url.path if request else ""),
+    )
+    if APP_DEBUG:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail": _default_status_message_tr(500),
+                "debug_error": str(exc),
+                "path": request.url.path if request else "",
+            },
+        )
     return JSONResponse(
         status_code=500,
         content={"detail": _default_status_message_tr(500)},
@@ -420,6 +437,22 @@ def _require_admin(user: User):
     if not _is_admin_user(user):
         raise HTTPException(status_code=403, detail="Bu alan sadece yonetici icin acik")
     return user
+
+
+@app.get("/debug/oauth-env")
+def debug_oauth_env(user: User = Depends(get_current_user)):
+    _require_admin(user)
+    cid = (os.getenv("GOOGLE_CLIENT_ID") or "").strip()
+    csec = (os.getenv("GOOGLE_CLIENT_SECRET") or "").strip()
+    ruri = (os.getenv("GOOGLE_REDIRECT_URI") or "").strip()
+    return {
+        "google_client_id_set": bool(cid),
+        "google_client_secret_set": bool(csec),
+        "google_redirect_uri_set": bool(ruri),
+        "google_redirect_uri_value": ruri,
+        "session_cookie_secure": os.getenv("SESSION_COOKIE_SECURE", "0"),
+        "app_debug": APP_DEBUG,
+    }
 
 
 def _is_authenticated_request(request: Request) -> bool:
