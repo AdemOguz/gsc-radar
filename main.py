@@ -473,6 +473,25 @@ def _is_authenticated_request(request: Request) -> bool:
         db.close()
 
 
+def _get_authenticated_user_for_request(request: Request) -> Optional[User]:
+    token = request.cookies.get("session_token")
+    if not token:
+        return None
+    db = SessionLocal()
+    try:
+        sess = db.query(UserSession).filter(UserSession.token == token).first()
+        if not sess:
+            return None
+        exp = sess.expires_at
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        if exp < datetime.now(timezone.utc):
+            return None
+        return db.query(User).filter(User.id == sess.user_id).first()
+    finally:
+        db.close()
+
+
 @app.middleware("http")
 async def require_login_middleware(request: Request, call_next):
     path = request.url.path
@@ -500,12 +519,21 @@ async def require_login_middleware(request: Request, call_next):
         if path.endswith(".html") and path not in public_static_html:
             if not _is_authenticated_request(request):
                 return RedirectResponse("/static/login.html")
+            if path == "/static/admin-users.html":
+                req_user = _get_authenticated_user_for_request(request)
+                if not req_user or not _is_admin_user(req_user):
+                    return RedirectResponse("/static/home.html")
         return await call_next(request)
 
     if not _is_authenticated_request(request):
         return JSONResponse(status_code=401, content={"detail": "Login gerekli"})
 
     return await call_next(request)
+
+
+@app.get("/auth/is-admin")
+def auth_is_admin(user: User = Depends(get_current_user)):
+    return {"is_admin": _is_admin_user(user)}
 
 
 @app.middleware("http")

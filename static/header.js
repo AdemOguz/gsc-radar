@@ -14,6 +14,7 @@
       "nav.monthly": "Aylik Rapor",
       "nav.members": "Uyeler",
       "nav.login": "Giris",
+      "nav.logout": "Cikis Yap",
       "lang.tr": "Turkce",
       "lang.en": "Ingilizce",
       "home.hero_title": "SEO Buyumenin Komuta Merkezi",
@@ -173,6 +174,7 @@
       "nav.monthly": "Monthly Report",
       "nav.members": "Members",
       "nav.login": "Login",
+      "nav.logout": "Logout",
       "lang.tr": "Turkish",
       "lang.en": "English",
       "home.hero_title": "Your SEO Growth Command Center",
@@ -508,8 +510,10 @@
     { href: "/static/site-select.html", labelKey: "nav.sites", carrySite: false },
     { href: "/static/monthly-seo-report.html", labelKey: "nav.monthly", carrySite: true },
     { href: "/static/admin-users.html", labelKey: "nav.members", carrySite: false },
-    { href: "/static/login.html", labelKey: "nav.login", carrySite: false }
+    { href: "/static/login.html", labelKey: "nav.login", carrySite: false, authAction: true }
   ];
+  var isAdminUser = false;
+  var isLoggedInUser = false;
 
   function isActive(href) {
     if (href === "/") return path === "/";
@@ -540,12 +544,16 @@
 
   function renderHeader() {
     if (!mount) return;
+    var visibleNavItems = navItems.filter(function (item) {
+      if (item.labelKey === "nav.members" && !isAdminUser) return false;
+      return true;
+    });
     mount.innerHTML = [
       '<header class="app-header">',
       '  <div class="app-header-inner">',
       '    <a class="app-brand" href="/static/home.html">GSC Radar</a>',
       '    <nav class="app-nav">',
-      navItems
+      visibleNavItems
         .map(function (item) {
           if (item.children && item.children.length) {
             var childHtml = item.children.map(function (child) {
@@ -572,10 +580,21 @@
           }
           var cls = "app-nav-link" + (isActive(item.href) ? " active" : "");
           var href = buildHref(item, getCurrentSiteId());
+          var labelKey = item.labelKey;
+          var authActionAttr = "";
+          if (item.authAction) {
+            if (isLoggedInUser) {
+              href = "#";
+              labelKey = "nav.logout";
+              authActionAttr = " data-auth-action='logout'";
+            } else {
+              labelKey = "nav.login";
+            }
+          }
           var carry = item.carrySite ? "1" : "0";
           return (
-            '<a class="' + cls + '" data-base-href="' + item.href + '" data-carry-site="' + carry + '" href="' + href + '">' +
-            t(item.labelKey, item.labelKey) +
+            '<a class="' + cls + '" data-base-href="' + item.href + '" data-carry-site="' + carry + '"' + authActionAttr + ' href="' + href + '">' +
+            t(labelKey, labelKey) +
             "</a>"
           );
         })
@@ -585,6 +604,44 @@
       "</header>"
     ].join("");
     bindNavDropdownHandlers();
+    bindAuthActionHandlers();
+  }
+
+  function syncAdminStatus() {
+    return fetch("/auth/is-admin")
+      .then(function (res) {
+        if (!res.ok) return { is_admin: false };
+        return res.json();
+      })
+      .then(function (data) {
+        isAdminUser = Boolean(data && data.is_admin);
+      })
+      .catch(function () {
+        isAdminUser = false;
+      });
+  }
+
+  function syncAuthStatus() {
+    return fetch("/auth/me")
+      .then(function (res) {
+        isLoggedInUser = res.ok;
+      })
+      .catch(function () {
+        isLoggedInUser = false;
+      });
+  }
+
+  function bindAuthActionHandlers() {
+    var logoutLink = document.querySelector(".app-nav-link[data-auth-action='logout']");
+    if (!logoutLink) return;
+    logoutLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      fetch("/auth/logout", { method: "POST" })
+        .catch(function () { return null; })
+        .finally(function () {
+          window.location.href = "/static/login.html";
+        });
+    });
   }
 
   function bindNavDropdownHandlers() {
@@ -693,4 +750,7 @@
 
   syncLinks(getCurrentSiteId());
   document.body.classList.add("has-app-header");
+  Promise.all([syncAuthStatus(), syncAdminStatus()]).then(function () {
+    renderHeader();
+  });
 })();
