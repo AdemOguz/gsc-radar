@@ -448,6 +448,72 @@ def fetch_gsc_rows(
     raise HTTPException(status_code=500, detail="GSC sorgusu yapilamadi")
 
 
+def fetch_ga4_rows(
+    property_id: str,
+    start_date: str,
+    end_date: str,
+    dimensions: list,
+    metrics: list,
+    db: Session,
+    user_id: str = None,
+    row_limit: int = 1000,
+):
+    refresh_token = get_refresh_token(db, user_id=user_id)
+    access_token = refresh_access_token(refresh_token)
+
+    clean_property = str(property_id or "").strip().replace("properties/", "")
+    if not clean_property:
+        raise HTTPException(status_code=400, detail="GA4 property_id gerekli")
+
+    url = f"https://analyticsdata.googleapis.com/v1beta/properties/{clean_property}:runReport"
+    payload = {
+        "dateRanges": [{"startDate": start_date, "endDate": end_date}],
+        "dimensions": [{"name": d} for d in (dimensions or []) if str(d).strip()],
+        "metrics": [{"name": m} for m in (metrics or []) if str(m).strip()],
+        "limit": str(max(1, min(int(row_limit or 1000), 100000))),
+    }
+
+    r = requests.post(url, headers=gsc_headers(access_token), json=payload, timeout=30)
+    if r.status_code != 200:
+        raise HTTPException(status_code=r.status_code, detail=r.text)
+
+    data = r.json() or {}
+    out = []
+    for row in data.get("rows", []) or []:
+        dim_vals = [x.get("value", "") for x in (row.get("dimensionValues") or [])]
+        met_vals = [x.get("value", "0") for x in (row.get("metricValues") or [])]
+        out.append({"dimensions": dim_vals, "metrics": met_vals})
+    return out
+
+
+def fetch_ga4_properties(db: Session, user_id: str = None):
+    refresh_token = get_refresh_token(db, user_id=user_id)
+    access_token = refresh_access_token(refresh_token)
+
+    url = "https://analyticsadmin.googleapis.com/v1beta/accountSummaries?pageSize=200"
+    r = requests.get(url, headers=gsc_headers(access_token), timeout=30)
+    if r.status_code != 200:
+        raise HTTPException(status_code=r.status_code, detail=r.text)
+
+    data = r.json() or {}
+    props = []
+    for acc in data.get("accountSummaries", []) or []:
+        account_name = str((acc or {}).get("displayName") or "").strip()
+        for p in (acc or {}).get("propertySummaries", []) or []:
+            prop = str((p or {}).get("property") or "").strip()
+            prop_id = prop.replace("properties/", "") if prop else ""
+            if not prop_id:
+                continue
+            props.append({
+                "property_id": prop_id,
+                "property": prop,
+                "display_name": str((p or {}).get("displayName") or "").strip(),
+                "property_type": str((p or {}).get("propertyType") or "").strip(),
+                "account": account_name,
+            })
+    return props
+
+
 @router.get("/gsc/summary")
 def gsc_summary(
     site_url: str,
